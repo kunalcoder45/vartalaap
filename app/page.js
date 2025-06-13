@@ -1,13 +1,15 @@
 'use client';
 import { useAuth } from '../components/AuthProvider';
 import { useRouter } from 'next/navigation';
+import { BounceLoader } from 'react-spinners';
+
 
 export default function HomePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading by ks</div>;
+    return <div className="flex justify-center items-center h-screen"><BounceLoader color="#f9b500" size={40} /></div>;
   }
 
   return (
