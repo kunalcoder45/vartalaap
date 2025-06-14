@@ -1,21 +1,21 @@
+// client/app/components/CommentModal.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import moment from 'moment';
 import toast from 'react-hot-toast';
-import PostContent from './comments/PostContent'; // Assuming this path is correct
-import CommentsSection from './comments/CommentsSection'; // Assuming this path is correct
+import PostContent from './comments/PostContent';
+import CommentsSection from './comments/CommentsSection';
 
-// Define the props interface for CommentModal
 interface CommentModalProps {
-    post: any;
+    post: any; // Define a more specific type for 'post' if possible
     onClose: () => void;
-    currentUser: any;
+    currentUser: any; // Define a more specific type for 'currentUser' (CustomUser from AuthProvider)
     getIdToken: () => Promise<string | null>;
     handleLike: (postId: string, currentLikes: number, currentIsLiked: boolean) => Promise<void>;
     handleShare: (postId: string) => Promise<void>;
-    backendUrl: string;
+    backendUrl: string; // The full backend API URL, e.g., 'http://localhost:5001/api'
 }
 
 const CommentModal = ({
@@ -34,7 +34,7 @@ const CommentModal = ({
     const commentsListRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
-    // Use the backendUrl prop - it already includes /api
+    const baseBackendUrl = backendUrl.endsWith('/api') ? backendUrl.slice(0, -4) : backendUrl;
     const apiBaseUrl = backendUrl;
 
     useEffect(() => {
@@ -49,59 +49,42 @@ const CommentModal = ({
             setErrorComments(null);
 
             try {
-                console.log(`Fetching comments from: ${apiBaseUrl}/posts/${post._id}/comments`);
+                const token = currentUser ? await getIdToken() : null;
+                const headers: HeadersInit = {
+                    'Content-Type': 'application/json',
+                };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
 
                 const res = await fetch(`${apiBaseUrl}/posts/${post._id}/comments`, {
                     method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // Add authorization header if needed
-                        ...(currentUser && await getIdToken() && {
-                            'Authorization': `Bearer ${await getIdToken()}`
-                        })
-                    },
+                    headers: headers,
                 });
-
-                console.log('Response status:', res.status, res.statusText);
 
                 if (!res.ok) {
                     let errorMessage = `Failed to fetch comments (${res.status})`;
-
                     try {
-                        // Clone the response so we can try multiple parsing methods
                         const errorData = await res.clone().json();
                         errorMessage = errorData.message || errorData.error || errorMessage;
-                        console.error('Server error response:', errorData);
-                    } catch (parseError) {
-                        try {
-                            const errorText = await res.clone().text();
-                            errorMessage = errorText || errorMessage;
-                            console.error('Server error text:', errorText);
-                        } catch (textError) {
-                            console.error('Could not parse error response:', textError);
-                        }
+                    } catch {
+                        const errorText = await res.clone().text();
+                        errorMessage = errorText || errorMessage;
                     }
-
                     throw new Error(errorMessage);
                 }
 
                 const data = await res.json();
-                console.log('Comments fetched successfully:', data);
-
-                // Ensure data is an array
                 if (Array.isArray(data)) {
                     setComments(data);
                 } else if (data.comments && Array.isArray(data.comments)) {
                     setComments(data.comments);
                 } else {
-                    console.warn('Unexpected data format:', data);
+                    console.warn("Unexpected comment data format:", data);
                     setComments([]);
                 }
 
             } catch (err: any) {
-                console.error('Error fetching comments:', err);
-
-                // Provide more specific error messages
                 if (err.name === 'TypeError' && err.message.includes('fetch')) {
                     setErrorComments('Unable to connect to server. Please check your connection.');
                 } else if (err.message.includes('404')) {
@@ -117,7 +100,7 @@ const CommentModal = ({
         };
 
         fetchComments();
-    }, [post?._id, backendUrl, currentUser, getIdToken]); // Added getIdToken to dependencies
+    }, [post?._id, apiBaseUrl, currentUser, getIdToken]);
 
     useEffect(() => {
         if (commentsListRef.current) {
@@ -160,50 +143,40 @@ const CommentModal = ({
                 body: JSON.stringify({ text: newCommentText.trim() }),
             });
 
-            console.log('Response status:', res.status);
             const resText = await res.text();
-            console.log('Response text:', resText);
-
             if (!res.ok) {
-                throw new Error(`Failed to post comment (${res.status}): ${resText}`);
+                let errorDetails = resText;
+                try {
+                    const errorJson = JSON.parse(resText);
+                    errorDetails = errorJson.message || JSON.stringify(errorJson);
+                } catch {
+                    // Not JSON, use raw text
+                }
+                throw new Error(`Failed to post comment (${res.status}): ${errorDetails}`);
             }
 
             const newComment = JSON.parse(resText);
-
             setComments((prev) => [...prev, newComment]);
             setNewCommentText('');
-
-            // Success toast
             toast.success('Comment posted successfully!');
         } catch (error: any) {
-            console.error('Error posting comment:', error);
             toast.error(`Failed to post comment: ${error.message || 'Unknown error'}`);
         }
     };
 
-
     const formatDate = (isoString: string) => moment(isoString).format('MMM D, h:mm A');
 
-    const postAuthorAvatar =
-        post?.author?.avatarUrl
-            ? post.author.avatarUrl.startsWith('http') || post.author.avatarUrl.startsWith('data:')
-                ? post.author.avatarUrl
-                : `${backendUrl}${post.author.avatarUrl.startsWith('/') ? '' : '/'}${post.author.avatarUrl}`
-            : `${backendUrl}/avatars/userLogo.png`;
+    const postAuthorAvatar = post?.author?.avatarUrl;
+    const currentUserAvatar = currentUser?.avatarUrl;
 
     const postAuthorName = post?.author?.name || 'Unknown User';
     const postTime = moment(post.createdAt).fromNow();
-    const postMediaFullUrl = post?.mediaUrl ? `${post.mediaUrl}` : ''; // Ensure correct construction, backendUrl isn't always needed for media
-    const currentUserAvatar = currentUser?.photoURL || `${backendUrl}/avatars/userLogo.png`;
 
-    // Debug info - remove in production
-    console.log('CommentModal Debug Info:', {
-        postId: post?._id,
-        backendUrl,
-        apiBaseUrl,
-        currentUser: !!currentUser,
-        commentsCount: comments.length
-    });
+    const postMediaFullUrl = post?.mediaUrl
+        ? (post.mediaUrl.startsWith('http') || post.mediaUrl.startsWith('data:')
+            ? post.mediaUrl
+            : `${baseBackendUrl}/${post.mediaUrl.startsWith('/') ? post.mediaUrl.substring(1) : post.mediaUrl}`)
+        : '';
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-30 backdrop-blur-sm p-4 transition-opacity duration-300 ease-out animate-scale-in">
@@ -217,7 +190,7 @@ const CommentModal = ({
                     postMediaFullUrl={postMediaFullUrl}
                     onClose={onClose}
                     handleLike={handleLike}
-                    handleShare={handleShare}
+                    handleShare={handleShare}    
                 />
 
                 <CommentsSection
@@ -230,7 +203,7 @@ const CommentModal = ({
                     setNewCommentText={setNewCommentText}
                     handlePostComment={handlePostComment}
                     formatDate={formatDate}
-                    backendUrl={backendUrl}
+                    post={post}
                 />
 
             </div>
