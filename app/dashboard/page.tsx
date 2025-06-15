@@ -93,8 +93,8 @@ export default function Dashboard() {
     return (
         <ProtectedRoute> {/* Protects the route, redirects if not authenticated */}
             <Navbar /> {/* Top navigation */}
-            <div className="h-auto p-4 bg-gray-50">
-                <div className="flex">
+            <div className="h-auto p-4 bg-gray-50 mt-18">
+                <div className="flex h-auto">
                     <div className="flex-shrink-0">
                         {/* Left sidebar, passes joined groups */}
                         <Slidebar

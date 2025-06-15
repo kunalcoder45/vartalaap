@@ -29,7 +29,7 @@ const activeFriends = [
 ];
 
 const activitybar = () => {
-  const heightAdjustment = "110px";
+  const heightAdjustment = "105px";
   return (
     <div className="w-99 p-4 bg-white shadow-md rounded-lg overflow-y-auto mr-0 hide-scrollbar"
       style={{ height: `calc(100vh - ${heightAdjustment})` }}>

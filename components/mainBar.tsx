@@ -4,7 +4,7 @@ import ActionSection from './actionSection'
 
 const MainBar = () => {
     // You can define heightAdjustment here or pass it as a prop if needed from a grand-parent
-    const heightAdjustment = '110px'; // Example: adjust based on header/footer height
+    const heightAdjustment = '105px'; // Example: adjust based on header/footer height
 
     return (
         // Apply scrolling and height to this parent div

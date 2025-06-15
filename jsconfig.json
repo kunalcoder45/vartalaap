@@ -28,7 +28,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "app/layout.js"  ],
+, "app/layout.js", "components/NotificationDropdown.jsx"  ],
   "exclude": [
     "node_modules"
   ]

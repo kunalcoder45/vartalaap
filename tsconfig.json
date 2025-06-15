@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/mainContent.jsx"  ],
+, "components/mainContent.jsx", "components/NotificationDropdown.jsx"  ],
   "exclude": [
     "node_modules"
   ]

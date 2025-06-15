@@ -98,7 +98,7 @@ const navItems = [
 
 // Slidebar component now accepts `currentPath`, `className`, and `joinedGroups` props
 const Slidebar = ({ currentPath, className, joinedGroups = [] }) => {
-    const heightAdjustment = '110px';
+    const heightAdjustment = '105px';
     return (
         <div className={`w-99 bg-white shadow-md rounded-lg mr-0 ${className || ''}`} 
         style={{ height: `calc(100vh - ${heightAdjustment})` }}>
