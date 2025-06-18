@@ -2176,7 +2176,7 @@ const PostCard = ({
         <div className="bg-white rounded-lg shadow-md m-4 p-4 mt-1">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                    <Link href={`/dashboard/profile/${post?.author?._id}`} className="flex items-center space-x-3 group">
+                    <Link href={`/users/${post?.author?._id}/page`} className="flex items-center space-x-3 group">
                         <img
                             src={authorAvatarUrl}
                             alt={authorName}

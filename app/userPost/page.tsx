@@ -357,7 +357,7 @@ const CreatePostPage = () => {
             <div className="bg-white p-5 rounded-lg shadow-md">
                 <div className="flex items-center space-x-3 mb-4">
                     <img
-                        src={user?.photoURL || '/avatars/user-default.jpg'}
+                        src={user?.avatarUrl || '/avatars/user-default.jpg'}
                         alt="User Avatar"
                         className="w-12 h-12 rounded-full object-cover border border-gray-300"
                     />
