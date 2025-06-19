@@ -92,11 +92,22 @@ const UploadModal = ({
                         <select
                             value={visibility}
                             onChange={(e) => setVisibility(e.target.value as 'public' | 'followers')}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-700 shadow-sm transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         >
-                            <option value="public">Everyone</option>
-                            <option value="followers">Followers only</option>
+                            <option
+                                value="public"
+                                className="bg-white text-gray-800 hover:bg-blue-100 cursor-pointer"
+                            >
+                                🌐 Public - Visible to everyone
+                            </option>
+                            <option
+                                value="followers"
+                                className="bg-white text-gray-800 hover:bg-blue-100 cursor-pointer"
+                            >
+                                👥 Followers - Only your followers can view
+                            </option>
                         </select>
+
                     </div>
 
                     {error && (

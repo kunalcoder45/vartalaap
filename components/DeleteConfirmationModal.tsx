@@ -1,7 +1,6 @@
 // client/components/DeleteConfirmationModal.tsx
 'use client';
 
-import { X } from 'lucide-react';
 import React from 'react';
 
 interface DeleteConfirmationModalProps {
