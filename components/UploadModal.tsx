@@ -36,7 +36,7 @@ const UploadModal = ({
                         onClick={onClose}
                         className="p-1 hover:bg-gray-100 rounded-full"
                     >
-                        <X size={20} />
+                        <X size={20} className='cursor-pointer' />
                     </button>
                 </div>
 

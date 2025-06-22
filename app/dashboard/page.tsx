@@ -6,16 +6,14 @@
 // import { useAuth } from '../../components/AuthProvider';
 // import Navbar from '../../components/navbar';
 // import Slidebar from '../../components/slidebar';
-// import RightSidebar from '../../components/activitybar'; // Your ActivityBar component
+// import RightSidebar from '../../components/activitybar';
 // import MainBar from '../../components/mainBar';
 // import toast, { Toaster } from 'react-hot-toast';
+// import { fetchMongoUserId } from '../../utils/userApi';
+// import { BeatLoader } from "react-spinners"; // Import BeatLoader
 
 // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
 
-// /**
-//  * Dashboard component: The main social media feed page.
-//  * Handles group fetching, post creation, and overall layout.
-//  */
 // export default function Dashboard() {
 //     const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();
 //     const pathname = usePathname();
@@ -23,8 +21,12 @@
 //     const [userJoinedGroups, setUserJoinedGroups] = useState([]);
 //     const [loadingGroups, setLoadingGroups] = useState(true);
 //     const [groupsError, setGroupsError] = useState(null);
-//     const imageInputRef = useRef<HTMLInputElement>(null);
-//     const videoInputRef = useRef<HTMLInputElement>(null);
+//     const imageInputRef = useRef(null);
+//     const videoInputRef = useRef(null);
+
+//     // --- New State for separately fetched userId ---
+//     const [fetchedUserId, setFetchedUserId] = useState(null);
+//     // --- End New State ---
 
 //     const fetchUserGroups = useCallback(async () => {
 //         if (!user) {
@@ -68,7 +70,7 @@
 
 //             const data = await response.json();
 //             setUserJoinedGroups(data);
-//         } catch (error: any) {
+//         } catch (error) {
 //             console.error("Error fetching joined groups:", error.message);
 //             setGroupsError(error.message);
 //             setUserJoinedGroups([]);
@@ -78,31 +80,56 @@
 //         }
 //     }, [user, getIdToken]);
 
+//     // --- New useEffect to fetch userId using the new utility function ---
+//     useEffect(() => {
+//         const getUserIdSeparately = async () => {
+//             if (user && !authLoading) {
+//                 const token = await getIdToken();
+//                 if (token) {
+//                     const id = await fetchMongoUserId(user.uid, token);
+//                     if (id) {
+//                         setFetchedUserId(id);
+//                         console.log("Dashboard: Separately fetched userId:", id);
+//                     } else {
+//                         console.log("Dashboard: Failed to separately fetch userId.");
+//                     }
+//                 }
+//             }
+//         };
+
+//         getUserIdSeparately();
+//     }, [user, authLoading, getIdToken]);
+//     // --- End New useEffect ---
+
 //     useEffect(() => {
 //         fetchUserGroups();
 //     }, [fetchUserGroups]);
-    
-//     const userId = mongoUser?._id || null;
+
+//     const userIdToUse = mongoUser?._id || fetchedUserId || null;
 
 //     useEffect(() => {
 //         if (authLoading) {
 //             console.log("Dashboard: Auth is still loading...");
-//         } else if (userId) {
-//             console.log("Dashboard: Current userId for RightSidebar (populated):", userId);
+//         } else if (userIdToUse) {
+//             console.log("Dashboard: Current userId for RightSidebar (from mongoUser or separate fetch):", userIdToUse);
 //         } else {
 //             console.log("Dashboard: Auth finished loading, but userId is null. This indicates a problem fetching/syncing mongoUser profile data.");
 //         }
-//     }, [userId, authLoading]);
+//     }, [userIdToUse, authLoading]);
 
-//     if (authLoading) {
+//     // --- Loading State with Spinner ---
+//     if (authLoading || (user && !userIdToUse)) { // Show spinner if auth is loading or if user exists but mongoUser isn't ready
 //         return (
-//             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '24px' }}>
-//                 Loading Dashboard (Waiting for user data)...
+//             <div className="flex justify-center items-center h-screen">
+//                 <BeatLoader color="#3498db" size={20} /> {/* Adjust size as needed */}
 //             </div>
 //         );
 //     }
-//     if (!userId && !user && !authLoading) {
+//     // --- End Loading State with Spinner ---
+
+//     if (!userIdToUse && !user && !authLoading) {
 //         console.log("Dashboard: Auth finished, user is not logged in or profile not found. Redirecting via ProtectedRoute.");
+//         // This case should ideally be handled by ProtectedRoute, but good for logging.
 //     }
 
 //     return (
@@ -119,25 +146,21 @@
 //                     </div>
 //                     <MainBar />
 //                     <div className="flex-shrink-0">
-//                         <RightSidebar userId={userId} />
+//                         <RightSidebar userId={userIdToUse} />
 //                     </div>
 //                 </div>
 //                 <Toaster />
 //             </div>
 //         </ProtectedRoute>
 //     );
-// }
+// }   
 
 
-
-
-
-
-// pages/dashboard.js (your existing Dashboard component)
+// cleanup code
 
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react'; // Removed useRef
 import { usePathname } from 'next/navigation';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import { useAuth } from '../../components/AuthProvider';
@@ -146,7 +169,8 @@ import Slidebar from '../../components/slidebar';
 import RightSidebar from '../../components/activitybar';
 import MainBar from '../../components/mainBar';
 import toast, { Toaster } from 'react-hot-toast';
-import { fetchMongoUserId } from '../../utils/userApi'; // Import the new function
+import { fetchMongoUserId } from '../../utils/userApi';
+import { BeatLoader } from "react-spinners";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
 
@@ -157,10 +181,8 @@ export default function Dashboard() {
     const [userJoinedGroups, setUserJoinedGroups] = useState([]);
     const [loadingGroups, setLoadingGroups] = useState(true);
     const [groupsError, setGroupsError] = useState(null);
-    const imageInputRef = useRef(null);
-    const videoInputRef = useRef(null);
 
-    // --- New State for separately fetched userId ---
+    // --- State for separately fetched userId ---
     const [fetchedUserId, setFetchedUserId] = useState(null);
     // --- End New State ---
 
@@ -216,11 +238,11 @@ export default function Dashboard() {
         }
     }, [user, getIdToken]);
 
-    // --- New useEffect to fetch userId using the new utility function ---
+    // --- useEffect to fetch userId using the new utility function ---
     useEffect(() => {
         const getUserIdSeparately = async () => {
-            if (user && !authLoading) { // Ensure Firebase user is available and auth is not loading
-                const token = await getIdToken(); // Get the ID token for authentication
+            if (user && !authLoading) {
+                const token = await getIdToken();
                 if (token) {
                     const id = await fetchMongoUserId(user.uid, token);
                     if (id) {
@@ -234,15 +256,14 @@ export default function Dashboard() {
         };
 
         getUserIdSeparately();
-    }, [user, authLoading, getIdToken]); // Depend on user and authLoading to trigger fetch
+    }, [user, authLoading, getIdToken]);
     // --- End New useEffect ---
 
     useEffect(() => {
         fetchUserGroups();
     }, [fetchUserGroups]);
 
-    // You can choose which userId to use. mongoUser?._id is generally preferred
-    // as it's already handled by your AuthProvider and likely available earlier.
+    // Choose which userId to use. mongoUser?._id is generally preferred
     const userIdToUse = mongoUser?._id || fetchedUserId || null;
 
     useEffect(() => {
@@ -255,14 +276,15 @@ export default function Dashboard() {
         }
     }, [userIdToUse, authLoading]);
 
-
-    if (authLoading) {
+    // Loading State with Spinner
+    if (authLoading || (user && !userIdToUse)) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '24px' }}>
-                Loading Dashboard (Waiting for user data)...
+            <div className="flex justify-center items-center h-screen">
+                <BeatLoader color="#3498db" size={20} />
             </div>
         );
     }
+
     if (!userIdToUse && !user && !authLoading) {
         console.log("Dashboard: Auth finished, user is not logged in or profile not found. Redirecting via ProtectedRoute.");
     }
@@ -281,7 +303,7 @@ export default function Dashboard() {
                     </div>
                     <MainBar />
                     <div className="flex-shrink-0">
-                        <RightSidebar userId={userIdToUse} /> {/* Using the consolidated userId */}
+                        <RightSidebar userId={userIdToUse} />
                     </div>
                 </div>
                 <Toaster />

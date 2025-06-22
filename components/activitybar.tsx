@@ -550,7 +550,7 @@ import StatusViewer from './StatusViewer'; // Import the new StatusViewer compon
 import { User } from './StatusViewer'; // Assuming User interface is defined and exported from StatusViewer.tsx or a types file
 import ChatList from './ChatList'; // Import the new ChatList component
 import ChatWindow from './ChatWindow'; // Import the new ChatWindow component
-import { Socket } from 'socket.io-client';
+
 
 // Ensure these are correctly set in your .env.local file
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
@@ -1047,7 +1047,7 @@ const ActivityBar = ({ userId }: ActivityBarProps) => {
                 <h2 className="text-lg font-semibold">Stories</h2>
                 <button
                     onClick={() => setIsUploadModalOpen(true)}
-                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+                    className="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
                 >
                     <Plus size={20} />
                 </button>

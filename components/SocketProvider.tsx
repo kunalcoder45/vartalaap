@@ -463,8 +463,6 @@
 //     return context;
 // };
 
-
-
 'use client';
 
 import React, {
@@ -477,8 +475,8 @@ import React, {
     ReactNode
 } from 'react';
 
-// 'io' को डिफ़ॉल्ट निर्यात (मूल्य) के रूप में आयात करें
-// और 'Socket' को विशेष रूप से एक प्रकार निर्यात के रूप में आयात करें।
+// Import 'io' as a default export (value)
+// and 'Socket' specifically as a type export.
 import io from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 
@@ -502,14 +500,14 @@ interface SocketProviderProps {
 
 const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const { getIdToken, user, mongoUser } = useAuth();
-    // 'Socket' यहाँ अब सही ढंग से आयातित प्रकार को संदर्भित करता है
+    // 'Socket' here now correctly refers to the imported type
     const socketRef = useRef<Socket | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
     const connectSocket = useCallback(async () => {
         if (!user || !mongoUser) {
-            console.log('कोई Firebase उपयोगकर्ता या mongoUser प्रमाणित नहीं, सॉकेट कनेक्शन छोड़ रहे हैं');
+            console.log('No Firebase user or mongoUser authenticated, skipping socket connection');
             return;
         }
 
@@ -518,16 +516,16 @@ const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         try {
             const token = await getIdToken();
             if (!token) {
-                console.warn('सॉकेट कनेक्शन के लिए कोई प्रमाणीकरण टोकन उपलब्ध नहीं है।');
+                console.warn('No authentication token available for socket connection.');
                 socketRef.current?.disconnect();
                 socketRef.current = null;
                 setIsConnected(false);
                 return;
             }
 
-            console.log('सॉकेट सर्वर से कनेक्ट हो रहा है:', SOCKET_SERVER_URL);
+            console.log('Connecting to socket server:', SOCKET_SERVER_URL);
 
-            // किसी भी मौजूदा सॉकेट को साफ करें
+            // Clean up any existing socket
             socketRef.current?.disconnect();
 
             const socket = io(SOCKET_SERVER_URL, {
@@ -542,7 +540,7 @@ const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
             socketRef.current = socket;
 
             socket.on('connect', () => {
-                console.log('सॉकेट कनेक्टेड:', socket.id);
+                console.log('Socket connected:', socket.id);
                 setIsConnected(true);
 
                 socket.emit('user-online', {
@@ -553,18 +551,18 @@ const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
             });
 
             socket.on('disconnect', (reason) => {
-                console.log('सॉकेट डिस्कनेक्टेड:', reason);
+                console.log('Socket disconnected:', reason);
                 setIsConnected(false);
                 setOnlineUsers([]);
             });
 
             socket.on('connect_error', (error) => {
-                console.error('सॉकेट कनेक्शन त्रुटि:', error.message);
+                console.error('Socket connection error:', error.message);
                 setIsConnected(false);
             });
 
             socket.on('reconnect', () => {
-                console.log('सॉकेट फिर से कनेक्टेड');
+                console.log('Socket reconnected');
                 setIsConnected(true);
                 socket.emit('user-online', {
                     userId: mongoUser._id,
@@ -573,14 +571,14 @@ const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
                 });
             });
 
-            // ऑनलाइन उपयोगकर्ताओं को अपडेट करें
+            // Update online users
             socket.on('online_users', (users: string[]) => {
-                console.log('ऑनलाइन उपयोगकर्ता अपडेटेड:', users);
+                console.log('Online users updated:', users);
                 setOnlineUsers(users);
             });
 
             socket.on('user-status-change', (data: { userId: string; status: 'online' | 'offline' }) => {
-                console.log('उपयोगकर्ता स्थिति परिवर्तन:', data);
+                console.log('User status change:', data);
                 setOnlineUsers((prev) =>
                     data.status === 'online'
                         ? prev.includes(data.userId)
@@ -591,14 +589,14 @@ const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
             });
 
         } catch (error) {
-            console.error('connectSocket में त्रुटि:', error);
+            console.error('Error in connectSocket:', error);
             setIsConnected(false);
         }
     }, [getIdToken, user, mongoUser]);
 
     const disconnectSocket = useCallback(() => {
         if (socketRef.current) {
-            console.log('सॉकेट डिस्कनेक्ट हो रहा है...');
+            console.log('Disconnecting socket...');
             if (mongoUser) {
                 socketRef.current.emit('user-offline', {
                     userId: mongoUser._id
@@ -642,7 +640,7 @@ export default SocketProvider;
 export const useSocket = () => {
     const context = useContext(SocketContext);
     if (context === undefined) {
-        throw new Error('useSocket का उपयोग SocketProvider के भीतर ही किया जाना चाहिए');
+        throw new Error('useSocket must be used within a SocketProvider');
     }
     return context;
 };

@@ -450,9 +450,9 @@ const MessageList: FC<MessageListProps> = ({
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Scroll to the latest message whenever messages change
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, loading]);
+    // useEffect(() => {
+    //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // }, [messages, loading]);
 
     if (loading) {
         return (

@@ -5721,7 +5721,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
                 return prevSelected.filter(id => id !== messageId);
             } else {
                 // If a message is not selected, select it and clear any other selections.
-                return [messageId]; // Ensure only one message is selected at a time
+                return [...prevSelected, messageId]; // Ensure only one message is selected at a time
             }
         });
     }, [editingMessageId]);
@@ -6150,7 +6150,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
             setMessages([]); // Clear all messages in the UI
             setSelectedMessages([]);
             onMessageSent();
-            toast.success('All your messages in this conversation deleted successfully!');
+            toast.success('All messages are deleted successfully!');
         } catch (err) {
             console.error('[ChatWindow] Error deleting all messages:', err);
             toast.error(err instanceof Error ? err.message : 'Failed to delete all messages.');

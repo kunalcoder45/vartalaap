@@ -884,7 +884,7 @@ export default function ProfilePage() {
 
     return (
         <ProtectedRoute>
-            <div className="flex flex-col h-screen overflow-hidden bg-gray-100">
+            <div className="flex flex-col h-screen overflow-hidden mt-18">
                 <Navbar />
                 <LoadingBar
                     color="#3498db"
@@ -894,10 +894,10 @@ export default function ProfilePage() {
                     height={3}
                 />
 
-                <div className="flex flex-1 overflow-hidden">
+                <div className="flex flex-1 overflow-hidden bg-gray-100">
                     <Slidebar joinedGroups={joinedGroups} currentPath={pathname} className="flex-shrink-0 m-4" />
 
-                    <main className="flex-1 overflow-y-auto p-6 md:p-4 lg:p-4 bg-gray-100 flex justify-center items-start">
+                    <main className="flex-1 overflow-y-auto p-6 md:p-4 lg:p-4 flex justify-center items-start hide-scrollbar bg-gray-50">
                         <div className="w-full max-w-full bg-white rounded-xl shadow-2xl p-8 md:p-10 lg:p-12 border border-gray-200">
                             <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-10 tracking-tight">
                                 Your Profile{name && <span className="text-blue-600">, {name}!</span>}
