@@ -3233,8 +3233,6 @@
 
 
 
-
-
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -3553,8 +3551,8 @@ const Navbar: React.FC = () => {
                                 }}
                                 disabled={isProcessing}
                                 className={`p-2 rounded-full transition-colors ${isProcessing
-                                        ? 'bg-gray-100 cursor-not-allowed'
-                                        : 'bg-green-100 hover:bg-green-200 text-green-600'
+                                    ? 'bg-gray-100 cursor-not-allowed'
+                                    : 'bg-green-100 hover:bg-green-200 text-green-600'
                                     }`}
                                 aria-label="Accept follow request"
                             >
@@ -3567,8 +3565,8 @@ const Navbar: React.FC = () => {
                                 }}
                                 disabled={isProcessing}
                                 className={`p-2 rounded-full transition-colors ${isProcessing
-                                        ? 'bg-gray-100 cursor-not-allowed'
-                                        : 'bg-red-100 hover:bg-red-200 text-red-600'
+                                    ? 'bg-gray-100 cursor-not-allowed'
+                                    : 'bg-red-100 hover:bg-red-200 text-red-600'
                                     }`}
                                 aria-label="Reject follow request"
                             >
@@ -3627,7 +3625,7 @@ const Navbar: React.FC = () => {
                 ></div>
             )}
 
-            <nav className="bg-white shadow-lg p-4 flex items-center justify-between fixed top-0 left-0 w-full z-[300]">
+            <nav className="bg-white shadow-lg p-3 flex items-center justify-between fixed top-0 left-0 w-full z-[300]">
                 <div className="flex items-center space-x-2 md:pl-8">
                     <Link href="/dashboard" className="text-2xl font-extrabold text-blue-600 tracking-tight">
                         Vartalaap<span className="text-yellow-500 text-3xl">.</span>
@@ -3641,15 +3639,15 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Navigation Links (Hidden on mobile, shown on desktop) */}
-                <div className="hidden md:flex items-center space-x-6 mr-8">
+                <div className="hidden md:flex items-center space-x-6 mr-0">
                     <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Home">
-                        <Home size={24} />
+                        <Home size={20} />
                     </Link>
                     <Link href="/users" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Find Users">
-                        <Users size={24} />
+                        <Users size={20} />
                     </Link>
                     <Link href="/messages" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Messages">
-                        <MessageSquare size={24} />
+                        <MessageSquare size={20} />
                     </Link>
 
                     {/* Notifications Dropdown */}
@@ -3659,7 +3657,7 @@ const Navbar: React.FC = () => {
                             className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
                             aria-label="Notifications"
                         >
-                            <Bell size={24} />
+                            <Bell size={20} />
                             {notificationCount > 0 && (
                                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
                                     {notificationCount}
@@ -3699,10 +3697,10 @@ const Navbar: React.FC = () => {
                     </div>
 
                     {/* User Profile Dropdown */}
-                    <div className="relative">
+                    <div className="relative hover:bg-gray-100 rounded-full p-1 ">
                         <button
                             onClick={handleProfileClick}
-                            className="flex items-center focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full"
+                            className="flex items-center focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-full"
                             aria-label="User menu"
                         >
                             <Image
@@ -3713,6 +3711,7 @@ const Navbar: React.FC = () => {
                                 className="rounded-full object-cover aspect-square"
                                 onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
                             />
+                            <p className="ml-2 text-gray-800 font-medium">{user?.name}</p>
                         </button>
                         {showProfileDropdown && (
                             <div

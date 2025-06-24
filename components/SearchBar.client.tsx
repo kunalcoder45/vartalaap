@@ -123,7 +123,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
   };
 
   return (
-    <div className="relative w-full ml-18" ref={searchRef}>
+    <div className="relative w-full ml-24" ref={searchRef}>
       <div className="relative w-144">
         <input
           ref={searchInputRef}
