@@ -21,12 +21,10 @@ export default function FavouritesPage() {
                     <Slidebar
                         joinedGroups={joinedGroups} // Pass actual joined groups if available
                         currentPath={pathname}
-                        // Add a fixed width or a flex basis to the Slidebar if it doesn't already have one
-                        // For example: w-64 for a fixed width, or flex-none if you want it to not grow/shrink
-                        className="w-64" // Example: giving Slidebar a fixed width. Adjust as per your Slidebar's design.
+                        className="w-64"
                     />
                     {/* The main content area. Use flex-1 to make it take all available space. */}
-                    <main className='flex-1 p-6 overflow-auto hide-scrollbar'> {/* Changed w-full back to flex-1 */}
+                    <main className='flex-1 p-6 overflow-auto h-[85vh]'> {/* Changed w-full back to flex-1 */}
                         <h1 className="text-3xl font-bold text-gray-800 mb-6">Explore Posts</h1>
                         <PostGrid /> {/* Uncomment PostGrid to render your posts */}
                     </main>
