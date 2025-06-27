@@ -29,12 +29,13 @@
 // }
 
 
+
 // app/layout.tsx
 import "./globals.css";
 import { AuthProvider } from '../components/AuthProvider';
 import AppClientWrapper from "../components/AppClientWrapper";
 import { CallProvider } from "../app/context/CallProvider";
-import CallUIWrapper from "../components/CallUIWrapper";
+import CallUIWrapper from "../components/CallUIWrapper"; // Import the new client component
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -43,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <CallProvider>
             <AppClientWrapper>
-              <CallUIWrapper>
+              <CallUIWrapper> {/* Now CallUIWrapper is a Client Component */}
                 {children}
               </CallUIWrapper>
             </AppClientWrapper>

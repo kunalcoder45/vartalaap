@@ -1,4 +1,5 @@
-'use client';
+// client/components/activitybar.tsx
+'use client'; // <-- Add this line
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from './AuthProvider'; // Adjust path if necessary
@@ -28,7 +29,7 @@ interface Status {
     createdAt: string;
     viewedBy: string[]; // This will contain user IDs who viewed it
     visibility: 'public' | 'followers';
-}   
+}
 
 // Interface for the current user's data as returned by /api/status (currentUserData property)
 interface CurrentUserActivityData {
@@ -55,9 +56,10 @@ interface ConnectionActivityData {
 
 interface ActivityBarProps {
     userId: string | null; // This should be the MongoDB ID of the current authenticated user
+    className?: string; // <-- Add this line to accept className
 }
 
-const ActivityBar = ({ userId }: ActivityBarProps) => {
+const ActivityBar = ({ userId, className }: ActivityBarProps) => { // <-- Destructure className from props
     const { getIdToken, user: authUser } = useAuth(); // `authUser` might be useful for current user's Firebase UID if needed
 
     // State for current user's own stories (full list)
@@ -503,7 +505,8 @@ const ActivityBar = ({ userId }: ActivityBarProps) => {
     return (
         // Added flex flex-col and h-full to make ActivityBar take full height
         // and allow its children to grow/shrink with flex properties.
-        <div className="flex flex-col flex-shrink-0 w-[50vh] bg-white rounded-lg shadow-md p-4 h-full">
+        // Apply the passed className here
+        <div className={`flex flex-col flex-shrink-0 w-[50vh] bg-white rounded-lg shadow-md p-4 h-full ${className || ''}`}>
             <div className="flex items-center justify-between mb-2">
                 <h2 className="text-lg font-semibold">Stories</h2>
                 <button
