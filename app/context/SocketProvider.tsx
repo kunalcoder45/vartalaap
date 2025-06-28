@@ -18,7 +18,7 @@ interface SocketContextType {
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001';
+const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com';
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const { getIdToken, user, loading: authLoading } = useAuth();

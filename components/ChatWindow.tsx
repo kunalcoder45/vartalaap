@@ -31,7 +31,7 @@
 // //     onMessageSent: () => void;
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: React.FC<ChatWindowProps> = ({
 // //     isOpen,
@@ -555,7 +555,7 @@
 // //     // socket: any; // Remove this if you import it directly as above
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: React.FC<ChatWindowProps> = ({
 // //     isOpen,
@@ -1424,7 +1424,7 @@
 // //     onMessageSent: () => void;
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: React.FC<ChatWindowProps> = ({
 // //     isOpen,
@@ -3402,7 +3402,7 @@
 // //     onMessageSent: () => void;
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: React.FC<ChatWindowProps> = ({
 // //     isOpen,
@@ -3938,7 +3938,7 @@
 // //     onMessageSent: () => void;
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: FC<ChatWindowProps> = ({ // Explicitly type as FC
 // //     isOpen,
@@ -4480,7 +4480,7 @@
 // //     onMessageSent: () => void;
 // // }
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // const ChatWindow: FC<ChatWindowProps> = ({
 // //     isOpen,
@@ -5021,7 +5021,7 @@
 //     onMessageSent: () => void;
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const ChatWindow: FC<ChatWindowProps> = ({
 //     isOpen,
@@ -5665,7 +5665,7 @@
 //     onMessageSent: () => void;
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const ChatWindow: FC<ChatWindowProps> = ({
 //     isOpen,
@@ -6310,7 +6310,7 @@
 //     onMessageSent: () => void;
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const ChatWindow: FC<ChatWindowProps> = ({
 //     isOpen,
@@ -6937,7 +6937,7 @@ interface ChatWindowProps {
     onMessageSent: () => void;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 const ChatWindow: FC<ChatWindowProps> = ({
     isOpen,

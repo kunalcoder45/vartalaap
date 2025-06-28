@@ -19,8 +19,8 @@ interface SearchBarProps {
   currentAuthUser: CustomUser | null;
 }
 
-const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/api$/, '') || 'http://localhost:5001';
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/api$/, '') || 'https://vartalaap-r36o.onrender.com';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 const SearchBar: React.FC<SearchBarProps> = () => {
   const { getIdToken } = useAuth();

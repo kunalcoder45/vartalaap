@@ -13,7 +13,7 @@
 // // import { ArrowLeft } from 'lucide-react';
 // // // import React from 'react'; // REMOVE THIS IMPORT, as React.use() is no longer used here
 
-// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// // const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // interface Post {
 // //   _id: string;
@@ -341,7 +341,7 @@
 // import Skeleton from 'react-loading-skeleton'; // Import Skeleton
 // import 'react-loading-skeleton/dist/skeleton.css'; // Import Skeleton CSS
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // interface Post {
 //     _id: string;
@@ -710,7 +710,7 @@ import { ArrowLeft } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton'; // Import Skeleton
 import 'react-loading-skeleton/dist/skeleton.css'; // Import Skeleton CSS
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 interface Post {
     _id: string;

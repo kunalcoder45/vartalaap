@@ -29,7 +29,7 @@ interface CardProps {
 
 const defaultAvatar = '/avatars/userLogo.png';
 
-const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:5001';
+const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
 const Card: React.FC<CardProps> = ({ post }) => {
     const authorName = post.author?.name || 'Unknown User';

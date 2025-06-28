@@ -28,7 +28,7 @@
 //     };
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -490,7 +490,7 @@
 //     };
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -1146,7 +1146,7 @@
 //     };
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -1783,7 +1783,7 @@
 //     };
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -2424,7 +2424,7 @@
 // }
 
 // // Define the base URL for your backend's API.
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // Define the base URL for your backend's static files (e.g., user avatars).
 // // We strip '/api' from process.env.NEXT_PUBLIC_BACKEND_URL because static files
@@ -2432,7 +2432,7 @@
 // // not under the '/api' endpoint.
 // const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 //     ? process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api$/, '')
-//     : 'http://localhost:5001';
+//     : 'https://vartalaap-r36o.onrender.com';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -3265,7 +3265,7 @@
 // }
 
 // // Define the base URL for your backend's API.
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // Define the base URL for your backend's static files (e.g., user avatars).
 // // We strip '/api' from process.env.NEXT_PUBLIC_BACKEND_URL because static files
@@ -3273,7 +3273,7 @@
 // // not under the '/api' endpoint.
 // const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 //     ? process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api$/, '')
-//     : 'http://localhost:5001';
+//     : 'https://vartalaap-r36o.onrender.com';
 
 // const Navbar: React.FC = () => {
 //     const { user, getIdToken, logout } = useAuth();
@@ -3827,6 +3827,624 @@
 
 
 
+// 'use client';
+
+// import React, { useState, useCallback, useEffect, useRef } from 'react';
+// import Image from 'next/image';
+// import Link from 'next/link';
+// import { useAuth } from './AuthProvider'; // Make sure CustomUser is defined in AuthProvider or imported via it
+// import { useSocket } from './SocketProvider';
+// import toast from 'react-hot-toast';
+// import { Bell, Home, MessageSquare, Search, Settings, User, LogOut, Users, Check, X, Menu } from 'lucide-react';
+// import defaultUserLogo from '../app/assets/userLogo.png'; // Make sure this path is correct for your project
+// import { useRouter } from 'next/navigation';
+// import SearchBar from './SearchBar'; // Import the SearchBar component
+
+// interface Notification {
+//     _id: string;
+//     type: string;
+//     message: string;
+//     read: boolean;
+//     createdAt: string;
+//     sender?: {
+//         _id: string; // Ensure sender object also has _id
+//         name: string;
+//         avatarUrl?: string | null;
+//         firebaseUid?: string;
+//     };
+//     link?: string;
+//     data?: {
+//         requestId?: string; // Used for follow requests to identify the specific request
+//     };
+// }
+
+// // Define the base URL for your backend's API.
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
+
+// // Define the base URL for your backend's static files (e.g., user avatars).
+// // We strip '/api' from process.env.NEXT_PUBLIC_BACKEND_URL because static files
+// // like uploads and avatars are usually served directly from the root of your backend server,
+// // not under the '/api' endpoint.
+// const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
+//     ? process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api$/, '')
+//     : 'https://vartalaap-r36o.onrender.com';
+
+// const Navbar: React.FC = () => {
+//     const { user, getIdToken, logout } = useAuth();
+//     const { socket } = useSocket();
+//     const router = useRouter();
+
+//     const [notificationCount, setNotificationCount] = useState(0);
+//     const [notifications, setNotifications] = useState<Notification[]>([]);
+//     const [processingRequests, setProcessingRequests] = useState<Set<string>>(new Set());
+//     const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+//     const [showNotificationDropdown, setShowNotificationDropdown] = useState(false);
+//     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+//     const profileDropdownRef = useRef<HTMLDivElement>(null);
+//     const notificationDropdownRef = useRef<HTMLDivElement>(null);
+//     const menuRef = useRef<HTMLDivElement>(null);
+//     // searchRef, searchInputRef, searchTerm, searchResults, isSearchActive, debounceTimeoutRef are now managed within SearchBar.
+
+//     const requestAcceptedAudio = useRef<HTMLAudioElement | null>(null);
+//     const requestRejectedAudio = useRef<HTMLAudioElement | null>(null);
+
+//     useEffect(() => {
+//         requestAcceptedAudio.current = new Audio('/sounds/request_accepted.mp3');
+//         requestRejectedAudio.current = new Audio('/sounds/request_rejected.mp3');
+//         requestAcceptedAudio.current.load();
+//         requestRejectedAudio.current.load();
+//     }, []);
+
+//     const playSound = useCallback((audioElementRef: React.MutableRefObject<HTMLAudioElement | null>) => {
+//         if (audioElementRef.current) {
+//             audioElementRef.current.currentTime = 0;
+//             audioElementRef.current.play().catch(error => {
+//                 console.warn('Audio playback failed:', error);
+//             });
+//         }
+//     }, []);
+
+//     const fetchNotifications = useCallback(async (markAsRead: boolean = false) => {
+//         // Ensure user and user._id are available before fetching notifications
+//         if (!user || !user._id || !getIdToken) {
+//             console.log("Not authorized, user not logged in, or user ID not available to fetch notifications.");
+//             return;
+//         }
+
+//         try {
+//             const idToken = await getIdToken();
+//             if (!idToken) {
+//                 console.warn('No ID token available for fetching notifications. User might be unauthenticated.');
+//                 return;
+//             }
+
+//             const url = markAsRead ? `${API_BASE_URL}/notifications/mark-as-read` : `${API_BASE_URL}/notifications?limit=5`;
+//             const method = markAsRead ? 'PUT' : 'GET';
+
+//             const response = await fetch(url, {
+//                 method: method,
+//                 headers: {
+//                     'Authorization': `Bearer ${idToken}`,
+//                     'Content-Type': 'application/json'
+//                 },
+//             });
+
+//             if (response.ok) {
+//                 if (markAsRead) {
+//                     setNotificationCount(0);
+//                     // Re-fetch notifications to get the updated read status
+//                     fetchNotifications();
+//                 } else {
+//                     const data = await response.json();
+//                     setNotifications(data.notifications || []);
+//                     setNotificationCount(data.unreadCount || 0);
+//                 }
+//             } else {
+//                 const errorData = await response.json().catch(() => ({ message: response.statusText }));
+//                 console.error('Failed to fetch/update notifications:', errorData.message || response.statusText);
+//                 toast.error('Failed to load notifications.');
+//             }
+//         } catch (error) {
+//             console.error('Error fetching/updating notifications:', error);
+//             toast.error('An unexpected error occurred while loading notifications.');
+//         }
+//     }, [user, getIdToken]); // user is a dependency because we access user._id and getIdToken depends on user
+
+//     const handleAcceptReject = useCallback(async (requestId: string, action: 'accept' | 'reject') => {
+//         // Ensure user and user._id are available, and the request isn't already processing
+//         if (!user || !user._id || !getIdToken || processingRequests.has(requestId)) {
+//             console.log("Skipping accept/reject: User, token or request already processing.");
+//             return;
+//         }
+
+//         setProcessingRequests(prev => new Set([...prev, requestId]));
+//         const loadingToast = toast.loading(`${action === 'accept' ? 'Accepting' : 'Rejecting'} request...`);
+
+//         try {
+//             const idToken = await getIdToken();
+//             if (!idToken) {
+//                 throw new Error('No authentication token available.');
+//             }
+
+//             const endpoint = action === 'accept' ? 'accept-follow-request' : 'reject-follow-request';
+//             const response = await fetch(`${API_BASE_URL}/follow/${endpoint}/${requestId}`, {
+//                 method: 'PUT',
+//                 headers: {
+//                     'Authorization': `Bearer ${idToken}`,
+//                     'Content-Type': 'application/json'
+//                 },
+//             });
+
+//             const data = await response.json();
+
+//             if (response.ok) {
+//                 // Remove the handled notification from the local state
+//                 setNotifications(prev => prev.filter(notif =>
+//                     notif.type !== 'followRequest' || notif.data?.requestId !== requestId
+//                 ));
+//                 toast.dismiss(loadingToast);
+//                 toast.success(data.message || `Follow request ${action === 'accept' ? 'accepted' : 'rejected'} successfully!`);
+
+//                 if (action === 'accept') {
+//                     playSound(requestAcceptedAudio);
+//                 } else {
+//                     playSound(requestRejectedAudio);
+//                 }
+//                 fetchNotifications(); // Refresh notifications to update counts/list
+//             } else {
+//                 throw new Error(data.message || `Failed to ${action} request.`);
+//             }
+//         } catch (error) {
+//             console.error(`Error ${action}ing request:`, error);
+//             toast.dismiss(loadingToast);
+//             toast.error(error instanceof Error ? error.message : `Failed to ${action} request. Please try again.`);
+//         } finally {
+//             setProcessingRequests(prev => {
+//                 const newSet = new Set(prev);
+//                 newSet.delete(requestId);
+//                 return newSet;
+//             });
+//         }
+//     }, [user, getIdToken, processingRequests, fetchNotifications, playSound]);
+
+//     useEffect(() => {
+//         // Register user with socket if user and their _id are available
+//         if (socket && user?._id) {
+//             socket.emit('registerUser', user._id);
+
+//             const handleNewNotification = (notification: Notification) => {
+//                 console.log('New notification received:', notification);
+//                 setNotificationCount(prev => prev + 1);
+//                 // Add new notification to the beginning of the list, limit to 5 recent ones
+//                 setNotifications(prev => [notification, ...prev].slice(0, 5));
+//                 toast(`New notification: ${notification.message}`, {
+//                     icon: '🔔',
+//                     duration: 4000,
+//                 });
+//             };
+
+//             socket.on('newNotification', handleNewNotification);
+
+//             return () => {
+//                 socket.off('newNotification', handleNewNotification);
+//             };
+//         }
+//     }, [socket, user?._id]); // Depend on user._id to re-register if user changes or _id becomes available
+
+//     useEffect(() => {
+//         // Initial fetch of notifications when component mounts or user/token changes
+//         fetchNotifications();
+//     }, [fetchNotifications]);
+
+//     const handleLogout = useCallback(async () => {
+//         try {
+//             await logout();
+//             router.push('/login');
+//         } catch (error) {
+//             console.error('Error logging out:', error);
+//             toast.error('Failed to log out.');
+//         } finally {
+//             setShowProfileDropdown(false);
+//             setShowNotificationDropdown(false);
+//             setIsMenuOpen(false);
+//             // SearchBar will manage its own state, no need to clear here
+//         }
+//     }, [logout, router]);
+
+//     const handleNotificationClick = () => {
+//         if (!showNotificationDropdown) {
+//             fetchNotifications(); // Fetch latest notifications when opening the dropdown
+//         }
+//         setShowNotificationDropdown(prev => !prev);
+//         setShowProfileDropdown(false);
+//         setIsMenuOpen(false);
+//     };
+
+//     const handleProfileClick = () => {
+//         setShowProfileDropdown(prev => !prev);
+//         setShowNotificationDropdown(false);
+//         setIsMenuOpen(false);
+//     };
+
+//     const handleMenuToggle = () => {
+//         setIsMenuOpen(prev => !prev);
+//         setShowProfileDropdown(false);
+//         setShowNotificationDropdown(false);
+//     };
+
+//     const getFullImageUrl = useCallback((relativePath: string | undefined | null): string => {
+//         if (!relativePath || relativePath.trim() === "") {
+//             return defaultUserLogo.src;
+//         }
+//         // Check if it's already a full URL or a data URI
+//         if (relativePath.startsWith('http://') || relativePath.startsWith('https://') || relativePath.startsWith('data:')) {
+//             return relativePath;
+//         }
+//         // Prepend the backend static base URL
+//         const cleanedPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+//         return `${BACKEND_STATIC_BASE_URL}/${cleanedPath}`;
+//     }, []);
+
+//     useEffect(() => {
+//         const handleClickOutside = (event: MouseEvent) => {
+//             let clickedInsideAnyDropdownOrMenu = false;
+
+//             // Check if click was inside mobile menu
+//             if (isMenuOpen && menuRef.current && menuRef.current.contains(event.target as Node)) {
+//                 clickedInsideAnyDropdownOrMenu = true;
+//             }
+//             // Check if click was inside notification dropdown
+//             if (showNotificationDropdown && notificationDropdownRef.current && notificationDropdownRef.current.contains(event.target as Node)) {
+//                 clickedInsideAnyDropdownOrMenu = true;
+//             }
+//             // Check if click was inside profile dropdown
+//             if (showProfileDropdown && profileDropdownRef.current && profileDropdownRef.current.contains(event.target as Node)) {
+//                 clickedInsideAnyDropdownOrMenu = true;
+//             }
+//             // SearchBar component now handles its own click-outside logic and active state.
+//             // So, we don't need to explicitly manage isSearchActive or search results here for SearchBar's dropdowns.
+
+//             // Check if the click target was one of the buttons that toggle the dropdowns/menu
+//             const isDropdownToggleButton = (event.target as HTMLElement).closest(
+//                 'button[aria-label="Open menu"], button[aria-label="Close menu"], button[aria-label="Notifications"], button[aria-label="User menu"]'
+//             );
+
+//             // If clicked outside any open dropdown/menu AND not on a toggle button, close all.
+//             if (!clickedInsideAnyDropdownOrMenu && !isDropdownToggleButton) {
+//                 setIsMenuOpen(false);
+//                 setShowNotificationDropdown(false);
+//                 setShowProfileDropdown(false);
+//             }
+//         };
+
+//         document.addEventListener('mousedown', handleClickOutside);
+//         return () => {
+//             document.removeEventListener('mousedown', handleClickOutside);
+//         };
+//     }, [isMenuOpen, showNotificationDropdown, showProfileDropdown]);
+
+//     const renderNotification = (notification: Notification) => {
+//         // Fallback to defaultUserLogo if sender or avatarUrl is missing/empty
+//         const senderAvatar = notification.sender?.avatarUrl && notification.sender.avatarUrl !== ""
+//             ? getFullImageUrl(notification.sender.avatarUrl)
+//             : defaultUserLogo.src;
+//         const senderName = notification.sender?.name ?? 'Unknown User'; // Fallback name
+
+//         if (notification.type === 'followRequest') {
+//             // Use notification._id as fallback if requestId is not explicitly provided in data
+//             const requestIdToProcess = notification.data?.requestId || notification._id;
+//             const isProcessing = processingRequests.has(requestIdToProcess);
+//             return (
+//                 <div className="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0" key={notification._id}>
+//                     <div className="flex items-center justify-between">
+//                         <div className="flex items-center space-x-3">
+//                             <Image
+//                                 src={senderAvatar}
+//                                 alt={senderName}
+//                                 width={40}
+//                                 height={40}
+//                                 className="rounded-full object-cover aspect-square"
+//                                 onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
+//                             />
+//                             <div>
+//                                 <p className="font-medium text-gray-800">{notification.message}</p>
+//                                 <p className="text-xs text-gray-500">
+//                                     {new Date(notification.createdAt).toLocaleString()}
+//                                 </p>
+//                             </div>
+//                         </div>
+//                         <div className="flex space-x-2">
+//                             <button
+//                                 onClick={(e) => {
+//                                     e.stopPropagation(); // Prevent dropdown from closing
+//                                     handleAcceptReject(requestIdToProcess, 'accept');
+//                                 }}
+//                                 disabled={isProcessing}
+//                                 className={`p-2 rounded-full transition-colors ${isProcessing
+//                                     ? 'bg-gray-100 cursor-not-allowed'
+//                                     : 'bg-green-100 hover:bg-green-200 text-green-600'
+//                                     }`}
+//                                 aria-label="Accept follow request"
+//                             >
+//                                 <Check className="w-4 h-4" />
+//                             </button>
+//                             <button
+//                                 onClick={(e) => {
+//                                     e.stopPropagation(); // Prevent dropdown from closing
+//                                     handleAcceptReject(requestIdToProcess, 'reject');
+//                                 }}
+//                                 disabled={isProcessing}
+//                                 className={`p-2 rounded-full transition-colors ${isProcessing
+//                                     ? 'bg-gray-100 cursor-not-allowed'
+//                                     : 'bg-red-100 hover:bg-red-200 text-red-600'
+//                                     }`}
+//                                 aria-label="Reject follow request"
+//                             >
+//                                 <X className="w-4 h-4" />
+//                             </button>
+//                         </div>
+//                     </div>
+//                 </div>
+//             );
+//         }
+
+//         // Default rendering for other notification types
+//         return (
+//             <Link
+//                 key={notification._id}
+//                 href={`/dashboard/notifications?id=${notification._id}`} // Link to a specific notification detail page
+//                 onClick={() => setShowNotificationDropdown(false)} // Close dropdown on navigation
+//                 className={`flex items-center px-4 py-3 text-sm hover:bg-gray-100 border-b border-gray-100 last:border-b-0 ${notification.read ? 'text-gray-500' : 'font-medium text-gray-800'}`}
+//             >
+//                 <div className="flex items-center space-x-3">
+//                     <Image
+//                         src={senderAvatar}
+//                         alt={senderName}
+//                         width={40}
+//                         height={40}
+//                         className="rounded-full object-cover aspect-square"
+//                         onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
+//                     />
+//                     <div>
+//                         <p>{notification.message}</p>
+//                         <span className="block text-xs text-gray-400 mt-1">
+//                             {new Date(notification.createdAt).toLocaleString()}
+//                         </span>
+//                     </div>
+//                 </div>
+//             </Link>
+//         );
+//     };
+
+//     // Determine the user's avatar URL, with fallback
+//     const userAvatar = user?.avatarUrl && user.avatarUrl !== ""
+//         ? getFullImageUrl(user.avatarUrl)
+//         : defaultUserLogo.src;
+
+//     return (
+//         <>
+//             {/* Overlay for closing dropdowns/menu when clicking outside */}
+//             {(showNotificationDropdown || showProfileDropdown || isMenuOpen) && (
+//                 <div
+//                     className="fixed inset-0 bg-opacity-30 backdrop-blur-sm z-[190]"
+//                     style={{ top: '64px' }} // Start overlay below the navbar
+//                     onClick={() => {
+//                         setShowNotificationDropdown(false);
+//                         setShowProfileDropdown(false);
+//                         setIsMenuOpen(false);
+//                         // SearchBar will manage its own click outside
+//                     }}
+//                     aria-hidden="true"
+//                 ></div>
+//             )}
+
+//             <nav className="bg-white shadow-lg p-3 flex items-center justify-between fixed top-0 left-0 w-full z-[300]">
+//                 <div className="flex items-center space-x-2 md:pl-8">
+//                     <Link href="/dashboard" className="text-2xl font-extrabold text-blue-600 tracking-tight">
+//                         Vartalaap<span className="text-yellow-500 text-3xl">.</span>
+//                     </Link>
+//                 </div>
+
+//                 {/* Desktop Search Bar (Hidden on smaller screens) */}
+//                 <div className="hidden md:flex items-center flex-grow mx-auto max-w-xl pr-20">
+//                     <SearchBar currentAuthUser={user} />
+//                 </div>
+
+//                 {/* Desktop Navigation Links and User Menu */}
+//                 <div className="hidden md:flex items-center space-x-6 mr-0">
+//                     <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Home">
+//                         <Home size={20} />
+//                     </Link>
+//                     <Link href="/users" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Find Users">
+//                         <Users size={20} />
+//                     </Link>
+//                     <Link href="/messages" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Messages">
+//                         <MessageSquare size={20} />
+//                     </Link>
+
+//                     {/* Notifications Dropdown */}
+//                     <div className="relative">
+//                         <button
+//                             onClick={handleNotificationClick}
+//                             className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+//                             aria-label="Notifications"
+//                         >
+//                             <Bell size={20} />
+//                             {notificationCount > 0 && (
+//                                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+//                                     {notificationCount}
+//                                 </span>
+//                             )}
+//                         </button>
+//                         {showNotificationDropdown && (
+//                             <div
+//                                 ref={notificationDropdownRef}
+//                                 className="absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right animate-fade-in"
+//                             >
+//                                 <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+//                                     <h3 className="font-semibold text-gray-800">Notifications</h3>
+//                                     {notificationCount > 0 && (
+//                                         <button
+//                                             onClick={() => fetchNotifications(true)}
+//                                             className="text-blue-600 text-sm hover:underline"
+//                                         >
+//                                             Mark all as read
+//                                         </button>
+//                                     )}
+//                                 </div>
+//                                 {notifications.length > 0 ? (
+//                                     <div className="max-h-96 overflow-y-auto">
+//                                         {notifications.map(renderNotification)}
+//                                     </div>
+//                                 ) : (
+//                                     <p className="p-4 text-center text-gray-500 text-sm">No new notifications.</p>
+//                                 )}
+//                                 <div className="p-3 border-t border-gray-200 text-center">
+//                                     <Link href="/dashboard/notifications" onClick={() => setShowNotificationDropdown(false)} className="text-blue-600 hover:underline text-sm">
+//                                         View all notifications
+//                                     </Link>
+//                                 </div>
+//                             </div>
+//                         )}
+//                     </div>
+
+//                     {/* User Profile Dropdown */}
+//                     <div className="relative hover:bg-gray-100 rounded-full p-1 ">
+//                         <button
+//                             onClick={handleProfileClick}
+//                             className="flex items-center focus:outline-none focus:ring-2 focus:ring-gray-300 rounded-full"
+//                             aria-label="User menu"
+//                         >
+//                             <Image
+//                                 src={userAvatar}
+//                                 alt={user?.name || 'User'}
+//                                 width={40}
+//                                 height={40}
+//                                 className="rounded-full object-cover aspect-square"
+//                                 onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
+//                             />
+//                             <p className="ml-2 text-gray-800 font-medium">{user?.name}</p>
+//                         </button>
+//                         {showProfileDropdown && (
+//                             <div
+//                                 ref={profileDropdownRef}
+//                                 className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right animate-fade-in"
+//                             >
+//                                 <div className="py-2">
+//                                     <Link
+//                                         // Prefer firebaseUid for public profiles, fallback to backend _id
+//                                         href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+//                                         onClick={() => setShowProfileDropdown(false)}
+//                                         className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+//                                     >
+//                                         <User size={18} className="mr-2" /> My Profile
+//                                     </Link>
+//                                     <Link
+//                                         href="/dashboard/settings"
+//                                         onClick={() => setShowProfileDropdown(false)}
+//                                         className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+//                                     >
+//                                         <Settings size={18} className="mr-2" /> Settings
+//                                     </Link>
+//                                     <div className="border-t border-gray-200 my-2"></div>
+//                                     <button
+//                                         onClick={handleLogout}
+//                                         className="flex items-center w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"
+//                                     >
+//                                         <LogOut size={18} className="mr-2" /> Logout
+//                                     </button>
+//                                 </div>
+//                             </div>
+//                         )}
+//                     </div>
+//                 </div>
+
+//                 {/* Mobile Menu Button */}
+//                 <div className="md:hidden flex items-center">
+//                     <button
+//                         onClick={handleMenuToggle}
+//                         className="p-2 text-gray-600 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+//                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+//                     >
+//                         <Menu size={24} />
+//                     </button>
+//                 </div>
+//             </nav>
+
+//             {/* Mobile Search Bar - positioned below the main navbar, visible only on small screens */}
+//             <div className="md:hidden fixed top-[64px] left-0 w-full bg-white z-[200] p-4 shadow-md">
+//                 <SearchBar currentAuthUser={user} />
+//             </div>
+
+//             {/* Mobile Menu Dropdown - positioned below the mobile search bar, visible only when open */}
+//             {isMenuOpen && (
+//                 <div
+//                     ref={menuRef}
+//                     className="md:hidden fixed top-[128px] left-0 w-full bg-white shadow-xl z-[250] overflow-hidden transform origin-top animate-fade-in"
+//                 >
+//                     <div className="py-2">
+//                         {/* Mobile Navigation Links */}
+//                         <Link
+//                             href="/dashboard"
+//                             onClick={() => setIsMenuOpen(false)}
+//                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200 border-b border-gray-100"
+//                         >
+//                             <Home size={20} className="mr-3 text-blue-500" /> Home
+//                         </Link>
+//                         <Link
+//                             href="/users"
+//                             onClick={() => setIsMenuOpen(false)}
+//                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200 border-b border-gray-100"
+//                         >
+//                             <Users size={20} className="mr-3 text-purple-500" /> Find Users
+//                         </Link>
+//                         <Link
+//                             href="/messages"
+//                             onClick={() => setIsMenuOpen(false)}
+//                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200 border-b border-gray-100"
+//                         >
+//                             <MessageSquare size={20} className="mr-3 text-green-500" /> Messages
+//                         </Link>
+//                         <Link
+//                             // Prefer firebaseUid for public profiles, fallback to backend _id
+//                             href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+//                             onClick={() => setIsMenuOpen(false)}
+//                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200 border-b border-gray-100"
+//                         >
+//                             <User size={20} className="mr-3 text-yellow-500" /> My Profile
+//                         </Link>
+//                         <Link
+//                             href="/dashboard/settings"
+//                             onClick={() => setIsMenuOpen(false)}
+//                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 transition-colors duration-200 border-b border-gray-100"
+//                         >
+//                             <Settings size={20} className="mr-3 text-gray-500" /> Settings
+//                         </Link>
+//                         <button
+//                             onClick={handleLogout}
+//                             className="flex items-center w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-md transition-colors duration-200"
+//                         >
+//                             <LogOut size={20} className="mr-3" /> Logout
+//                         </button>
+//                     </div>
+//                 </div>
+//             )}
+//         </>
+//     );
+// };
+
+// export default Navbar;
+
+
+
+
+
+
+
+
+
+
 'use client';
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
@@ -3859,7 +4477,7 @@ interface Notification {
 }
 
 // Define the base URL for your backend's API.
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // Define the base URL for your backend's static files (e.g., user avatars).
 // We strip '/api' from process.env.NEXT_PUBLIC_BACKEND_URL because static files
@@ -3867,7 +4485,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:50
 // not under the '/api' endpoint.
 const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
     ? process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/api$/, '')
-    : 'http://localhost:5001';
+    : 'https://vartalaap-r36o.onrender.com';
 
 const Navbar: React.FC = () => {
     const { user, getIdToken, logout } = useAuth();
@@ -4075,6 +4693,8 @@ const Navbar: React.FC = () => {
 
     const getFullImageUrl = useCallback((relativePath: string | undefined | null): string => {
         if (!relativePath || relativePath.trim() === "") {
+            // For static imported images, use their 'src' directly.
+            // Next.js Image component handles these imports correctly.
             return defaultUserLogo.src;
         }
         // Check if it's already a full URL or a data URI
@@ -4125,10 +4745,12 @@ const Navbar: React.FC = () => {
     }, [isMenuOpen, showNotificationDropdown, showProfileDropdown]);
 
     const renderNotification = (notification: Notification) => {
-        // Fallback to defaultUserLogo if sender or avatarUrl is missing/empty
-        const senderAvatar = notification.sender?.avatarUrl && notification.sender.avatarUrl !== ""
+        // Determine the avatar URL for the sender
+        // Prioritize sender's avatarUrl if available and not empty, otherwise use defaultUserLogo.src
+        const senderAvatar = notification.sender?.avatarUrl && notification.sender.avatarUrl.trim() !== ""
             ? getFullImageUrl(notification.sender.avatarUrl)
-            : defaultUserLogo.src;
+            : defaultUserLogo.src; // Directly use defaultUserLogo.src for the static import
+
         const senderName = notification.sender?.name ?? 'Unknown User'; // Fallback name
 
         if (notification.type === 'followRequest') {
@@ -4145,7 +4767,9 @@ const Navbar: React.FC = () => {
                                 width={40}
                                 height={40}
                                 className="rounded-full object-cover aspect-square"
-                                onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
+                                // No onError needed if defaultUserLogo.src is correctly set to a static import.
+                                // If senderAvatar comes from getFullImageUrl and could still be invalid,
+                                // the onError could be useful. For now, assuming getFullImageUrl handles it.
                             />
                             <div>
                                 <p className="font-medium text-gray-800">{notification.message}</p>
@@ -4204,7 +4828,6 @@ const Navbar: React.FC = () => {
                         width={40}
                         height={40}
                         className="rounded-full object-cover aspect-square"
-                        onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
                     />
                     <div>
                         <p>{notification.message}</p>
@@ -4218,9 +4841,9 @@ const Navbar: React.FC = () => {
     };
 
     // Determine the user's avatar URL, with fallback
-    const userAvatar = user?.avatarUrl && user.avatarUrl !== ""
+    const userAvatar = user?.avatarUrl && user.avatarUrl.trim() !== ""
         ? getFullImageUrl(user.avatarUrl)
-        : defaultUserLogo.src;
+        : defaultUserLogo.src; // Directly use defaultUserLogo.src for the static import
 
     return (
         <>
@@ -4317,12 +4940,12 @@ const Navbar: React.FC = () => {
                             aria-label="User menu"
                         >
                             <Image
-                                src={userAvatar}
+                                src={userAvatar} // Use the resolved user avatar URL
                                 alt={user?.name || 'User'}
                                 width={40}
                                 height={40}
                                 className="rounded-full object-cover aspect-square"
-                                onError={(e) => { e.currentTarget.src = defaultUserLogo.src; }}
+                                // No onError needed here if userAvatar uses getFullImageUrl which already handles fallback
                             />
                             <p className="ml-2 text-gray-800 font-medium">{user?.name}</p>
                         </button>

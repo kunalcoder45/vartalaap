@@ -35,7 +35,7 @@ interface ChatListProps {
     currentSelectedChatUser?: GeneralUser | null; // To highlight the active chat
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 const ChatList: React.FC<ChatListProps> = ({
     userId,

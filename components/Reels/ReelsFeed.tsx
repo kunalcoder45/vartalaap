@@ -36,8 +36,8 @@
 //     currentUser?: CurrentUser; // Define currentUser as an optional prop
 // }
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
-// const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:5001';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
+// const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
 // const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept currentUser as a prop
 //     const { user, getIdToken, loading: authLoading } = useAuth();
@@ -532,8 +532,8 @@ interface ReelsFeedProps {
     currentUser?: CurrentUser; // Define currentUser as an optional prop
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
-const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:5001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
+const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
 // --- DEBUGGING CONSOLE LOGS FOR ENVIRONMENT VARIABLES AND DEFAULT ASSETS ---
 console.log('BACKEND_STATIC_BASE_URL:', BACKEND_STATIC_BASE_URL);

@@ -37,8 +37,8 @@
 
 // const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
-// // Calculate the base URL for static assets (e.g., http://localhost:5001)
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
+// // Calculate the base URL for static assets (e.g., https://vartalaap-r36o.onrender.com)
 // const BACKEND_STATIC_BASE_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
 
 // export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -302,8 +302,8 @@
 // const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // // Ensure NEXT_PUBLIC_BACKEND_URL is set in your .env.local file
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
-// // Calculate the base URL for static assets (e.g., http://localhost:5001)
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
+// // Calculate the base URL for static assets (e.g., https://vartalaap-r36o.onrender.com)
 // const BACKEND_STATIC_BASE_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
 
 // export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -560,7 +560,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com';
 const BACKEND_STATIC_BASE_URL = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {

@@ -7,8 +7,8 @@
 // // import { CustomUser } from '../types';
 
 // // // Ensure this URL is correct and accessible from your client.
-// // // For development, it's often 'http://localhost:5001'
-// // const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001');
+// // // For development, it's often 'https://vartalaap-r36o.onrender.com'
+// // const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'https://vartalaap-r36o.onrender.com');
 
 // // const CallContext = createContext<any>(null);
 // // export const useCall = () => useContext(CallContext);
@@ -486,7 +486,7 @@
 // import { useAuth } from '../../components/AuthProvider';
 // import { CustomUser, CallInfoState, CallingInfoState } from '../types';
 
-// const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001');
+// const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'https://vartalaap-r36o.onrender.com');
 
 // const CallContext = createContext<any>(null);
 // export const useCall = () => useContext(CallContext);
@@ -620,7 +620,7 @@
 //       console.log(`CallProvider: Attempting to fetch name for user ID: ${userId}`);
 //       try {
 //           // This should be your actual backend endpoint for fetching user details
-//           const response = await fetch(`http://localhost:5001/api/users/${userId}`);
+//           const response = await fetch(`https://vartalaap-r36o.onrender.com/api/users/${userId}`);
 //           if (!response.ok) {
 //               throw new Error(`HTTP error! status: ${response.status}`);
 //           }
@@ -908,7 +908,7 @@ import io from 'socket.io-client';
 import { useAuth } from '../../components/AuthProvider';
 import { CustomUser, CallInfoState, CallingInfoState } from '../types'; // Ensure '../types' points to your types.ts file
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001');
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'https://vartalaap-r36o.onrender.com');
 
 const CallContext = createContext<any>(null);
 export const useCall = () => useContext(CallContext);
@@ -1044,7 +1044,7 @@ export const CallProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(`CallProvider: Attempting to fetch name and avatar for user ID: ${userId}`);
       try {
           // This should be your actual backend endpoint for fetching user details
-          const response = await fetch(`http://localhost:5001/api/users/${userId}`);
+          const response = await fetch(`https://vartalaap-r36o.onrender.com/api/users/${userId}`);
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
           }

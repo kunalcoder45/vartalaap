@@ -12,7 +12,7 @@
 // import { fetchMongoUserId } from '../../utils/userApi';
 // import { BeatLoader } from "react-spinners"; // Import BeatLoader
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // export default function Dashboard() {
 //     const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();
@@ -176,7 +176,7 @@
 // import { BeatLoader } from "react-spinners";
 
 // // Base URL for your backend API
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // export default function Dashboard() {
 //     // Destructure user, mongoUser, getIdToken, and authLoading from the AuthProvider context
@@ -358,7 +358,7 @@
 // import { BeatLoader } from "react-spinners";
 
 // // Base URL for your backend API
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // export default function Dashboard() {
 //     const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();
@@ -494,7 +494,7 @@ import MainBar from '../../components/mainBar';
 import toast, { Toaster } from 'react-hot-toast';
 import { BeatLoader } from "react-spinners";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 export default function Dashboard() {
   const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();

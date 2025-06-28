@@ -5,7 +5,7 @@
 // import { useAuth } from './AuthProvider';
 
 // // Fix: Remove /api from socket URL - sockets connect directly to server, not API routes
-// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'http://localhost:5001';
+// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
 // interface SocketContextType {
 //     socket: Socket | null;
@@ -139,7 +139,7 @@
 // import { useAuth } from './AuthProvider'; // Make sure AuthProvider gives you firebaseUser.uid
 
 // // Fix: Remove /api from socket URL - sockets connect directly to server, not API routes
-// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_NEW_URL?.replace('/api', '') || 'http://localhost:5001';
+// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_NEW_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
 // interface SocketContextType {
 //     socket: Socket | null;
@@ -302,7 +302,7 @@
 
 // const SOCKET_SERVER_URL =
 //     process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-//     'http://localhost:5001';
+//     'https://vartalaap-r36o.onrender.com';
 
 // interface SocketContextType {
 //     socket: Socket | null;
@@ -484,7 +484,7 @@
 
 // const SOCKET_SERVER_URL =
 //     process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-//     'http://localhost:5001';
+//     'https://vartalaap-r36o.onrender.com';
 
 // interface SocketContextType {
 //     socket: Socket | null;
@@ -672,7 +672,7 @@ import { useAuth } from './AuthProvider';
 
 const SOCKET_SERVER_URL =
     process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-    'http://localhost:5001';
+    'https://vartalaap-r36o.onrender.com';
 
 // Derive the Socket type directly from the 'io' function's return type
 type SocketInstance = ReturnType<typeof io>;

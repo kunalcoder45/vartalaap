@@ -1,6 +1,6 @@
 // utils/userApi.js (or .ts if you're using TypeScript)
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 /**
  * Fetches the MongoDB user ID for a given Firebase UID from the backend.

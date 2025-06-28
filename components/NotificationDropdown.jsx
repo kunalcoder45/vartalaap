@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { UserCheck, UserX, Clock, Bell } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 const NotificationDropdown = ({ isOpen, onClose, socket }) => {
     const { user, token } = useAuth();

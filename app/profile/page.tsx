@@ -13,7 +13,7 @@
 // import LoadingBar from 'react-top-loading-bar';
 // import PostCard from '../../components/PostCard';
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // Define a type for Post structure (expanded to match PostCard's needs)
 // interface Post {
@@ -547,7 +547,7 @@
 // import LoadingBar from 'react-top-loading-bar';
 // import PostCard from '../../components/PostCard';
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // // Define a type for Post structure (expanded to match PostCard's needs)
 // interface Post {
@@ -1111,7 +1111,7 @@ import PostCard from '../../components/PostCard';
 // Import CustomUser from your central types file
 import { CustomUser, Post } from '../../app/types'; // Import Post as well if it's defined there, or ensure its local definition is complete.
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // If Post is also defined in types.ts, remove this local definition:
 // Define a type for Post structure (expanded to match PostCard's needs)

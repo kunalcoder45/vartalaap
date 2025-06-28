@@ -15,10 +15,10 @@ import ChatWindow from './ChatWindow'; // Import the new ChatWindow component
 
 
 // Ensure these are correctly set in your .env.local file
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 // Using process.env.NEXT_PUBLIC_BACKEND_URL for media as well,
 // as your backend serves static files directly from the base URL + /uploads or /avatars
-const MEDIA_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_MEDIA_URL || 'http://localhost:5001';
+const MEDIA_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_MEDIA_URL || 'https://vartalaap-r36o.onrender.com';
 
 // Interface for a single Status object
 interface Status {

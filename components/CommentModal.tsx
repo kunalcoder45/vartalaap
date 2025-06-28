@@ -15,7 +15,7 @@ interface CommentModalProps {
     getIdToken: () => Promise<string | null>;
     handleLike: (postId: string, currentLikes: number, currentIsLiked: boolean) => Promise<void>;
     handleShare: (postId: string) => Promise<void>;
-    backendUrl: string; // The full backend API URL, e.g., 'http://localhost:5001/api'
+    backendUrl: string; // The full backend API URL, e.g., 'https://vartalaap-r36o.onrender.com/api'
 }
 
 const CommentModal = ({

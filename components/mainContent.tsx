@@ -7,7 +7,7 @@
 // import { useAuth } from './AuthProvider'; // Use your AuthProvider's hook
 // import toast from 'react-hot-toast'; // Import toast here
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // /**
 //  * MainContent component: Fetches and displays the main feed of posts.
@@ -264,7 +264,7 @@
 // import { useAuth } from './AuthProvider'; // Use your AuthProvider's hook
 // import toast from 'react-hot-toast'; // Import toast here (already present, good!)
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // /**
 //  * MainContent component: Fetches and displays the main feed of posts.
@@ -540,7 +540,7 @@
 // import { useAuth } from './AuthProvider';
 // import toast from 'react-hot-toast';
 
-// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 // const MainContent = () => {
 //     // Get currentUser and getIdToken from AuthProvider
@@ -762,7 +762,7 @@ import PostCard from './PostCard';
 import { useAuth } from './AuthProvider';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 const MainContent = () => {
     // Get currentUser and getIdToken from AuthProvider

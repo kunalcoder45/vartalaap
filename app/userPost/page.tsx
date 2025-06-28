@@ -246,7 +246,7 @@ import toast from 'react-hot-toast'; // For notifications
 import LoadingBar from 'react-top-loading-bar'; // Import LoadingBar
 
 // --- API Base URL ---
-const API_BASE_URL = 'http://localhost:5001/api'; // Make sure this matches your Express server's address
+const API_BASE_URL = 'https://vartalaap-r36o.onrender.com/api'; // Make sure this matches your Express server's address
 
 const CreatePostPage = () => {
     const { user, getIdToken } = useAuth();

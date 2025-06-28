@@ -10,7 +10,7 @@ import { useState, useRef } from 'react';
 
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 const BACKEND_URL = API_BASE_URL.replace('/api', ''); // Define BACKEND_URL for cleaner avatar paths
 
 const ActionSection = () => { // Removed `post` prop as it's not needed here

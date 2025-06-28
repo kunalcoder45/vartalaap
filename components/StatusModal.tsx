@@ -8,7 +8,7 @@ import defaultAvatar from '../app/assets/userLogo.png';
 import { useAuth } from './AuthProvider'; // To get current user ID for analytics/deletion
 import { formatDistanceToNow } from 'date-fns'; // For time formatting
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 interface Status {
   _id: string;

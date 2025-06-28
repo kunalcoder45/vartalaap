@@ -7,7 +7,7 @@ import defaultAvatar from '../../app/assets/userLogo.png';
 import { ChatParticipant } from '../../app/types';
 import { MessageSquareText } from 'lucide-react';
 
-const MEDIA_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_MEDIA_URL || 'http://localhost:5001';
+const MEDIA_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_MEDIA_URL || 'https://vartalaap-r36o.onrender.com';
 
 interface ActivityBarProps {
   userId: string | null;
