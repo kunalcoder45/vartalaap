@@ -5,7 +5,8 @@ import { Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth, CustomUser } from './AuthProvider';
+import { useAuth } from './AuthProvider';
+import { CustomUser } from '@/app/types'; // Adjust the import path based on your project structure
 import defaultUserLogo from '../app/assets/userLogo.png';
 
 interface UserResult {

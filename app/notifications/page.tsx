@@ -12,7 +12,7 @@ export default function FavouritesPage() {
         <div>
             <Navbar />
             <div className="flex-grow p-6 bg-gray-50 flex space-x-6 justify-center">
-                <Slidebar joinedGroups={joinedGroups} currentPath={pathname} />
+                <Slidebar joinedGroups={joinedGroups} currentPath={pathname}  className="" />
                 <main className="flex-1 p-6">
                     <h1>Nothing..</h1>
                 </main>

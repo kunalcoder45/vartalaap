@@ -44,44 +44,45 @@
 // client/app/types/index.ts
 
 export interface Message {
-    _id: string;
-    conversationId: string;
-    sender: GeneralUser;
-    receiver: string;
-    content: string;
-    mediaUrl?: string;
-    mediaType?: 'image' | 'video' | 'audio' | 'file';
-    isDeleted: boolean;
-    isEdited: boolean;
-    createdAt: string;
-    updatedAt: string;
+  _id: string;
+  conversationId: string;
+  sender: GeneralUser;
+  receiver: string;
+  content: string;
+  mediaUrl?: string;
+  mediaType?: 'image' | 'video' | 'audio' | 'file';
+  isDeleted: boolean;
+  isEdited: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface GeneralUser {
-    _id: string;
-    name: string;
-    username?: string;
-    avatarUrl?: string;
-    email?: string;
-    // Add any other fields you typically expect for a general user profile
+  _id: string;
+  name: string;
+  username?: string;
+  avatarUrl?: string;
+  email?: string;
+  // Add any other fields you typically expect for a general user profile
 }
 
 // AppUser could be an alias for GeneralUser or a more specific type if needed
 export interface AppUser extends GeneralUser {
-    // Add app-specific fields here if different from GeneralUser
+  // Add app-specific fields here if different from GeneralUser
 }
 
 export interface CustomUser {
-    uid: string; // Firebase UID
-    email: string | null;
-    displayName: string | null;
-    _id?: string; // MongoDB _id - IMPORTANT: Make sure this is present and correct
-    name?: string; // User's display name - IMPORTANT: Make sure this is present and correct
-    bio?: string | null;
-    avatarUrl?: string | null;
-    username?: string;
-    // Add any other fields from your user model
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  _id?: string; // MongoDB _id
+  name?: string;
+  bio?: string | null;
+  avatarUrl?: string | null;
+  username?: string;
+  mongoUserId: string;
 }
+
 
 // --- Call related types (optional but good practice) ---
 export interface CallInfoState {

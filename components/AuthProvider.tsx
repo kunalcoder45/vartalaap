@@ -258,16 +258,18 @@ import React, { createContext, useContext, useState, useEffect, ReactNode, useCa
 import { onAuthStateChanged, User as FirebaseUser, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from '../firebase/config'; // Make sure this path is correct for your Firebase config
 import toast from 'react-hot-toast';
+import { CustomUser } from '../app/types';
 
-export interface CustomUser {
-    uid: string;
-    email: string | null;
-    displayName: string | null;
-    _id?: string;
-    name?: string;
-    bio?: string | null;
-    avatarUrl?: string | null; // This will now always be a fully resolved URL
-}
+// export interface CustomUser {
+//     uid: string;
+//     email: string | null;
+//     displayName: string | null;
+//     _id?: string;
+//     name?: string;
+//     mongoUserId?: string;
+//     bio?: string | null;
+//     avatarUrl?: string | null; // This will now always be a fully resolved URL
+// }
 
 export interface MongoUser { // Exported for use in other files if needed
     _id: string;
@@ -327,6 +329,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             email: fUser.email,
             displayName: fUser.displayName,
             _id: backendUserData?._id,
+            mongoUserId: backendUserData?._id || '',
             name: backendUserData?.name || fUser.displayName || fUser.email?.split('@')[0] || 'Unknown User',
             bio: backendUserData?.bio,
             avatarUrl: resolvedAvatarUrl, // This is now always a fully resolved URL
@@ -506,7 +509,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user: customUser, loading, signInWithGoogle, logout, getIdToken , mongoUser}}>
+        <AuthContext.Provider value={{ user: customUser, loading, signInWithGoogle, logout, getIdToken, mongoUser }}>
             {children}
         </AuthContext.Provider>
     );
@@ -518,4 +521,4 @@ export const useAuth = () => {
         throw new Error('useAuth must be used within an AuthProvider');
     }
     return context;
-};
+};  

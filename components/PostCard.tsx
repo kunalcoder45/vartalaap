@@ -372,7 +372,7 @@
 //     const [showOptionsDropdown, setShowOptionsDropdown] = useState(false);
 //     const [showEditModal, setShowEditModal] = useState(false);
 //     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
-    
+
 //     // Follow related states
 //     const [followStatus, setFollowStatus] = useState<FollowStatus['status']>('not_following');
 //     const [isFollowLoading, setIsFollowLoading] = useState(false);
@@ -610,7 +610,7 @@
 //                         </div>
 //                     </Link>
 //                 </div>
-                
+
 //                 <div className="flex items-center space-x-2">
 //                     {/* Follow Button - Show only if not current user's post */}
 //                     {!isCurrentUserAuthor && followButtonConfig && (
@@ -1832,20 +1832,22 @@ import toast from 'react-hot-toast';
 import CommentModal from './CommentModal';
 import PostEditModal from './PostEditModal';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
-
+import { CustomUser } from '../app/types';
 import defaultUserLogo from '../app/assets/userLogo.png';
 
 interface PostCardProps {
     post?: any;
-    handleLike: (postId: string) => Promise<void>;
+    // handleLike: (postId: string) => Promise<void>;
+    handleLike: (postId: string, currentLikes: number, currentIsLiked: boolean) => Promise<void>; // <--- MODIFIED
     handleShare: (postId: string) => Promise<void>;
     loading: boolean;
-    currentUser: {
-        uid: string;
-        mongoUserId: string;
-        name: string;
-        avatarUrl: string;
-    };
+    // currentUser: {
+    //     uid: string;
+    //     mongoUserId: string;
+    //     name: string;
+    //     avatarUrl: string;
+    // };
+    currentUser: CustomUser | null;
     getIdToken: () => Promise<string | null>;
     onPostDeleted: (postId: string) => void;
     onPostUpdated: (updatedPost: any) => void;
@@ -2014,7 +2016,7 @@ const PostCard = ({
                     successMessage = data.message || 'Unfollowed successfully!';
                     optimisticNewStatus = 'not_following';
                     // --- Play rejected sound specifically for successful unfollow ---
-                    playSound(requestRejectedAudio); 
+                    playSound(requestRejectedAudio);
                     // --- End Play rejected sound ---
                 } else {
                     throw new Error(data.message || 'Failed to unfollow user');
@@ -2198,9 +2200,8 @@ const PostCard = ({
                         <button
                             onClick={handleFollowAction}
                             disabled={isFollowLoading || followButtonConfig.disabled}
-                            className={`flex items-center px-3 py-1 rounded-full border text-sm font-medium transition-colors ${
-                                followButtonConfig.className
-                            } ${isFollowLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`flex items-center px-3 py-1 rounded-full border text-sm font-medium transition-colors ${followButtonConfig.className
+                                } ${isFollowLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             <followButtonConfig.icon size={16} className="mr-1" />
                             {isFollowLoading ? 'Loading...' : followButtonConfig.text}
@@ -2273,7 +2274,7 @@ const PostCard = ({
             <div className="flex items-center justify-between text-gray-600 text-sm mb-4">
                 <div className="flex items-center space-x-4">
                     <button
-                        onClick={() => handleLike(post._id)}
+                        onClick={() => handleLike(post._id, post.likes, post.isLiked)}
                         className={`flex items-center p-2 rounded-full cursor-pointer transition-colors ${post.isLiked ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-100'}`}
                     >
                         <ThumbsUp size={16} className={`mr-1 ${post.isLiked ? 'text-blue-500' : ''}`} />

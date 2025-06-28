@@ -1,14 +1,13 @@
+// app/users/[uid]/page.tsx
+import UserProfilePostsWrapper from './UserProfilePostsWrapper';
 
-import UserProfilePostsPage from '../../../components/UserProfilePostsPage'; // Correct relative path
-
-interface UserProfilePageProps {
-  params: {
-    uid: string;
-  };
+interface PageProps {
+  params: Promise<{ uid: string }>;
 }
 
-export default function Page({ params }: UserProfilePageProps) {
-  const { uid } = params;
-
-  return <UserProfilePostsPage uid={uid} />;
+export default async function Page({ params }: PageProps) {
+  // Await the params since they're now a Promise in Next.js 15
+  const { uid } = await params;
+  
+  return <UserProfilePostsWrapper uid={uid} />;
 }

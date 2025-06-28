@@ -3238,7 +3238,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth, CustomUser } from './AuthProvider'; // Import CustomUser
+import { useAuth } from './AuthProvider'; // Import CustomUser
 import { useSocket } from './SocketProvider';
 import toast from 'react-hot-toast';
 import { Bell, Home, MessageSquare, Search, Settings, User, LogOut, Users, Check, X, Menu } from 'lucide-react';

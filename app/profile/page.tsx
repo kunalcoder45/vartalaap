@@ -568,6 +568,15 @@ interface Post {
     isLiked: boolean; // Indicates if current user liked it
 }
 
+interface CustomUser {
+  uid: string;
+  mongoUserId: string;
+  name: string;
+  email: string; // <--- Add email
+  displayName: string; // <--- Add displayName
+  avatarUrl: string;
+}
+
 export default function ProfilePage() {
     const { user, getIdToken, mongoUser } = useAuth();
     const pathname = usePathname();
@@ -856,6 +865,8 @@ export default function ProfilePage() {
             uid: user.uid,
             mongoUserId: mongoUser._id, // Use _id from mongoUser
             name: user.name || user.displayName || 'Unknown User',
+            email: user.email || '', // Add email property
+            displayName: user.displayName || user.name || 'Unknown User',
             avatarUrl: user.avatarUrl || `${API_BASE_URL.replace('/api', '')}/avatars/userLogo.png`
         };
     }, [user, mongoUser]);
