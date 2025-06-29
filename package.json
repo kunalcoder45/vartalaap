@@ -26,11 +26,13 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.21.0",
+    "@types/howler": "^2.2.12",
     "@types/moment": "^2.11.29",
     "@types/simple-peer": "^9.11.8",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^11.9.0",
+    "howler": "^2.2.4",
     "lucide-react": "^0.513.0",
     "moment": "^2.30.1",
     "next": "^15.3.3",

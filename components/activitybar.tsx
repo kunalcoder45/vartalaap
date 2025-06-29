@@ -599,8 +599,7 @@ const ActivityBar = ({ userId, className }: ActivityBarProps) => { // <-- Destru
                     currentUserId={userId}
                     getFullMediaUrl={getFullMediaUrl}
                     defaultAvatarUrl={defaultAvatarUrl}
-                    onMessageSent={handleChatActivity} // Prop to refresh chat list after sending
-                // socket={socket}
+                    onMessageSent={handleChatActivity}  
                 />
             )}
         </div>

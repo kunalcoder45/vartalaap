@@ -5591,12 +5591,56 @@ const Navbar: React.FC = () => {
 
                 {/* Mobile Menu Button (Visible on smaller screens) */}
                 <div className="md:hidden flex items-center space-x-4">
+                    <div className="relative">
+                        <button
+                            onClick={handleNotificationClick}
+                            className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+                            aria-label="Notifications"
+                        >
+                            <Bell size={18} />
+                            {notificationCount > 0 && (
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                    {notificationCount}
+                                </span>
+                            )}
+                        </button>
+                        {showNotificationDropdown && (
+                            <div
+                                ref={notificationDropdownRef}
+                                className="absolute ml-[-255px] mt-4 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right animate-fade-in"
+                            >
+                                <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                                    <h3 className="font-semibold text-gray-800">Notifications</h3>
+                                    {notificationCount > 0 && (
+                                        <button
+                                            onClick={() => fetchNotifications(true)}
+                                            className="text-blue-600 text-sm hover:underline"
+                                        >
+                                            Mark all as read
+                                        </button>
+                                    )}
+                                </div>
+                                {notifications.length > 0 ? (
+                                    <div className="max-h-100 overflow-y-auto">
+                                        {notifications.map(renderNotification)}
+                                    </div>
+                                ) : (
+                                    <p className="p-4 text-center text-gray-500 text-sm">No new notifications.</p>
+                                )}
+                                {/* <div className="p-3 border-t border-gray-200 text-center">
+                                    <Link href="/dashboard/notifications" onClick={() => setShowNotificationDropdown(false)} className="text-blue-600 hover:underline text-sm">
+                                        View all notifications
+                                    </Link>
+                                </div> */}
+                            </div>
+                        )}
+                    </div>
                     <button
                         onClick={handleMenuToggle}
                         className="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         aria-label={isMenuOpen ? "Close menu" : "Open menu"}
                     >
-                        <Menu size={24} />
+                        <Menu size={20} />
                     </button>
                 </div>
 
@@ -5606,7 +5650,7 @@ const Navbar: React.FC = () => {
                         ref={menuRef}
                         className="md:hidden absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-xl z-[200] py-4 transform origin-top animate-fade-in-down"
                     >
-                        <div className="px-4 py-2">
+                        <div className="m-0 p-0 flex items-center justify-center">
                             <SearchBar currentAuthUser={user} />
                         </div>
                         <Link href="/dashboard" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100" onClick={handleMenuToggle}>

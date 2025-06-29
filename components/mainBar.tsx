@@ -1,25 +1,29 @@
-// client/components/mainBar.tsx
-'use client'; // <-- Add this line
+'use client';
 
 import React from 'react';
-import MainContent from './mainContent'; // Adjust path if necessary
-import ActionSection from './actionSection'; // Adjust path if necessary
+import MainContent from './mainContent';
+import ActionSection from './actionSection';
 
-// Define the props interface for MainBar
 interface MainBarProps {
-    className?: string; // Add this line to accept className
-    heightAdjustment?: string; // Optional: if you want to pass this from parent
+    className?: string;
 }
 
-const MainBar = ({ className, heightAdjustment = '105px' }: MainBarProps) => {
-    // heightAdjustment can be passed as a prop, or defaulted here.
-    // If you always want it to be '105px' regardless of parent, remove heightAdjustment from props and keep it as a const.
+const MainBar = ({ className }: MainBarProps) => {
+    // We'll use a consistent height adjustment for both mobile and desktop
+    // based on the Navbar's height.
+    // Let's assume Navbar height is around 80px based on common designs.
+    // You might need to adjust this '80px' value if your Navbar is different.
+    const navbarHeight = '80px'; // Adjust this value if your Navbar has a different fixed height
+    const desktopAdjustment = '105px'; // This was your previous desktop adjustment
 
     return (
-        // Apply scrolling and height to this parent div
         <div
-            className={`flex-grow p-0 pt-0 space-y-6 overflow-y-auto max-w-2xl mx-auto hide-scrollbar rounded-3xl ${className || ''}`} // Apply className here
-            style={{ height: `calc(100vh - ${heightAdjustment})`}}
+            className={`
+                flex-grow p-0 pt-0 space-y-6 overflow-y-auto max-w-2xl mx-auto hide-scrollbar rounded-3xl
+                h-[calc(100vh-${navbarHeight})] /* Mobile: Full viewport height minus Navbar */
+                md:h-[calc(100vh-${desktopAdjustment})] /* Desktop: Your specified height */
+                ${className || ''}
+            `}
         >
             <ActionSection />
             <MainContent />

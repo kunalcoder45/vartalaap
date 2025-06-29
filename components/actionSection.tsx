@@ -127,7 +127,7 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
       <div className="flex-grow p-0 pt-0 space-y-6 mb-0 overflow-y-auto max-w-2xl mx-auto">
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 pt-0 space-y-6 mb-0 max-w-2xl mx-auto">
-            <div className="bg-white p-5 rounded-lg shadow-md">
+            <div className="bg-white md:p-5 p-2 rounded-lg shadow-md">
               <div className="flex items-center space-x-3 mb-4">
                 <Link href="/profile" className="flex-shrink-0">
                   <img
@@ -142,7 +142,7 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
                   value={postText}
                   onChange={(e) => setPostText(e.target.value)}
                   rows={3}
-                  className="flex-grow p-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 resize-y"
+                  className="flex-grow md:p-3 p-2 md:h-auto h-15 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 resize-y"
                 />
               </div>
 
@@ -166,7 +166,7 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
 
               <hr className="my-4 border-gray-200" />
 
-              <div className="flex justify-around text-gray-600 flex-wrap gap-2">
+              <div className="flex justify-around text-gray-600 flex-wrap md:gap-2 gap-1">
                 <input
                   type="file"
                   accept="image/*"
@@ -177,7 +177,7 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
                 />
                 <button
                   onClick={() => imageInputRef.current?.click()}
-                  className="flex items-center p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center md:p-2 p-1 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={selectedFile !== null && fileType !== 'image'}
                   type="button"
                 >
@@ -202,13 +202,15 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
                   <Video size={20} className="text-purple-500 mr-2" />
                   <span>Video</span>
                 </button>
+                
+                {/* Uncomment if you want to add "Go Live" and "Feeling" buttons later */}
 
-                <button
+                {/* <button
                   className="flex items-center p-2 rounded-lg hover:bg-gray-100 transition-colors cursor-not-allowed opacity-70"
                   type="button"
                   disabled
                 >
-                  <Video size={20} className="text-red-500 mr-2" />
+                  {/* <Video size={20} className="text-red-500 mr-2" />
                   <span>Go Live</span>
                 </button>
 
@@ -219,12 +221,12 @@ const ActionSection = () => { // Removed `post` prop as it's not needed here
                 >
                   <Smile size={20} className="text-yellow-500 mr-2" />
                   <span>Feeling</span>
-                </button>
+                </button> */}
 
                 <button
                   onClick={handlePost}
                   disabled={isPosting || (!postText.trim() && !selectedFile)}
-                  className="flex items-center p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center p-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   type="button"
                 >
                   {isPosting ? (

@@ -119,6 +119,38 @@
 
 // clie// client/app/types.ts
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // This interface represents the user object as it comes directly from your MongoDB backend.
 export interface MongoUser {
   _id: string; // MongoDB primary key (required from backend)
@@ -260,36 +292,3 @@ export interface ChatParticipant {
   lastMessageContent?: string;       // ✅ Used in ChatList
   lastMessageTimestamp?: string;     // ✅ Used in ChatList
 }
-
-
-// // app/types.ts
-// export interface Message {
-//     _id: string;
-//     conversationId: string;
-//     sender: GeneralUser; // Assuming sender is populated with GeneralUser fields
-//     receiver: string; // Or GeneralUser if you populate it
-//     content: string;
-//     mediaUrl?: string; // Optional for media messages
-//     mediaType?: 'image' | 'video' | 'audio' | 'file'; // Optional for media messages
-//     isDeleted: boolean;
-//     isEdited: boolean; // Add this field
-//     createdAt: string;
-//     updatedAt: string;
-// }
-
-// export interface GeneralUser {
-//     _id: string;
-//     name: string; // Assuming 'name' is always available
-//     username?: string; // Optional, depending on your user schema
-//     avatarUrl?: string;
-//     email?: string;
-// }
-
-// export interface AppUser {
-//     _id: string;
-//     name: string; // Assuming 'name' is always available
-//     username?: string; // Optional, depending on your user schema
-//     avatarUrl?: string;
-//     email?: string;
-// }
-

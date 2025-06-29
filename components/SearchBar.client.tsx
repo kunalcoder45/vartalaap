@@ -1,3 +1,5 @@
+// client/components/SearchBar.tsx
+
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
@@ -17,22 +19,33 @@ interface UserResult {
 
 interface SearchBarProps {
   currentAuthUser: CustomUser | null;
+  // NEW PROP: Function to update search active state in parent
+  onSearchActiveChange?: (isActive: boolean) => void;
 }
 
 const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/api$/, '') || 'https://vartalaap-r36o.onrender.com';
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
-const SearchBar: React.FC<SearchBarProps> = () => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearchActiveChange }) => { // Destructure new prop
   const { getIdToken } = useAuth();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState<UserResult[]>([]);
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  // Managed locally, but we'll notify parent
+  const [isSearchActiveLocal, setIsSearchActiveLocal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Function to update local state and notify parent
+  const updateSearchActive = useCallback((isActive: boolean) => {
+    setIsSearchActiveLocal(isActive);
+    if (onSearchActiveChange) {
+      onSearchActiveChange(isActive);
+    }
+  }, [onSearchActiveChange]);
 
   const getFullImageUrl = useCallback((path?: string | null) => {
     if (!path || path.trim() === '') return defaultUserLogo.src;
@@ -58,7 +71,7 @@ const SearchBar: React.FC<SearchBarProps> = () => {
         }
       }
     } else if (e.key === 'Escape') {
-      setIsSearchActive(false);
+      updateSearchActive(false); // Use update function
       setSearchResults([]);
       setSelectedIndex(null);
     }
@@ -106,17 +119,17 @@ const SearchBar: React.FC<SearchBarProps> = () => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setIsSearchActive(false);
+        updateSearchActive(false); // Use update function
         setSearchResults([]);
         setSelectedIndex(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [updateSearchActive]); // Depend on updateSearchActive
 
   const handleResultClick = () => {
-    setIsSearchActive(false);
+    updateSearchActive(false); // Use update function
     setSearchTerm('');
     setSearchResults([]);
     setSelectedIndex(null);
@@ -124,8 +137,8 @@ const SearchBar: React.FC<SearchBarProps> = () => {
   };
 
   return (
-    <div className="relative w-full ml-24" ref={searchRef}>
-      <div className="relative w-144">
+    <div className="relative md:ml-24 ml-0 w-auto" ref={searchRef}>
+      <div className="relative w-full">
         <input
           ref={searchInputRef}
           type="text"
@@ -133,16 +146,16 @@ const SearchBar: React.FC<SearchBarProps> = () => {
           value={searchTerm}
           onKeyDown={handleKeyDown}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setIsSearchActive(true)}
-          className={`w-full bg-gray-100 rounded-full py-2.5 pl-10 pr-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 ${
-            isSearchActive ? 'shadow-md' : ''
+          onFocus={() => updateSearchActive(true)} // Use update function
+          className={`w-[330px] md:w-[580px] bg-gray-100 rounded-full py-2.5 pl-10 pr-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200 ${
+            isSearchActiveLocal ? 'shadow-md' : '' // Use local state for conditional styling
           }`}
         />
         <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
       </div>
 
-      {isSearchActive && searchTerm && (
-        <div className="absolute left-0 right-0 mt-4 bg-white border border-gray-200 rounded-lg shadow-lg z-[310] max-h-80 overflow-y-auto animate-fade-in">
+      {isSearchActiveLocal && searchTerm && ( // Use local state here too
+        <div className="absolute w-full left-0 right-0 md:mt-4 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-[310] max-h-80 overflow-y-auto animate-fade-in">
           {searchResults.length > 0 ? (
             searchResults.map((user, index) => (
               <Link
@@ -170,17 +183,21 @@ const SearchBar: React.FC<SearchBarProps> = () => {
         </div>
       )}
 
-      {isSearchActive && (
+      {/* This overlay should be controlled by Navbar now for mobile view */}
+      {/* Remove this overlay from here as Navbar will handle it to cover the entire page below it */}
+      {/*
+      {isSearchActiveLocal && (
         <div
           className="fixed inset-0 top-[64px] bg-opacity-30 backdrop-blur-sm z-40"
           onClick={() => {
-            setIsSearchActive(false);
+            updateSearchActive(false);
             setSearchResults([]);
             setSelectedIndex(null);
           }}
           aria-hidden="true"
         />
       )}
+      */}
     </div>
   );
 };
