@@ -32,14 +32,23 @@
 
 
 
-
-
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
-      // ✅ Render backend (production)
+      // ✅ Production frontend (vercel app)
+      {
+        protocol: 'https',
+        hostname: 'vartalaap-sable.vercel.app',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'vartalaap-sable.vercel.app',
+        pathname: '/avatars/**',
+      },
+
+      // ✅ Backend (Render - production)
       {
         protocol: 'https',
         hostname: 'vartalaap-r36o.onrender.com',
@@ -51,7 +60,14 @@ const nextConfig = {
         pathname: '/uploads/**',
       },
 
-      // ✅ Localhost backend (development)
+      // ✅ Backend (Render - sometimes HTTP)
+      {
+        protocol: 'http',
+        hostname: 'vartalaap-r36o.onrender.com',
+        pathname: '/uploads/**',
+      },
+
+      // ✅ Local development backend
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -65,12 +81,13 @@ const nextConfig = {
         pathname: '/uploads/**',
       },
 
-      // ✅ Google profile images (for Google login)
+      // ✅ Google profile images
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
     ],
+    domains: ['res.cloudinary.com'],
   },
 };
 

@@ -2250,9 +2250,10 @@ import toast from 'react-hot-toast';
 import { Camera, Save } from 'lucide-react';
 import LoadingBar from 'react-top-loading-bar';
 import PostCard from '../../components/PostCard';
+import { getFullAvatarUrl } from '../../utils/imageUtils';
 
 // Ensure this matches your backend's URL from .env.local or process.env
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 interface Post {
     _id: string;
@@ -2346,7 +2347,10 @@ export default function ProfilePage() {
                 setName(userData.name || '');
                 setBio(userData.bio || '');
                 // currentAvatarUrl will be the full URL from the backend
-                setCurrentAvatarUrl(userData.avatarUrl || `${API_BASE_URL.replace('/api', '')}/avatars/userLogo.png`);
+                // setCurrentAvatarUrl(userData.avatarUrl || `${API_BASE_URL.replace('/api', '')}/avatars/userLogo.png`);
+                // setCurrentAvatarUrl(getFullAvatarUrl(userData.avatarUrl));
+                setCurrentAvatarUrl(getFullAvatarUrl(userData.avatarUrl));
+
                 setNewAvatarPreview(null); // Clear any old preview
 
                 // Fetch user posts (using firebaseUid as per your backend route)
@@ -2455,7 +2459,9 @@ export default function ProfilePage() {
 
             const updatedUser = await response.json();
             // Backend now returns the full URL, so update directly
-            setCurrentAvatarUrl(updatedUser.avatarUrl || `${API_BASE_URL.replace('/api', '')}/avatars/userLogo.png`);
+            // setCurrentAvatarUrl(updatedUser.avatarUrl || `${API_BASE_URL.replace('/api', '')}/avatars/userLogo.png`);
+            setCurrentAvatarUrl(getFullAvatarUrl(updatedUser.avatarUrl));
+
             setNewAvatarFile(null);
             setNewAvatarPreview(null); // Clear preview after successful upload
             toast.success('Profile updated successfully!');
@@ -2552,7 +2558,8 @@ export default function ProfilePage() {
             uid: user.uid,
             mongoUserId: mongoUser._id,
             name: mongoUser.name || user.displayName || 'Unknown User',
-            avatarUrl: mongoUser.avatarUrl || user.photoURL || `${API_BASE_URL.replace('/api', '')}/uploads/avatars/userLogo.png`,
+            // avatarUrl: mongoUser.avatarUrl || user.photoURL || `${API_BASE_URL.replace('/api', '')}/uploads/avatars/userLogo.png`,
+            avatarUrl: getFullAvatarUrl(mongoUser.avatarUrl || user.photoURL),
             _id: mongoUser._id,
             email: user.email,
             displayName: user.displayName,
