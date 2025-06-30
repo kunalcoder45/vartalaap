@@ -111,10 +111,10 @@ const Slidebar = ({ currentPath, className, joinedGroups = [] }) => {
     <div
       // REMOVED: md:w-[260px]
       // The width is now controlled entirely by the `className` prop passed from Dashboard
-      className={`bg-white md:shadow-md md:rounded-lg w-full h-full z-50 ${className || ''}`}
-      style={{ height: `calc(100vh - ${heightAdjustment})` }}
+      className={`bg-white md:shadow-md md:rounded-lg  h-auto z-50 ${className || ''}`}
+      // style={{ height: `calc(100vh - ${heightAdjustment})` }}
     >
-      <div className="h-full overflow-y-auto hide-scrollbar p-4">
+      <div className="h-auto overflow-y-auto hide-scrollbar p-4">
         <ul className="space-y-1">
           {navItems.map((item, index) => (
             <li key={index}>

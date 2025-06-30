@@ -853,7 +853,7 @@ const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept cur
     }
 
     return (
-        <div className="relative flex flex-col items-center justify-center h-[86vh] w-full bg-black">
+        <div className="relative flex flex-col items-center justify-center h-[86vh] w-full bg-black hide-scrollbar">
             {/* Mute/Unmute Button */}
             <button
                 onClick={(e) => { // Added event parameter and stopPropagation
@@ -875,7 +875,7 @@ const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept cur
             {/* Reel Container - will handle scrolling */}
             <div
                 ref={containerRef}
-                className="relative flex-grow w-full h-[86vh] overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
+                className="relative flex-grow w-full h-[86vh] overflow-y-scroll snap-y snap-mandatory hide-scrollbar"
             >
                 {reels.map((reel, index) => {
                     const shouldRenderVideo = index === currentReelIndex ||

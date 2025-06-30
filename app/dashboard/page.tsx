@@ -202,8 +202,8 @@ export default function Dashboard() {
       <Navbar />
 
       {/* 🔵 Thin Toggle Bars (Mobile Only) */}
-      <div className="md:hidden fixed top-0 left-0 h-full w-2 bg-blue-400 z-40 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
-      <div className="md:hidden fixed top-0 right-0 h-full w-2 bg-blue-400 z-40 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
+      <div className="md:hidden fixed left-0 py-12 px-1 top-1/2 rounded-r-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
+      <div className="md:hidden fixed right-0 px-1 py-12 top-1/2 rounded-l-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
 
       {(leftOpen || rightOpen) && (
         <div className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-30 md:hidden" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />

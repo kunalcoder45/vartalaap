@@ -1117,7 +1117,7 @@ const Navbar: React.FC = () => {
                                     transition={{ duration: 0.2 }}
                                     className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right"
                                 >
-                                    <div className="py-2">
+                                    <div className="">
                                         <Link
                                             href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
                                             onClick={() => setShowProfileDropdown(false)}
@@ -1132,10 +1132,10 @@ const Navbar: React.FC = () => {
                                         >
                                             <Settings size={18} className="mr-2" /> Settings
                                         </Link>
-                                        <div className="border-t border-gray-200 my-2"></div>
+                                        <div className="border-t border-gray-200 my-0"></div>
                                         <button
                                             onClick={handleLogout}
-                                            className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                            className="flex items-center w-full text-left px-4 py-2 text-gray-700 hover:bg-red-500/80 hover:text-white cursor-pointer"
                                         >
                                             <LogOut size={18} className="mr-2" /> Log Out
                                         </button>
