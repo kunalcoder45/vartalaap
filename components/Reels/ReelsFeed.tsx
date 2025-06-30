@@ -860,7 +860,7 @@ const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept cur
                     e.stopPropagation(); // Prevents click from bubbling to video
                     toggleMute();
                 }}
-                className="absolute top-2 right-6 p-2 bg-white/30 rounded-full text-white hover:bg-white/50 transition-all focus:outline-none z-20 cursor-pointer"
+                className="absolute top-2 right-2 p-2 bg-white/30 rounded-full text-white hover:bg-white/50 transition-all focus:outline-none z-20 cursor-pointer"
                 aria-label={isMuted ? "Unmute" : "Mute"}
             >
                 {isMuted ? (
@@ -999,7 +999,7 @@ const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept cur
             </div>
 
             {/* Navigation Buttons */}
-            <div className="absolute top-1/2 right-6 transform -translate-y-1/2 flex flex-col gap-4 z-20">
+            <div className="absolute top-1/2 right-2 transform -translate-y-1/2 flex flex-col gap-4 z-20">
                 <button
                     onClick={() => navigateReels('up')}
                     className="p-3 bg-white/30 rounded-full text-white hover:bg-white/50 transition-all focus:outline-none"
