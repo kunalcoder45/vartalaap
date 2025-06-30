@@ -192,7 +192,7 @@ import { fetchMongoUserId } from '../../utils/userApi';
 
 export default function ChatPage() {
   const pathname = usePathname();
-  const joinedGroups: string[] = [];
+  const joinedGroups: { id: string; name: string; avatar?: string }[] = [];
 
   const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();
   const [fetchedUserId, setFetchedUserId] = useState<string | null>(null);
