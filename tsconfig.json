@@ -40,6 +40,48 @@
 
 
 
+// {
+//   "compilerOptions": {
+//     "target": "esnext",
+//     "lib": [
+//       "dom",
+//       "dom.iterable",
+//       "esnext"
+//     ],
+//     "allowJs": true,
+//     "skipLibCheck": true,
+//     "strict": false,
+//     "noEmit": true,
+//     "incremental": true,
+//     "module": "esnext",
+//     "esModuleInterop": true,
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "jsx": "preserve",
+//     "plugins": [
+//       {
+//         "name": "next"
+//       }
+//     ],
+//     "paths": {
+//       "@/*": ["./*"]
+//     }
+//   },
+//   "include": [
+//     "next-env.d.ts",
+//     ".next/types/**/*.ts",
+//     "**/*.ts",
+//     "**/*.tsx",
+//     "**/*.js",
+//     "**/*.jsx"
+//   ],
+//   "exclude": [
+//     "node_modules"
+//   ]
+// }
+
+
 {
   "compilerOptions": {
     "target": "esnext",
@@ -50,7 +92,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": false, // Given your current setting is false, keep it. If you move to strict true later, you might need more explicit types.
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
@@ -74,7 +116,9 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx"
+    "**/*.jsx",
+    "r3f.d.ts" // <--- Add this line if r3f.d.ts is in the project root
+    // Or if you put it in a 'types' folder: "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"
