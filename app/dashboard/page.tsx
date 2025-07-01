@@ -215,7 +215,7 @@ export default function Dashboard() {
       {/* Overlay/Backdrop when any sidebar is open on mobile */}
       {(leftOpen || rightOpen) && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-30 md:hidden"
+          className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-30 md:hidden"
           onClick={() => { setLeftOpen(false); setRightOpen(false); }}
         />
       )}
@@ -229,7 +229,7 @@ export default function Dashboard() {
             transition-transform duration-300 ease-in-out
             fixed left-0 bg-gray-100 shadow-lg z-50
             md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
-            ${leftOpen ? 'translate-x-0 w-4/5 top-0 h-full' : '-translate-x-full w-0 invisible top-0'}` // Adjusted top to 0 and h-full
+            ${leftOpen ? 'translate-x-0 w-4/5 top-14 h-full' : '-translate-x-full w-0 invisible top-0'}` // Adjusted top to 0 and h-full
             }>
           <Slidebar
             joinedGroups={userJoinedGroups}

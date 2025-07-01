@@ -8117,7 +8117,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
     }
 
     return (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-opacity-75 backdrop-blur-sm p-4"
+        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-opacity-75 backdrop-blur-sm p-0 md:p-4 md:top-16 top-[-50]"
              onClick={onClose}>
             <Toaster position="top-center" reverseOrder={false} />
             <div className="relative w-full max-w-lg h-[90vh] bg-white rounded-lg shadow-xl flex flex-col overflow-hidden"

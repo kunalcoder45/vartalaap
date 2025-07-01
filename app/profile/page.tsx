@@ -931,7 +931,7 @@ export default function ProfilePage() {
                     <Slidebar
                         joinedGroups={joinedGroups}
                         currentPath={pathname}
-                        className={`fixed inset-y-0 left-0 z-50 top-14 w-[80%] md:w-3/12 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex-shrink-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full mt-4'
+                        className={`fixed inset-y-0 left-0 z-50 top-14 md:top-0 w-[80%] md:w-3/12 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex-shrink-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full mt-4'
                             }`}
                         onLinkClick={() => setIsSidebarOpen(false)} // Close sidebar on link click
                     />

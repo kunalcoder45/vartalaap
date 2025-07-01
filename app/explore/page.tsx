@@ -252,7 +252,7 @@ export default function FavouritesPage() {
           <div className="fixed inset-0 mt-14 z-40 bg-opacity-30 backdrop-blur-sm md:hidden">
             <div
               ref={rightRef}
-              className="absolute top-0 right-0 h-full w-4/5 bg-white shadow-lg transition-transform duration-300"
+              className="absolute top-0 right-0 h-full w-full bg-white shadow-lg transition-transform duration-300"
             >
               <RightSidebar userId={userIdToUse} className="h-full w-full" />
             </div>

@@ -632,7 +632,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
             target.src = defaultAvatarUrl;
           }}
         />
-        <h2 className="text-xl font-semibold text-gray-800 flex-1">
+        <h2 className="text-sm md:text-xl font-semibold text-gray-800 flex-1">
           {chatUser.name || chatUser.username}
         </h2>
       </div>
