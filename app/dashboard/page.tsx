@@ -110,6 +110,7 @@
 
 // mobile view
 
+
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -117,7 +118,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '../../components/AuthProvider';
 import Navbar from '../../components/navbar';
 import Slidebar from '../../components/slidebar';
-import RightSidebar from '../../components/activitybar';
+import RightSidebar from '../../components/activitybar'; // Correct import for ActivityBar
 import MainBar from '../../components/mainBar';
 import toast, { Toaster } from 'react-hot-toast';
 import { BeatLoader } from 'react-spinners';
@@ -179,6 +180,12 @@ export default function Dashboard() {
     }
   }, [user, mongoUser, authLoading, fetchUserGroups]);
 
+  // Function to close the right sidebar (ActivityBar) for mobile
+  const handleCloseRightSidebar = useCallback(() => {
+    setRightOpen(false);
+    console.log("Right Sidebar (ActivityBar) closed.");
+  }, []);
+
   if (authLoading || (user && !mongoUser)) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -205,20 +212,25 @@ export default function Dashboard() {
       <div className="md:hidden fixed left-0 py-12 px-1 top-1/2 rounded-r-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
       <div className="md:hidden fixed right-0 px-1 py-12 top-1/2 rounded-l-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
 
+      {/* Overlay/Backdrop when any sidebar is open on mobile */}
       {(leftOpen || rightOpen) && (
-        <div className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-30 md:hidden" onClick={() => { setLeftOpen(false); setRightOpen(false); }} />
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => { setLeftOpen(false); setRightOpen(false); }}
+        />
       )}
 
       {/* Main Content Container */}
-      <div className="h-auto mt-18 flex flex-grow bg-gray-50 overflow-hidden relative">
+      {/* mt-[64px] added to account for Navbar height (assuming Navbar is h-16 or 64px) */}
+      <div className="h-auto mt-[64px] flex flex-grow bg-gray-50 overflow-hidden relative">
 
         {/* Left Sidebar */}
         <div className={`
             transition-transform duration-300 ease-in-out
             fixed left-0 bg-gray-100 shadow-lg z-50
             md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
-            ${leftOpen ? 'translate-x-0 w-4/5 top-15 h-20' : '-translate-x-full w-0 invisible top-0'}]'}
-            `}>
+            ${leftOpen ? 'translate-x-0 w-4/5 top-0 h-full' : '-translate-x-full w-0 invisible top-0'}` // Adjusted top to 0 and h-full
+            }>
           <Slidebar
             joinedGroups={userJoinedGroups}
             currentPath={pathname}
@@ -228,18 +240,22 @@ export default function Dashboard() {
 
         {/* Main Bar */}
         {/* On mobile, MainBar should always be visible, taking full width if sidebars are closed */}
-        <div className="flex-grow z-10 w-full h-auto md:mt-4 md:w-3/5">
-          <MainBar className="w-full h-[99%] md:h-[98%] overflow-auto" />
+        <div className="flex-grow z-10 w-full h-auto md:w-3/5"> {/* Removed md:mt-4 as Navbar handles space */}
+          <MainBar className="w-full h-full overflow-auto" /> {/* Changed to h-full */}
         </div>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar (ActivityBar) */}
         <div className={`
             transition-transform duration-300 ease-in-out
             fixed right-0 bg-white shadow-lg z-50
             md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
-            ${rightOpen ? `translate-x-0 w-4/5 top-15 h-full` : 'translate-x-full w-0 invisible top-0 h-full'}
-            `}>
-          <RightSidebar userId={userIdToUse} className="h-full w-full" />
+            ${rightOpen ? 'translate-x-0 w-5/5 top-14 h-full' : 'translate-x-full w-0 invisible top-0 h-full'}` // Adjusted top to 0, width to 4/5
+            }>
+          <RightSidebar
+            userId={userIdToUse}
+            className="h-full w-full"
+            onCloseMobile={handleCloseRightSidebar} // Pass the close function here!
+          />
         </div>
       </div>
 

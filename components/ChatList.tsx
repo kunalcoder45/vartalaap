@@ -211,7 +211,7 @@ const ChatList: React.FC<ChatListProps> = ({
                     ))}
                 </div>
             ) : (
-                <ul className="space-y-2 max-h-60 overflow-y-auto hide-scrollbar">
+                <ul className="space-y-2 max-h-auto overflow-y-auto hide-scrollbar">
                     {combinedChatList.length === 0 ? (
                         <p className="text-gray-500 text-sm">No chats or contacts yet.</p>
                     ) : (

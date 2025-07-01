@@ -171,7 +171,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Home, Compass, MonitorPlay, User, MessagesSquare, X } from 'lucide-react'; // Import X icon for close button
+import { Home, Compass, MonitorPlay, User, MessagesSquare } from 'lucide-react'; // Import X icon for close button
 
 // Define the props interface for better type checking
 interface SlidebarProps {
@@ -200,7 +200,7 @@ const Slidebar: React.FC<SlidebarProps> = ({ currentPath, className, joinedGroup
     >
       <div className="h-auto overflow-y-auto hide-scrollbar p-4">
         {/* Close button for mobile view */}
-        <div className="lg:hidden flex justify-end mb-4">
+        {/* <div className="lg:hidden flex justify-end mb-4">
           <button
             onClick={onLinkClick} // Call onLinkClick when the close button is clicked
             className="p-2 rounded-full hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300"
@@ -208,7 +208,7 @@ const Slidebar: React.FC<SlidebarProps> = ({ currentPath, className, joinedGroup
           >
             <X size={24} />
           </button>
-        </div>
+        </div> */}
 
         <ul className="space-y-1">
           {navItems.map((item, index) => (
