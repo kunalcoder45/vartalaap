@@ -108,15 +108,15 @@ export default function ReelsPage() {
       </div>
 
       {/* 🖥️ Desktop + Main Content */}
-      <div className="h-auto p-4 bg-gray-50 mt-18">
-        <div className="flex h-auto">
+      <div className="h-auto p-0 bg-gray-50 mt-18">
+        <div className="flex gap-3 h-auto">
           {/* Desktop Sidebar */}
-          <div className="hidden md:block w-3/12 h-[86vh]">
+          <div className="hidden md:block w-3/12 h-[90vh] p-0">
             <Slidebar joinedGroups={joinedGroups} currentPath={pathname} className="h-full" />
           </div>
 
           {/* Reels Main Content */}
-          <main className="flex-1 overflow-hidden p-0 h-[86vh] rounded-lg hide-scrollbar">
+          <main className="flex-1 overflow-hidden py-2 md:pr-1 h-[89vh] md:h-[90vh] rounded-lg hide-scrollbar">
             <ReelsFeed currentUser={currentUser || undefined} />
           </main>
         </div>

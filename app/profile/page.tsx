@@ -937,107 +937,109 @@ export default function ProfilePage() {
                     />
 
                     <main className="flex-1 overflow-y-auto p-0 md:p-6 lg:p-4 bg-gray-100 flex justify-center items-start">
-                        <div className="w-full max-w-full bg-white rounded-xl shadow-2xl  md:p-8 p-4 lg:p-12 border border-gray-200">
-                            <h1 className="text-2xl md:text-4xl mt-3 md:mt-0 font-extrabold text-center text-gray-900 mb-4 md:mb-10 tracking-tight">
-                                Your Profile{name && <span className="text-blue-600">, {name}!</span>}
-                            </h1>
+                        <div className="w-full max-w-full bg-white rounded-xl shadow-2xl  md:p-8 p-0 lg:p-12 border border-gray-200">
+                            <div className="p-4">
+                                <h1 className="text-2xl md:text-4xl mt-3 md:mt-0 font-extrabold text-center text-gray-900 mb-4 md:mb-10 tracking-tight">
+                                    Your Profile{name && <span className="text-blue-600">, {name}!</span>}
+                                </h1>
 
-                            {error && (
-                                <div className="bg-red-100 border border-red-400 text-red-700 px-5 py-3 rounded-lg relative mb-8 shadow-sm animate-fade-in-down" role="alert">
-                                    <strong className="font-semibold">Error:</strong>
-                                    <span className="block sm:inline ml-2"> {error}</span>
-                                </div>
-                            )}
+                                {error && (
+                                    <div className="bg-red-100 border border-red-400 text-red-700 px-5 py-3 rounded-lg relative mb-8 shadow-sm animate-fade-in-down" role="alert">
+                                        <strong className="font-semibold">Error:</strong>
+                                        <span className="block sm:inline ml-2"> {error}</span>
+                                    </div>
+                                )}
 
-                            <form onSubmit={handleUpdateProfile} className="space-y-8">
-                                <div className="md:flex items-start mb-8 gap-6 flex-wrap justify-center sm:flex-nowrap sm:justify-start">
-                                    <div className="flex-shrink-0 flex flex-col items-center md:mb-0 mb-6">
-                                        <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-400 shadow-xl group transition-all duration-300 hover:scale-105 mb-4">
-                                            <Image
-                                                src={newAvatarPreview || currentAvatarUrl}
-                                                alt="Profile Avatar"
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                style={{ objectFit: 'cover' }}
-                                                className="rounded-full"
-                                                priority
-                                            />
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                ref={fileInputRef}
-                                                onChange={handleFileChange}
-                                                className="hidden"
-                                            />
-                                            <div
+                                <form onSubmit={handleUpdateProfile} className="space-y-8">
+                                    <div className="md:flex items-start mb-8 gap-6 flex-wrap justify-center sm:flex-nowrap sm:justify-start">
+                                        <div className="flex-shrink-0 flex flex-col items-center md:mb-0 mb-6">
+                                            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-400 shadow-xl group transition-all duration-300 hover:scale-105 mb-4">
+                                                <Image
+                                                    src={newAvatarPreview || currentAvatarUrl}
+                                                    alt="Profile Avatar"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    style={{ objectFit: 'cover' }}
+                                                    className="rounded-full"
+                                                    priority
+                                                />
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    ref={fileInputRef}
+                                                    onChange={handleFileChange}
+                                                    className="hidden"
+                                                />
+                                                <div
+                                                    onClick={() => fileInputRef.current?.click()}
+                                                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-lg font-semibold"
+                                                    title="Change profile picture"
+                                                >
+                                                    <Camera size={30} className="text-white" />
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white text-lg font-semibold"
-                                                title="Change profile picture"
+                                                className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg text-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                                             >
-                                                <Camera size={30} className="text-white" />
+                                                Change Picture
+                                            </button>
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col justify-center w-full sm:w-auto">
+                                            <div className="mb-4">
+                                                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 sr-only">
+                                                    Your Name
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="name"
+                                                    value={name}
+                                                    onChange={(e) => setName(e.target.value)}
+                                                    className="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out shadow-sm text-2xl font-bold text-gray-900"
+                                                    placeholder="Enter your full name"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2 sr-only">
+                                                    Your Bio
+                                                </label>
+                                                <textarea
+                                                    id="bio"
+                                                    value={bio}
+                                                    onChange={(e) => setBio(e.target.value)}
+                                                    rows={4}
+                                                    className="w-full px-5 py-3 h-20 md:h-auto border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 resize-y transition duration-150 ease-in-out shadow-sm text-base text-gray-700"
+                                                    placeholder="Tell us a little about yourself (e.g., your interests, profession)..."
+                                                />
                                             </div>
                                         </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg text-md font-semibold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                        >
-                                            Change Picture
-                                        </button>
                                     </div>
 
-                                    <div className="flex-1 flex flex-col justify-center w-full sm:w-auto">
-                                        <div className="mb-4">
-                                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 sr-only">
-                                                Your Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                id="name"
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                className="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out shadow-sm text-2xl font-bold text-gray-900"
-                                                placeholder="Enter your full name"
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2 sr-only">
-                                                Your Bio
-                                            </label>
-                                            <textarea
-                                                id="bio"
-                                                value={bio}
-                                                onChange={(e) => setBio(e.target.value)}
-                                                rows={4}
-                                                className="w-full px-5 py-3 h-20 md:h-auto border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 resize-y transition duration-150 ease-in-out shadow-sm text-base text-gray-700"
-                                                placeholder="Tell us a little about yourself (e.g., your interests, profession)..."
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isSaving}
-                                    className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-xl text-xl font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:-translate-y-1"
-                                >
-                                    {isSaving ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            Saving...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Save size={24} className="mr-3" />
-                                            Save Profile
-                                        </>
-                                    )}
-                                </button>
-                            </form>
+                                    <button
+                                        type="submit"
+                                        disabled={isSaving}
+                                        className="w-full flex justify-center items-center py-4 px-6 border border-transparent rounded-xl shadow-xl text-xl font-bold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+                                    >
+                                        {isSaving ? (
+                                            <>
+                                                <svg className="animate-spin -ml-1 mr-3 h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save size={24} className="mr-3" />
+                                                Save Profile
+                                            </>
+                                        )}
+                                    </button>
+                                </form>
+                            </div>
 
                             <hr className="my-12 border-gray-200" />
 
