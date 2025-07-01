@@ -1018,7 +1018,7 @@ const Navbar: React.FC = () => {
                     <Link href="/users" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Find Users">
                         <Users size={20} />
                     </Link>
-                    <Link href="/messages" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Messages">
+                    <Link href="/chat" className="text-gray-600 hover:text-blue-600 transition-colors duration-200" aria-label="Messages">
                         <MessageSquare size={20} />
                     </Link>
 
@@ -1119,14 +1119,15 @@ const Navbar: React.FC = () => {
                                 >
                                     <div className="">
                                         <Link
-                                            href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+                                            // href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+                                            href={'/profile'}
                                             onClick={() => setShowProfileDropdown(false)}
                                             className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                                         >
                                             <User size={18} className="mr-2" /> My Profile
                                         </Link>
                                         <Link
-                                            href="/dashboard/settings"
+                                            href="/settings"
                                             onClick={() => setShowProfileDropdown(false)}
                                             className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                                         >
@@ -1241,13 +1242,14 @@ const Navbar: React.FC = () => {
                             </Link>
                             <div className="border-t border-gray-200 my-2"></div>
                             <Link
-                                href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+                                // href={`/users/${user?.firebaseUid || user?._id || 'profile'}`}
+                                href={'/profile'}
                                 className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100"
                                 onClick={handleMenuToggle}
                             >
                                 <User size={20} className="mr-3" /> My Profile
                             </Link>
-                            <Link href="/dashboard/settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100" onClick={handleMenuToggle}>
+                            <Link href="settings" className="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100" onClick={handleMenuToggle}>
                                 <Settings size={20} className="mr-3" /> Settings
                             </Link>
                             <button
