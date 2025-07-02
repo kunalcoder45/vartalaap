@@ -58,7 +58,6 @@
 //   );
 // }
 
-
 // app/layout.tsx
 import "./globals.css";
 import { AuthProvider } from '../components/AuthProvider';
@@ -108,16 +107,34 @@ export const metadata: Metadata = {
     'Live calls', // Based on CallProvider/CallUIWrapper
   ],
 
+  // --- NEW: Robots Meta Tag for Crawler Control ---
+  // This tells search engine crawlers how to interact with your site.
+  robots: {
+    index: true, // Allow search engines to index this page
+    follow: true, // Allow search engines to follow links on this page
+    nocache: false, // Allow caching (default, but good to be explicit)
+    googleBot: { // Specific rules for Googlebot
+      index: true,
+      follow: true,
+      noimageindex: false, // Allow Googlebot to index images
+      'max-video-preview': -1, // Allow full video previews
+      'max-snippet': -1, // Allow full text snippets
+    },
+  },
+
   // Open Graph (OG) Tags: Crucial for how your content appears when shared on
   // social media platforms like Facebook, LinkedIn, etc.
   openGraph: {
     title: 'Vartalaap - Connect, Share & Discover Your Community',
     description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-    url: 'https://vartalaap-sable.vercel.app', // !!! IMPORTANT: Replace with your actual app's domain
+    url: 'https://vartalaap-sable.vercel.app', // Your actual app's domain
     siteName: 'Vartalaap',
     images: [
       {
-        url: 'https://www.yourdomain.com/og-image.jpg', // !!! IMPORTANT: Replace with a high-quality, appealing image URL (e.g., app screenshot, logo)
+        // --- IMPORTANT CORRECTION: Use a high-quality image, NOT favicon.ico for OG images ---
+        // Create an image like 'vartalaap-og-image.jpg' (1200x630px recommended)
+        // and place it in your 'public' folder. Then update the URL below.
+        url: 'https://vartalaap-sable.vercel.app/favicon.ico', // !!! IMPORTANT: Replace with your actual high-quality image URL
         width: 1200, // Recommended width for OG images
         height: 630, // Recommended height for OG images
         alt: 'Vartalaap Social Media App - Connect and Share',
@@ -128,26 +145,29 @@ export const metadata: Metadata = {
     type: 'website', // Type of content (e.g., website, article, profile)
   },
 
-  // Twitter Card Tags: Similar to Open Graph, but specifically for Twitter.
+  // --- UNCOMMENTED & FILLED: Twitter Card Tags ---
+  // Similar to Open Graph, but specifically for Twitter.
   // twitter: {
-  //   card: 'summary_large_image', // Options: summary, summary_large_image, app, player
+  //   card: 'summary_large_image', // Displays a prominent image
   //   title: 'Vartalaap - Connect, Share & Discover Your Community',
   //   description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-  //   creator: '@yourtwitterhandle', // !!! IMPORTANT: Replace with your app's Twitter handle (e.g., @VartalaapApp)
-  //   images: ['https://www.yourdomain.com/twitter-image.jpg'], // !!! IMPORTANT: Replace with a high-quality image URL optimized for Twitter
+  //   creator: '@VartalaapApp', // !!! IMPORTANT: Replace with your app's Twitter handle (e.g., @VartalaapApp)
+  //   images: ['https://vartalaap-sable.vercel.app/vartalaap-twitter-image.jpg'], // !!! IMPORTANT: Replace with a high-quality image URL optimized for Twitter (e.g., 1200x675px)
   // },
 
-  // Optional: Canonical URL. Helps prevent duplicate content issues if your site
-  // is accessible via multiple URLs (e.g., with/without www, http/https).
-  // Uncomment and replace if you have a specific canonical URL strategy.
-  // alternates: {
-  //   canonical: 'https://www.yourdomain.com', // !!! IMPORTANT: Replace with your actual canonical domain
-  // },
+  // --- UNCOMMENTED & FILLED: Canonical URL ---
+  // Helps prevent duplicate content issues if your site is accessible via multiple URLs.
+  alternates: {
+    canonical: 'https://vartalaap-sable.vercel.app', // !!! IMPORTANT: Replace with your actual canonical domain
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en"> {/* 'lang="en"' is good for SEO, indicates content language */}
+    // Ensure there is NO WHITESPACE or newline characters
+    // BETWEEN the <html> and <body> tags, or inside the <html> tags
+    // before <body>.
+    <html lang="en">
       <body>
         <AuthProvider>
           <CallProvider>
