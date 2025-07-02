@@ -35,6 +35,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // domains: ['res.cloudinary.com'],
     remotePatterns: [
       // ✅ Production frontend (vercel app)
       {
@@ -86,8 +87,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
-    domains: ['res.cloudinary.com'],
   },
 };
 
