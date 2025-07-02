@@ -65,6 +65,7 @@ import AppClientWrapper from "../components/AppClientWrapper";
 import { CallProvider } from "../app/context/CallProvider";
 import CallUIWrapper from "../components/CallUIWrapper";
 import ClickSpark from "@/components/ClickSpark";
+import OfflineOverlay from "@/components/OfflineOverlay";
 import type { Metadata } from 'next'; // Import Metadata type for type safety
 
 // --- SEO Metadata Configuration ---
@@ -174,6 +175,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppClientWrapper>
               <CallUIWrapper>
                 <ClickSpark sparkColor="#3B82F6" sparkCount={10}>
+                  <OfflineOverlay />
                   {children}
                 </ClickSpark>
               </CallUIWrapper>

@@ -959,6 +959,10 @@
 
 
 
+
+
+
+
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -1308,12 +1312,12 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
     if (!isOpen || !currentStatus) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-40 p-4">
-            <div className="relative w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 rounded-lg flex flex-col overflow-hidden">
+        <div className="fixed inset-0 bg-opacity-90 backdrop-blur-sm flex items-center mb-14 md:mb-0 justify-center z-40 p-1 md:p-4">
+            <div className="relative w-full max-w-2xl h-full max-h-[85vh] bg-gray-900 rounded-lg flex flex-col overflow-hidden">
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors"
+                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-opacity-50 text-white hover:bg-opacity-75 transition-colors"
                     aria-label="Close status viewer"
                 >
                     <X size={24} />
@@ -1407,7 +1411,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {currentStatusIndex > 0 && (
                     <button
                         onClick={(e) => { e.stopPropagation(); handlePrevStatus(); }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors z-40"
+                        className="absolute left-1 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
                         aria-label="Previous status"
                     >
                         <ChevronLeft size={24} />
@@ -1416,7 +1420,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {currentStatusIndex < statuses.length - 1 && (
                     <button
                         onClick={(e) => { e.stopPropagation(); handleNextStatus(); }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors z-40"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
                         aria-label="Next status"
                     >
                         <ChevronRight size={24} />
