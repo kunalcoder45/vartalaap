@@ -171,7 +171,7 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Home, Compass, MonitorPlay, User, MessagesSquare } from 'lucide-react'; // Import X icon for close button
+import { Home, Compass, MonitorPlay, User, MessagesSquare, Bell } from 'lucide-react'; // Import X icon for close button
 
 // Define the props interface for better type checking
 interface SlidebarProps {
@@ -188,6 +188,7 @@ const navItems = [
   { icon: MonitorPlay, label: 'Reels', href: '/reels' },
   { icon: MessagesSquare, label: 'Message', href: '/chat' },
   { icon: User, label: 'Profile', href: '/profile' },
+  { icon: Bell, label: 'Notifications', href: '/notifications' }
 ];
 
 const Slidebar: React.FC<SlidebarProps> = ({ currentPath, className, joinedGroups = [], onLinkClick }) => {

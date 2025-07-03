@@ -966,7 +966,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight, Eye, Trash2 } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Eye, Trash2, Play } from 'lucide-react';
 import Image from 'next/image';
 
 interface DeleteConfirmationModalProps {
@@ -1317,7 +1317,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-opacity-50 text-white hover:bg-opacity-75 transition-colors"
+                    className="absolute top-4 cursor-pointer hover:bg-gray-50 hover:text-black right-4 z-50 p-2 rounded-full bg-opacity-50 text-white hover:bg-opacity-75 transition-colors"
                     aria-label="Close status viewer"
                 >
                     <X size={24} />
@@ -1344,10 +1344,10 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {isOwnerOfCurrentStatus && (
                     <button
                         onClick={confirmDelete}
-                        className="absolute bottom-4 right-4 z-50 p-2 rounded-full bg-red-600 bg-opacity-70 text-white hover:bg-red-700 transition-colors"
+                        className="absolute cursor-pointer bottom-4 right-4 z-50 p-2 rounded-full bg-red-600 bg-opacity-70 text-white hover:bg-red-700 transition-colors"
                         aria-label="Delete status"
                     >
-                        <Trash2 size={24} />
+                        <Trash2 size={18} />
                     </button>
                 )}
 
@@ -1393,14 +1393,14 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                     {!isPlaying && (
                         <div className="absolute inset-0 flex items-center justify-center">
                             <button
-                                className="p-4 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75"
+                                className="p-2 cursor-pointer rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75"
                                 onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
                                 aria-label={isPlaying ? "Pause" : "Play"}
                             >
                                 {isPlaying ? (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pause"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                    <Play size={15} />
                                 ) : (
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    <Play size={15}/>
                                 )}
                             </button>
                         </div>
@@ -1411,7 +1411,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {currentStatusIndex > 0 && (
                     <button
                         onClick={(e) => { e.stopPropagation(); handlePrevStatus(); }}
-                        className="absolute left-1 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
+                        className="absolute cursor-pointer left-1 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
                         aria-label="Previous status"
                     >
                         <ChevronLeft size={24} />
@@ -1420,7 +1420,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 {currentStatusIndex < statuses.length - 1 && (
                     <button
                         onClick={(e) => { e.stopPropagation(); handleNextStatus(); }}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
+                        className="absolute right-1 top-1/2 cursor-pointer -translate-y-1/2 p-2 rounded-full bg-gray-50 bg-opacity-50 text-black hover:bg-opacity-75 transition-colors z-40"
                         aria-label="Next status"
                     >
                         <ChevronRight size={24} />
@@ -1435,7 +1435,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                                 setViewedByDropdownOpen(prev => !prev);
                                 setIsPlaying(false); // Pause playback when dropdown is open
                             }}
-                            className="flex items-center space-x-1 text-white bg-black bg-opacity-50 px-4 py-2 rounded-full hover:bg-opacity-75 transition-colors"
+                            className="flex items-center cursor-pointer space-x-1 text-white bg-black bg-opacity-50 px-4 py-2 rounded-full hover:bg-opacity-75 transition-colors"
                         >
                             <Eye size={20} />
                             <span>{currentStatus.viewedBy.length} Views</span>
@@ -1471,7 +1471,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                                         setViewedByDropdownOpen(false);
                                         setIsPlaying(true); // Resume playback when dropdown is closed
                                     }}
-                                    className="mt-2 text-blue-600 text-sm w-full text-center hover:underline"
+                                    className="mt-2 cursor-pointer text-blue-600 text-sm w-full text-center hover:underline"
                                 >
                                     Close
                                 </button>

@@ -8,6 +8,7 @@ import { useAuth } from './AuthProvider';
 import { useRouter } from 'next/navigation';
 import { UserCheck, UserX, Clock, Bell } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { CustomUser } from '../app/types'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
@@ -208,7 +209,7 @@ const NotificationDropdown = ({ isOpen, onClose, socket }) => {
             switch (notification.type) {
                 case 'followRequest':
                 case 'followRequestAccepted':
-                    router.push(`/dashboard/profile/${notification.sender.firebaseUid}`);
+                    // router.push(`/dashboard/${notification.sender.uid}`);
                     break;
                 default:
                     router.push('/dashboard');
@@ -298,7 +299,7 @@ const NotificationDropdown = ({ isOpen, onClose, socket }) => {
                                                 onClick={() => handleNotificationClick({
                                                     type: 'followRequest',
                                                     sender: request.sender,
-                                                    link: `/dashboard/profile/${request.sender.firebaseUid}`
+                                                    // link: `/dashboard/${request.sender.uid}`
                                                 })}
                                             >
                                                 <img

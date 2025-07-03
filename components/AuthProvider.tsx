@@ -548,6 +548,7 @@ import { auth } from '../firebase/config'; // Make sure this path is correct for
 import toast from 'react-hot-toast';
 // Import CustomUser AND MongoUser from the central types file
 import { CustomUser, MongoUser } from '../app/types'; // Corrected import to app/types
+import { set } from 'date-fns';
 
 interface AuthContextType {
     user: CustomUser | null;
@@ -556,6 +557,7 @@ interface AuthContextType {
     logout: () => Promise<void>;
     getIdToken: () => Promise<string | null>;
     mongoUser: MongoUser | null; // This will hold the raw backend user data
+    token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -569,6 +571,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [customUser, setCustomUser] = useState<CustomUser | null>(null); // This is the combined frontend user
     const [loading, setLoading] = useState(true);
     const [mongoUser, setMongoUser] = useState<MongoUser | null>(null); // This is the raw backend user
+    const [token, setToken] = useState<string | null>(null);
 
     const buildCustomUser = useCallback((
         fUser: FirebaseUser,
@@ -607,6 +610,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log("AuthProvider: No Firebase user for ensureUserProfileInDB. Exiting.");
             setMongoUser(null);
             setCustomUser(null);
+            setToken(null);
             return;
         }
 
@@ -616,6 +620,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 console.error("AuthProvider: Authentication token not available for backend sync.");
                 throw new Error("Authentication token not available.");
             }
+            setToken(token); // Store the token for later use
             console.log(`AuthProvider: Attempting to fetch user profile from backend (${API_BASE_URL}/users/profile) for Firebase UID: ${fUser.uid}`);
 
             const profileResponse = await fetch(`${API_BASE_URL}/users/profile`, {
@@ -691,6 +696,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setCustomUser(null);
                 setMongoUser(null);
                 setLoading(false);
+                setToken(null);
             }
         });
         return () => unsubscribe();
@@ -772,7 +778,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user: customUser, loading, signInWithGoogle, logout, getIdToken, mongoUser }}>
+        <AuthContext.Provider value={{ user: customUser, loading, signInWithGoogle, logout, getIdToken, mongoUser, token }}>
             {children}
         </AuthContext.Provider>
     );
