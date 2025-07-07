@@ -27,7 +27,7 @@ interface CardProps {
     post: Post;
 }
 
-const defaultAvatar = '/avatars/userLogo.png';
+const defaultAvatar = '../../app/assets/userLogo.png';
 
 const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 

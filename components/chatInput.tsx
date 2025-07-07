@@ -1,138 +1,7 @@
-// // components/ChatInput.tsx
-// import React, { useRef } from 'react';
-// import { Send, Paperclip, XCircle } from 'lucide-react';
-// import MediaPreview from './MediaPreview'; // Adjust path as needed
-
-// interface ChatInputProps {
-//     newMessageContent: string;
-//     setNewMessageContent: (content: string) => void;
-//     selectedMedia: File | null;
-//     mediaPreviewUrl: string | null;
-//     removeSelectedMedia: () => void;
-//     error: string | null;
-//     isEditing: boolean;
-//     editingMessageId: string | null;
-//     editedMessageContent: string;
-//     setEditedMessageContent: (content: string) => void;
-//     sendingMessage: boolean;
-//     handleSendMessage: (e?: React.FormEvent) => void;
-//     handleSaveEdit: (e: React.FormEvent) => void;
-//     handleCancelEdit: () => void;
-//     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-// }
-
-// const ChatInput: React.FC<ChatInputProps> = ({
-//     newMessageContent,
-//     setNewMessageContent,
-//     selectedMedia,
-//     mediaPreviewUrl,
-//     removeSelectedMedia,
-//     error,
-//     isEditing,
-//     editingMessageId,
-//     editedMessageContent,
-//     setEditedMessageContent,
-//     sendingMessage,
-//     handleSendMessage,
-//     handleSaveEdit,
-//     handleCancelEdit,
-//     handleFileChange,
-// }) => {
-//     const fileInputRef = useRef<HTMLInputElement>(null);
-
-//     return (
-//         <form
-//             onSubmit={editingMessageId ? handleSaveEdit : handleSendMessage}
-//             className="p-4 border-t border-gray-200 bg-gray-50 flex flex-col"
-//         >
-//             {selectedMedia && (
-//                 <MediaPreview
-//                     file={selectedMedia}
-//                     previewUrl={mediaPreviewUrl}
-//                     onRemove={removeSelectedMedia}
-//                     error={error}
-//                 />
-//             )}
-
-//             <div className="flex items-center mt-2">
-//                 {/* Hidden file input */}
-//                 <input
-//                     type="file"
-//                     ref={fileInputRef}
-//                     style={{ display: 'none' }}
-//                     onChange={handleFileChange}
-//                     accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-//                     disabled={isEditing || sendingMessage}
-//                 />
-//                 <button
-//                     type="button"
-//                     onClick={() => fileInputRef.current?.click()}
-//                     className="p-2 rounded-full text-gray-600 hover:bg-gray-200 transition-colors mr-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-//                     title="Attach Media"
-//                     disabled={isEditing || sendingMessage}
-//                 >
-//                     <Paperclip size={24} />
-//                 </button>
-
-//                 <input
-//                     type="text"
-//                     value={editingMessageId ? editedMessageContent : newMessageContent}
-//                     onChange={(e) => {
-//                         if (editingMessageId) {
-//                             setEditedMessageContent(e.target.value);
-//                         } else {
-//                             setNewMessageContent(e.target.value);
-//                         }
-//                     }}
-//                     placeholder={selectedMedia ? `Add a caption (optional)` : (editingMessageId ? "Edit your message..." : "Type a message...")}
-//                     className="flex-1 border border-gray-300 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//                     disabled={sendingMessage}
-//                 />
-//                 {editingMessageId ? (
-//                     <>
-//                         <button
-//                             type="submit"
-//                             className="ml-3 p-3 rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-//                             disabled={!editedMessageContent.trim() || isEditing}
-//                             aria-label="Save edited message"
-//                         >
-//                             <Send size={20} />
-//                         </button>
-//                         <button
-//                             type="button"
-//                             onClick={handleCancelEdit}
-//                             className="ml-2 p-3 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-//                             disabled={isEditing}
-//                             aria-label="Cancel edit"
-//                         >
-//                             <XCircle size={20} />
-//                         </button>
-//                     </>
-//                 ) : (
-//                     <button
-//                         type="submit"
-//                         className="ml-3 p-3 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-//                         disabled={(!newMessageContent.trim() && !selectedMedia) || sendingMessage}
-//                         aria-label="Send message"
-//                     >
-//                         <Send size={20} />
-//                     </button>
-//                 )}
-//             </div>
-//             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-//         </form>
-//     );
-// };
-
-// export default ChatInput;
-
-
-
-
 'use client';
 
-import React, { useRef, ChangeEvent, FC } from 'react';
-import { Send, Paperclip, XCircle, SendHorizontal, X } from 'lucide-react';
+import React, { useRef, ChangeEvent, FC, useEffect, useState } from 'react';
+import { Send, Paperclip, XCircle, SendHorizontal, X, FileText, Music, Video, Image as ImageIcon } from 'lucide-react'; // Import additional icons
 
 interface ChatInputProps {
     newMessageContent: string;
@@ -141,14 +10,18 @@ interface ChatInputProps {
     mediaPreviewUrl: string | null;
     removeSelectedMedia: () => void;
     error: string | null;
-    isEditing: boolean; // Indicates if in editing mode
-    editingMessageId: string | null; // The ID of the message being edited
-    sendingMessage: boolean; // For new message send
-    isSavingEdit: boolean; // For edit save
-    handleSendMessage: (e?: React.FormEvent) => Promise<void>; // Can be send or save
-    handleSaveEdit: (e?: React.FormEvent) => Promise<void>; // Explicit save handler
-    handleCancelEdit: () => void; // Explicit cancel handler
+    isEditing: boolean;
+    editingMessageId: string | null;
+    sendingMessage: boolean;
+    isSavingEdit: boolean;
+    handleSendMessage: (e?: React.FormEvent) => Promise<void>;
+    handleSaveEdit: (e?: React.FormEvent) => Promise<void>;
+    handleCancelEdit: () => void;
     handleFileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    uploadingMessage: {
+        tempId: string;
+        mediaType: 'image' | 'video' | 'audio' | 'file';
+    } | null;
 }
 
 const ChatInput: FC<ChatInputProps> = ({
@@ -160,47 +33,118 @@ const ChatInput: FC<ChatInputProps> = ({
     error,
     isEditing,
     editingMessageId,
-    sendingMessage, // For new message sending
-    isSavingEdit,   // For edit saving
+    sendingMessage,
+    isSavingEdit,
     handleSendMessage,
     handleSaveEdit,
     handleCancelEdit,
     handleFileChange,
+    uploadingMessage,
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const onSubmit = (e: React.FormEvent) => {
+    // For example progress animation (replace with real progress if you have)
+    const [uploadProgress, setUploadProgress] = useState(0);
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout | undefined;
+        if (uploadingMessage) {
+            setUploadProgress(0); // Reset progress when a new upload starts
+            interval = setInterval(() => {
+                setUploadProgress((old) => {
+                    // Stop incrementing if already at 100
+                    if (old >= 100) {
+                        clearInterval(interval);
+                        return 100;
+                    }
+                    // Increment by a small amount to simulate progress
+                    return Math.min(100, old + 10);
+                });
+            }, 300);
+        } else {
+            // Reset progress if no message is uploading
+            setUploadProgress(0);
+        }
+        // Cleanup function to clear interval
+        return () => {
+            if (interval) {
+                clearInterval(interval);
+            }
+        };
+    }, [uploadingMessage]); //handleSendMessage: (e?: React.FormEvent) => Promise<void>; Dependency on uploadingMessage ensures effect runs when it changes
+
+    // const onSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (isEditing) {
+    //         handleSaveEdit(e);
+    //     } else {
+    //         handleSendMessage(e);
+    //     }
+    // };
+
+    const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isEditing) {
-            handleSaveEdit(e);
+            await handleSaveEdit(e);
         } else {
-            handleSendMessage(e);
+            await handleSendMessage(e);
         }
     };
 
-    // Determine if any operation (sending new message or saving edit) is in progress
+
     const isOperationInProgress = sendingMessage || isSavingEdit;
+
+    // Helper for label based on mediaType
+    const getSendingLabel = (type: string) => {
+        switch (type) {
+            case 'image':
+                return 'Sending image...';
+            case 'video':
+                return 'Sending video...';
+            case 'audio':
+                return 'Sending audio...';
+            case 'file':
+                return 'Sending document...'; // General file
+            default:
+                return 'Sending media...'; // Fallback
+        }
+    };
 
     return (
         <form onSubmit={onSubmit} className="p-4 bg-white border-t border-gray-200">
-            {mediaPreviewUrl && (
+            {/* Uploading message and progress bar */}
+            {uploadingMessage && (
+                <div className="mb-2 flex items-center text-sm text-gray-600">
+                    {getSendingLabel(uploadingMessage.mediaType)}
+                    <div className="ml-2 h-2 w-24 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-blue-500 transition-all duration-300 ease-in-out"
+                            style={{ width: `${uploadProgress}%` }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* Media Preview Section */}
+            {selectedMedia && ( // Only show this div if selectedMedia exists
                 <div className="relative mb-2 p-2 border border-gray-300 rounded-lg flex items-center justify-between">
-                    {/* If you have your MediaPreview component, uncomment and use it here: */}
-                    {/* <MediaPreview
-                        file={selectedMedia}
-                        previewUrl={mediaPreviewUrl}
-                        onRemove={removeSelectedMedia}
-                        error={error} // Pass error prop if MediaPreview handles it
-                    /> */}
-                    {/* Otherwise, use this simplified inline preview: */}
-                    {mediaPreviewUrl.startsWith('data:image/') ? (
-                        <img src={mediaPreviewUrl} alt="Media Preview" className="h-20 w-auto rounded-md object-cover" />
-                    ) : mediaPreviewUrl.startsWith('data:video/') ? (
-                        <video src={mediaPreviewUrl} controls className="h-20 w-auto rounded-md object-cover" />
-                    ) : (
+                    {selectedMedia.type.startsWith('image/') ? (
+                        // Fix: Directly use mediaPreviewUrl without || ''
+                        <img src={mediaPreviewUrl as string | undefined} alt="Image Preview" className="h-20 w-auto rounded-md object-cover" />
+                    ) : selectedMedia.type.startsWith('video/') ? (
+                        // Fix: Directly use mediaPreviewUrl without || ''
+                        <video src={mediaPreviewUrl as string | undefined} controls className="h-20 w-auto rounded-md object-cover" />
+                    ) : selectedMedia.type.startsWith('audio/') ? (
                         <div className="flex items-center">
-                            <Paperclip size={20} className="mr-2 text-gray-500" />
-                            <span className="text-sm text-gray-700 truncate max-w-[150px]">{selectedMedia?.name || 'Selected file'}</span>
+                            <Music size={24} className="mr-2 text-gray-500" />
+                            {/* Fix: Directly use mediaPreviewUrl without || '' */}
+                            <audio src={mediaPreviewUrl as string | undefined} controls className="max-w-[200px]" />
+                        </div>
+                    ) : (
+                        // Generic file preview (for documents, unknown files, etc.)
+                        <div className="flex items-center">
+                            <FileText size={24} className="mr-2 text-gray-500" />
+                            <span className="text-sm text-gray-700 truncate max-w-[150px]">{selectedMedia.name || 'Selected file'}</span>
                         </div>
                     )}
                     <button
@@ -217,25 +161,22 @@ const ChatInput: FC<ChatInputProps> = ({
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
             <div className="flex items-center space-x-2">
-                {!isEditing && ( // Only show attachment button if not editing
+                {!isEditing && (
                     <>
                         <input
                             type="file"
                             ref={fileInputRef}
                             onChange={handleFileChange}
                             className="hidden"
-                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                            // Expanded accept attribute for common media and document types
+                            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv"
                         />
                         <button
                             type="button"
-                            onClick={() => {
-                                if (fileInputRef.current) {
-                                    fileInputRef.current.click();
-                                }
-                            }}
+                            onClick={() => fileInputRef.current?.click()}
                             className="p-2 rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-50"
                             aria-label="Attach file"
-                            disabled={isOperationInProgress}
+                            disabled={isOperationInProgress || !!selectedMedia} // Disable if operation in progress or media already selected
                         >
                             <Paperclip size={20} />
                         </button>
@@ -244,9 +185,9 @@ const ChatInput: FC<ChatInputProps> = ({
 
                 <input
                     type="text"
-                    value={newMessageContent} // Always use newMessageContent
+                    value={newMessageContent}
                     onChange={(e) => setNewMessageContent(e.target.value)}
-                    placeholder={isEditing ? "Edit your message..." : "Type your message..."}
+                    placeholder={isEditing ? "Edit your message..." : (selectedMedia ? "Add a caption..." : "Type your message...")}
                     className="flex-1 p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
                     disabled={isOperationInProgress}
                 />
@@ -254,7 +195,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 {isEditing ? (
                     <>
                         <button
-                            type="button" // Use type="button" to prevent form submission
+                            type="button"
                             onClick={handleCancelEdit}
                             className="p-3 rounded-full bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 flex items-center justify-center transition-colors duration-200 cursor-pointer"
                             disabled={isOperationInProgress}
@@ -263,9 +204,9 @@ const ChatInput: FC<ChatInputProps> = ({
                             <X size={20} />
                         </button>
                         <button
-                            type="submit" // This button will trigger onSubmit, which calls handleSaveEdit
+                            type="submit"
                             className="p-3 rounded-full bg-green-500 text-white hover:bg-green-600 disabled:opacity-50 flex items-center justify-center transition-colors duration-200 cursor-pointer"
-                            disabled={!newMessageContent.trim() || isOperationInProgress} // Disable if content is empty or saving
+                            disabled={!newMessageContent.trim() || isOperationInProgress}
                             title="Save Edit"
                         >
                             <Send size={20} />
@@ -277,7 +218,7 @@ const ChatInput: FC<ChatInputProps> = ({
                         className="p-3 rounded-full bg-blue-500 text-white hover:bg-blue-600 flex items-center justify-center transition-colors duration-200 cursor-pointer"
                         disabled={(!newMessageContent.trim() && !selectedMedia) || isOperationInProgress}
                     >
-                        <SendHorizontal size={20}/>
+                        <SendHorizontal size={20} />
                     </button>
                 )}
             </div>

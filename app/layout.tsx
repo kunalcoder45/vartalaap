@@ -166,10 +166,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // Ensure there is NO WHITESPACE or newline characters
-    // BETWEEN the <html> and <body> tags, or inside the <html> tags
-    // before <body>.
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <meta name="theme-color" content="#000000" />
+      </head>
       <body>
         <AuthProvider>
           <CallProvider>

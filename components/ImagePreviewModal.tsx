@@ -12,7 +12,7 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ imageUrl, onClose
 
     return (
         <div
-            className="fixed inset-0 z-50 bg-black bg-opacity-75 backdrop-blur-sm flex items-center justify-center"
+            className="fixed inset-0 z-50 bg-opacity-75 backdrop-blur-sm flex items-center justify-center"
             onClick={onClose} // Close on backdrop click
         >
             <div className="relative h-[88vh] max-w-full max-h-full" onClick={(e) => e.stopPropagation()}>
@@ -23,7 +23,7 @@ const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({ imageUrl, onClose
                 />
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 bg-gray-800 bg-opacity-50 text-white cursor-pointer rounded-full p-2 hover:bg-opacity-70"
+                    className="absolute top-1 right-1 text-black cursor-pointer rounded-full p-2"
                     aria-label="Close image preview"
                 >
                     <XCircle size={24} />

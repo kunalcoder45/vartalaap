@@ -568,7 +568,7 @@
 
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useAuth } from './AuthProvider';
 import defaultAvatar from '../app/assets/userLogo.png';
 import Skeleton from 'react-loading-skeleton';
@@ -576,43 +576,49 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { Plus, X } from 'lucide-react';
 import UploadModal from './UploadModal';
 import StatusViewer from './StatusViewer';
-import { User } from './StatusViewer';
+// import { User } from './StatusViewer';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
+import {
+    Status,
+    CurrentUserActivityData,
+    ConnectionActivityData,
+    User
+} from '../types/activity';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 const MEDIA_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_MEDIA_URL || 'https://vartalaap-r36o.onrender.com';
 
-interface Status {
-    _id: string;
-    userId: string;
-    mediaType: 'image' | 'video';
-    mediaUrl: string;
-    createdAt: string;
-    viewedBy: string[];
-    visibility: 'public' | 'followers';
-}
+// interface Status {
+//     _id: string;
+//     userId: string;
+//     mediaType: 'image' | 'video';
+//     mediaUrl: string;
+//     createdAt: string;
+//     viewedBy: string[];
+//     visibility: 'public' | 'followers';
+// }
 
-interface CurrentUserActivityData {
-    _id: string;
-    name: string;
-    avatarUrl?: string;
-    hasActiveStatus: boolean;
-    allActiveStatuses: Status[];
-}
+// export interface CurrentUserActivityData {
+//     _id: string;
+//     name: string;
+//     avatarUrl?: string;
+//     hasActiveStatus: boolean;
+//     allActiveStatuses: Status[];
+// }
 
-interface ConnectionActivityData {
-    _id: string;
-    name: string;
-    avatarUrl?: string;
-    hasActiveStatus: boolean;
-    latestActiveStatusPreview?: {
-        _id: string;
-        mediaType: 'image' | 'video';
-        mediaUrl: string;
-        createdAt: string;
-    };
-}
+// interface ConnectionActivityData {
+//     _id: string;
+//     name: string;
+//     avatarUrl?: string;
+//     hasActiveStatus: boolean;
+//     latestActiveStatusPreview?: {
+//         _id: string;
+//         mediaType: 'image' | 'video';
+//         mediaUrl: string;
+//         createdAt: string;
+//     };
+// }
 
 interface ActivityBarProps {
     userId: string | null;
@@ -636,6 +642,8 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
     const [uploadError, setUploadError] = useState<string | null>(null);
 
     const [viewingUserStatuses, setViewingUserStatuses] = useState<{ user: CurrentUserActivityData | ConnectionActivityData; statuses: Status[] } | null>(null);
+    const stableStatuses = useMemo(() => viewingUserStatuses?.statuses || [], [viewingUserStatuses]);
+
     const [statusRefreshKey, setStatusRefreshKey] = useState(0);
 
     const [isChatWindowOpen, setIsChatWindowOpen] = useState(false);
@@ -651,26 +659,26 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
         // Update currentUserOwnStatuses if it contains the status
         setCurrentUserOwnStatuses(prev => {
             if (!prev) return prev;
-            
-            const updatedStatuses = prev.allActiveStatuses.map(status => 
-                status._id === statusId 
+
+            const updatedStatuses = prev.allActiveStatuses.map(status =>
+                status._id === statusId
                     ? { ...status, viewedBy: newViewedBy }
                     : status
             );
-            
+
             return { ...prev, allActiveStatuses: updatedStatuses };
         });
 
         // Update viewingUserStatuses if it contains the status
         setViewingUserStatuses(prev => {
             if (!prev) return prev;
-            
+
             const updatedStatuses = prev.statuses.map(status =>
                 status._id === statusId
                     ? { ...status, viewedBy: newViewedBy }
                     : status
             );
-            
+
             return { ...prev, statuses: updatedStatuses };
         });
     }, []);
@@ -698,7 +706,7 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
 
             console.log(`[ActivityBar:handleDeleteStatus] Status ${statusId} deleted successfully.`);
             setStatusRefreshKey(prev => prev + 1);
-            
+
             if (viewingUserStatuses) {
                 const remainingStatuses = viewingUserStatuses.statuses.filter(s => s._id !== statusId);
                 if (remainingStatuses.length === 0) {
@@ -802,7 +810,7 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
             setCurrentUserOwnStatuses(null);
             setAllConnections([]);
         }
-    }, [userId, statusRefreshKey, fetchActivityBarData]);
+    }, [userId, statusRefreshKey]); // ✅ now safe
 
     const handleUpload = async () => {
         if (!selectedFile) return;
@@ -923,12 +931,12 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
                 }
 
                 const data = await response.json();
-                
+
                 // ✅ FIXED: Update local state with new viewedBy array
                 if (data.updatedStatus && data.updatedStatus.viewedBy) {
                     updateStatusViews(statusId, data.updatedStatus.viewedBy);
                 }
-                
+
                 return data;
             }
         } catch (err) {
@@ -1073,11 +1081,11 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
                     isOpen={!!viewingUserStatuses}
                     onClose={() => {
                         setViewingUserStatuses(null);
-                        // ✅ FIXED: Refresh data when closing viewer to ensure latest view counts
                         setStatusRefreshKey(prev => prev + 1);
                     }}
+                    statuses={stableStatuses} // ya
+                    // statuses={viewingUserStatuses.statuses} 
                     user={viewingUserStatuses.user}
-                    statuses={viewingUserStatuses.statuses}
                     currentUserData={currentUserOwnStatuses}
                     getFullMediaUrl={getFullMediaUrl}
                     defaultAvatarUrl={defaultAvatarUrl}
@@ -1117,3 +1125,7 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
 };
 
 export default ActivityBar;
+
+// function useMemo(arg0: () => Status[], arg1: { user: CurrentUserActivityData | ConnectionActivityData; statuses: Status[]; }[]) {
+//     throw new Error('Function not implemented.');
+// }

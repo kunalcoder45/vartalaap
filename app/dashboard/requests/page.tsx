@@ -244,7 +244,7 @@ export default function RequestsPage() {
                       onClick={() => handleAction(req._id, 'accept')}
                       disabled={processing === req._id}
                       className={`flex items-center gap-1 px-3 py-1 text-sm rounded-full disabled:opacity-50
-                        bg-green-500 text-green-100 hover:bg-green-600
+                        bg-green-500 text-green-100 hover:bg-green-600 cursor-pointer
                       `}
                     >
                       {processing === req._id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}
@@ -254,7 +254,7 @@ export default function RequestsPage() {
                       onClick={() => handleAction(req._id, 'reject')}
                       disabled={processing === req._id}
                       className={`flex items-center gap-1 px-3 py-1 text-sm rounded-full disabled:opacity-50
-                        bg-gray-200 text-gray-800 hover:bg-gray-300
+                        bg-red-500 text-white hover:bg-red-600 cursor-pointer
                       `}
                     >
                       {processing === req._id ? <Loader2 size={16} className="animate-spin" /> : <UserX size={16} />}

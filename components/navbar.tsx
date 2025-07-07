@@ -2145,7 +2145,7 @@ const Navbar: React.FC = () => {
     <>
       {(showNotificationDropdown || showProfileDropdown || isMenuOpen) && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-[190]"
+          className="fixed inset-0 bg-opacity-30 backdrop-blur-sm z-[190]"
           style={{ top: '64px' }}
           onClick={closeAllDropdowns}
         />

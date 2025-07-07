@@ -30,14 +30,13 @@
 
 // export default nextConfig;
 
-
+import nextPWA from 'next-pwa';
 
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   images: {
-    // domains: ['res.cloudinary.com'],
     remotePatterns: [
-      // ✅ Production frontend (vercel app)
       {
         protocol: 'https',
         hostname: 'vartalaap-sable.vercel.app',
@@ -48,8 +47,6 @@ const nextConfig = {
         hostname: 'vartalaap-sable.vercel.app',
         pathname: '/avatars/**',
       },
-
-      // ✅ Backend (Render - production)
       {
         protocol: 'https',
         hostname: 'vartalaap-r36o.onrender.com',
@@ -60,15 +57,11 @@ const nextConfig = {
         hostname: 'vartalaap-r36o.onrender.com',
         pathname: '/uploads/**',
       },
-
-      // ✅ Backend (Render - sometimes HTTP)
       {
         protocol: 'http',
         hostname: 'vartalaap-r36o.onrender.com',
         pathname: '/uploads/**',
       },
-
-      // ✅ Local development backend
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -81,13 +74,10 @@ const nextConfig = {
         port: '5001',
         pathname: '/uploads/**',
       },
-
-      // ✅ Google profile images
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
-
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
@@ -96,4 +86,11 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const withPWA = nextPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+});
+
+export default withPWA(nextConfig);
