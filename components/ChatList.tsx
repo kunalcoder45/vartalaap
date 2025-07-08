@@ -6,8 +6,7 @@ import { useAuth } from './AuthProvider';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-// Re-using User and Status interfaces from ActivityBar/StatusViewer
-import { User as GeneralUser } from './StatusViewer';
+import { User as GeneralUser } from '../types/activity';
 
 // Define a type for a chat participant with potentially last message info
 interface ChatParticipant extends GeneralUser {
