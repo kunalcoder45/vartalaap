@@ -6,7 +6,7 @@ export interface Notification {
   _id: string;
   type: string;
   message: string;
-  read: boolean;
+  isRead: boolean;
   createdAt: string;
   sender?: {
     _id: string;
@@ -45,7 +45,7 @@ export const useNotifications = (
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to fetch notifications');
       setNotifications(data.notifications || []);
-      setUnreadCount(data.notifications.filter((n: Notification) => !n.read).length);
+      setUnreadCount(data.notifications.filter((n: Notification) => !n.isRead).length);
     } catch (error) {
       console.error(error);
       toast.error('Failed to load notifications');

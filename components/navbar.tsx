@@ -1871,7 +1871,6 @@ import React, {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from './AuthProvider';
-import { useSocket } from './SocketProvider';
 import toast from 'react-hot-toast';
 import {
   Bell,
@@ -1892,6 +1891,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import AnimatedList from './AnimatedList';
 import { getFullAvatarUrl } from '../utils/imageUtils';
 import { useNotifications, Notification } from '../hooks/useNotifications';
+import { useSocket } from './SocketProvider';
 
 const Navbar: React.FC = () => {
   const { user, getIdToken, logout } = useAuth();
@@ -2191,12 +2191,12 @@ const Navbar: React.FC = () => {
           <div className="relative">
             <button
               onClick={toggleNotificationDropdown}
-              className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 hide-scrollbar"
               aria-label="Notifications"
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2 hide-scrollbar">
                   {unreadCount}
                 </span>
               )}
@@ -2210,14 +2210,17 @@ const Navbar: React.FC = () => {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right max-h-[380px] overflow-y-auto"
+                  className="absolute hide-scrollbar right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right max-h-auto overflow-y-auto"
                 >
                   <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                     <h3 className="font-semibold text-gray-800">Notifications</h3>
                     {unreadCount > 0 && (
                       <button
-                        onClick={() => markAllAsRead()}
-                        className="text-blue-600 text-sm hover:underline"
+                        onClick={async () => {
+                          await markAllAsRead();
+                          toast.success('All notifications marked as read');
+                        }}
+                        className="text-blue-600 text-sm hover:underline cursor-pointer"
                       >
                         Mark all as read
                       </button>
@@ -2244,8 +2247,7 @@ const Navbar: React.FC = () => {
                   ) : (
                     <p className="p-4 text-center text-gray-500 text-sm">No new notifications.</p>
                   )}
-
-                  <div className="p-3 border-t border-gray-200 text-center">
+                  <div className="p-3 bg-white border-t border-gray-200 text-center">
                     <Link
                       href="/notifications"
                       onClick={() => setShowNotificationDropdown(false)}

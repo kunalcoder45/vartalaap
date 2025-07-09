@@ -139,14 +139,14 @@ const MessageList: FC<MessageListProps> = ({
                         <div
                             className={`flex items-end ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'} ${isMessageSelected ? 'border-2 border-blue-400 rounded-lg' : ''}`}
                         >
-                            {!isCurrentUser && (
+                            {/* {!isCurrentUser && (
                                 <img
                                     src={getFullMediaUrl(message.sender.avatarUrl || defaultAvatarUrl)}
                                     alt={message.sender.name || message.sender.username}
                                     className="w-8 h-8 rounded-lg object-cover shadow-sm mr-2"
                                     onError={(e) => { e.currentTarget.src = defaultAvatarUrl; }}
                                 />
-                            )}
+                            )} */}
                             <div className={`${bubbleClasses} ${isBeingEdited ? 'ring-2 ring-offset-2 ring-purple-400' : ''}`}>
                                 {isMediaMessage && (
                                     <div

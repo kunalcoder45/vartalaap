@@ -110,7 +110,6 @@
 
 // mobile view
 
-
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -118,7 +117,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '../../components/AuthProvider';
 import Navbar from '../../components/navbar';
 import Slidebar from '../../components/slidebar';
-import RightSidebar from '../../components/activitybar'; // Correct import for ActivityBar
+import RightSidebar from '../../components/activitybar';
 import MainBar from '../../components/mainBar';
 import toast, { Toaster } from 'react-hot-toast';
 import { BeatLoader } from 'react-spinners';
@@ -128,6 +127,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r
 export default function Dashboard() {
   const { user, mongoUser, getIdToken, loading: authLoading } = useAuth();
   const pathname = usePathname();
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
 
   const [userJoinedGroups, setUserJoinedGroups] = useState([]);
   const [loadingGroups, setLoadingGroups] = useState(true);
@@ -135,6 +136,37 @@ export default function Dashboard() {
 
   const [leftOpen, setLeftOpen] = useState(false);
   const [rightOpen, setRightOpen] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBtn(true);
+      console.log("💡 Install prompt captured.");
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    deferredPrompt.prompt();
+
+    const choice = await deferredPrompt.userChoice;
+    if (choice.outcome === 'accepted') {
+      console.log("✅ User accepted install prompt");
+    } else {
+      console.log("❌ User dismissed install prompt");
+    }
+
+    setDeferredPrompt(null);
+    setShowInstallBtn(false);
+  };
 
   const fetchUserGroups = useCallback(async () => {
     if (!user || !mongoUser) {
@@ -180,7 +212,6 @@ export default function Dashboard() {
     }
   }, [user, mongoUser, authLoading, fetchUserGroups]);
 
-  // Function to close the right sidebar (ActivityBar) for mobile
   const handleCloseRightSidebar = useCallback(() => {
     setRightOpen(false);
     console.log("Right Sidebar (ActivityBar) closed.");
@@ -208,11 +239,10 @@ export default function Dashboard() {
     <div className="flex flex-col h-screen">
       <Navbar />
 
-      {/* 🔵 Thin Toggle Bars (Mobile Only) */}
+      {/* Mobile sidebar toggles */}
       <div className="md:hidden fixed left-0 py-12 px-1 top-1/2 rounded-r-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
       <div className="md:hidden fixed right-0 px-1 py-12 top-1/2 rounded-l-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
 
-      {/* Overlay/Backdrop when any sidebar is open on mobile */}
       {(leftOpen || rightOpen) && (
         <div
           className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-30 md:hidden"
@@ -220,17 +250,15 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Main Content Container */}
-      {/* mt-[64px] added to account for Navbar height (assuming Navbar is h-16 or 64px) */}
       <div className="h-auto mt-[64px] flex flex-grow bg-gray-50 overflow-hidden relative">
 
         {/* Left Sidebar */}
         <div className={`
-            transition-transform duration-300 ease-in-out
-            fixed left-0 bg-gray-100 shadow-lg z-50
-            md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
-            ${leftOpen ? 'translate-x-0 w-4/5 top-14 h-full' : '-translate-x-full w-0 invisible top-0'}` // Adjusted top to 0 and h-full
-            }>
+          transition-transform duration-300 ease-in-out
+          fixed left-0 bg-gray-100 shadow-lg z-50
+          md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
+          ${leftOpen ? 'translate-x-0 w-4/5 top-14 h-full' : '-translate-x-full w-0 invisible top-0'}
+        `}>
           <Slidebar
             joinedGroups={userJoinedGroups}
             currentPath={pathname}
@@ -239,25 +267,39 @@ export default function Dashboard() {
         </div>
 
         {/* Main Bar */}
-        {/* On mobile, MainBar should always be visible, taking full width if sidebars are closed */}
-        <div className="flex-grow z-10 w-full h-auto md:w-3/5"> {/* Removed md:mt-4 as Navbar handles space */}
-          <MainBar className="w-full h-full overflow-auto" /> {/* Changed to h-full */}
+        <div className="flex-grow z-10 w-full h-auto md:w-3/5">
+          <MainBar className="w-full h-full overflow-auto" />
         </div>
 
-        {/* Right Sidebar (ActivityBar) */}
+        {/* Right Sidebar */}
         <div className={`
-            transition-transform duration-300 ease-in-out
-            fixed right-0 bg-white shadow-lg z-50
-            md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
-            ${rightOpen ? 'translate-x-0 w-5/5 top-14 h-full' : 'translate-x-full w-0 invisible top-0 h-full'}` // Adjusted top to 0, width to 4/5
-            }>
+          transition-transform duration-300 ease-in-out
+          fixed right-0 bg-white shadow-lg z-50
+          md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
+          ${rightOpen ? 'translate-x-0 w-5/5 top-14 h-full' : 'translate-x-full w-0 invisible top-0 h-full'}
+        `}>
           <RightSidebar
             userId={userIdToUse}
             className="h-full w-full"
-            onCloseMobile={handleCloseRightSidebar} // Pass the close function here!
+            onCloseMobile={handleCloseRightSidebar}
           />
         </div>
       </div>
+
+      {/* 🔽 Install Button (Bottom-Right) */}
+      {showInstallBtn && (
+        <div className="fixed bottom-6 right-6 z-[9999]">
+          {showInstallBtn && (
+            <button
+              onClick={handleInstallClick}
+              className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
+            >
+              Install App
+            </button>
+          )}
+
+        </div>
+      )}
 
       <Toaster />
     </div>

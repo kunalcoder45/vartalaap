@@ -1,837 +1,236 @@
-// 'use client';
-
-// import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
-// import { io, Socket } from 'socket.io-client';
-// import { useAuth } from './AuthProvider';
-
-// // Fix: Remove /api from socket URL - sockets connect directly to server, not API routes
-// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
-
-// interface SocketContextType {
-//     socket: Socket | null;
-//     isConnected: boolean;
-// }
-
-// const SocketContext = createContext<SocketContextType | undefined>(undefined);
-
-// const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-//     const { getIdToken, user } = useAuth(); // Also get user to check auth state
-//     const socketRef = useRef<Socket | null>(null);
-//     const [isConnected, setIsConnected] = useState(false);
-
-//     const connectSocket = useCallback(async () => {
-//         // Don't connect if no user is authenticated
-//         if (!user) {
-//             console.log("No user authenticated, skipping socket connection");
-//             return;
-//         }
-
-//         if (socketRef.current && socketRef.current.connected) {
-//             return; // Already connected
-//         }
-
-//         try {
-//             const token = await getIdToken();
-//             if (!token) {
-//                 console.warn("No authentication token available for socket connection.");
-//                 if (socketRef.current) {
-//                     socketRef.current.disconnect();
-//                     socketRef.current = null;
-//                 }
-//                 setIsConnected(false);
-//                 return;
-//             }
-
-//             console.log("Connecting to socket server:", SOCKET_SERVER_URL);
-
-//             // Disconnect existing socket if any
-//             if (socketRef.current) {
-//                 socketRef.current.disconnect();
-//             }
-
-//             // Create new socket connection
-//             socketRef.current = io(SOCKET_SERVER_URL, {
-//                 auth: { token },
-//                 transports: ['websocket', 'polling'], // Allow both transports
-//                 reconnectionAttempts: 5,
-//                 reconnectionDelay: 1000,
-//                 timeout: 10000,
-//             });
-
-//             socketRef.current.on('connect', () => {
-//                 console.log('Socket connected:', socketRef.current?.id);
-//                 setIsConnected(true);
-//             });
-
-//             socketRef.current.on('disconnect', (reason) => {
-//                 console.log('Socket disconnected:', reason);
-//                 setIsConnected(false);
-//             });
-
-//             socketRef.current.on('connect_error', (error) => {
-//                 console.error('Socket connection error:', error.message);
-//                 setIsConnected(false);
-//             });
-
-//             // Listen for reconnection
-//             socketRef.current.on('reconnect', () => {
-//                 console.log('Socket reconnected');
-//                 setIsConnected(true);
-//             });
-
-//         } catch (error) {
-//             console.error('Error in connectSocket:', error);
-//             setIsConnected(false);
-//         }
-//     }, [getIdToken, user]);
-
-//     const disconnectSocket = useCallback(() => {
-//         if (socketRef.current) {
-//             console.log("Disconnecting socket...");
-//             socketRef.current.disconnect();
-//             socketRef.current = null;
-//             setIsConnected(false);
-//         }
-//     }, []);
-
-//     useEffect(() => {
-//         if (user) {
-//             connectSocket();
-//         } else {
-//             disconnectSocket();
-//         }
-
-//         return () => {
-//             disconnectSocket();
-//         };
-//     }, [user, connectSocket, disconnectSocket]);
-
-//     const value = {
-//         socket: socketRef.current,
-//         isConnected,
-//     };
-
-//     return (
-//         <SocketContext.Provider value={value}>
-//             {children}
-//         </SocketContext.Provider>
-//     );
-// };
-
-// export default SocketProvider;
-
-// export const useSocket = () => {
-//     const context = useContext(SocketContext);
-//     if (context === undefined) {
-//         throw new Error('useSocket must be used within a SocketProvider');
-//     }
-//     return context;
-// };
-
-
-
-
-
-// 'use client';
-
-// import React, { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
-// import { io, Socket } from 'socket.io-client';
-// import { useAuth } from './AuthProvider'; // Make sure AuthProvider gives you firebaseUser.uid
-
-// // Fix: Remove /api from socket URL - sockets connect directly to server, not API routes
-// const SOCKET_SERVER_URL = process.env.NEXT_PUBLIC_NEW_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
-
-// interface SocketContextType {
-//     socket: Socket | null;
-//     isConnected: boolean;
-// }
-
-// const SocketContext = createContext<SocketContextType | undefined>(undefined);
-
-// interface SocketProviderProps {
-//     children: ReactNode;
-// }
-
-// const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-//     const { getIdToken, user } = useAuth(); // Get firebaseUser to check auth state and get UID
-//     const socketRef = useRef<Socket | null>(null);
-//     const [isConnected, setIsConnected] = useState(false);
-
-//     const connectSocket = useCallback(async () => {
-//         // Don't connect if no user is authenticated via Firebase
-//         if (!user) {
-//             console.log("No Firebase user authenticated, skipping socket connection");
-//             return;
-//         }
-
-//         // Only connect if not already connected
-//         if (socketRef.current && socketRef.current.connected) {
-//             return;
-//         }
-
-//         try {
-//             const token = await getIdToken(); // Get the Firebase ID token for socket authentication
-//             if (!token) {
-//                 console.warn("No authentication token available for socket connection. User might not be fully authenticated.");
-//                 if (socketRef.current) {
-//                     socketRef.current.disconnect();
-//                     socketRef.current = null;
-//                 }
-//                 setIsConnected(false);
-//                 return;
-//             }
-
-//             console.log("Connecting to socket server:", SOCKET_SERVER_URL);
-
-//             // Disconnect existing socket if any before creating a new one
-//             if (socketRef.current) {
-//                 socketRef.current.disconnect();
-//             }
-
-//             // Create new socket connection
-//             const newSocket = io(SOCKET_SERVER_URL, {
-//                 auth: { token }, // Pass Firebase ID token for authentication
-//                 transports: ['websocket', 'polling'], // Allow both transports
-//                 reconnectionAttempts: 5,
-//                 reconnectionDelay: 1000,
-//                 timeout: 10000,
-//             });
-
-//             // Assign the new socket to the ref IMMEDIATELY after creation
-//             socketRef.current = newSocket; 
-
-//             newSocket.on('connect', () => {
-//                 console.log('Socket connected:', newSocket.id);
-//                 setIsConnected(true);
-//                 // After connection, you might want to emit a 'register' event with the mongoUser._id if your backend uses it for mapping
-//                 // However, the backend socketAuth.js already gets socket.userId, so explicit 'register' might not be needed if that's sufficient.
-//             });
-
-//             newSocket.on('disconnect', (reason) => {
-//                 console.log('Socket disconnected:', reason);
-//                 setIsConnected(false);
-//             });
-
-//             newSocket.on('connect_error', (error) => {
-//                 console.error('Socket connection error:', error.message);
-//                 setIsConnected(false);
-//             });
-
-//             // Listen for reconnection
-//             newSocket.on('reconnect', () => {
-//                 console.log('Socket reconnected');
-//                 setIsConnected(true);
-//             });
-
-//         } catch (error) {
-//             console.error('Error in connectSocket:', error);
-//             setIsConnected(false);
-//         }
-//     }, [getIdToken, user]); // Depend on firebaseUser to trigger reconnect on auth state change
-
-//     const disconnectSocket = useCallback(() => {
-//         if (socketRef.current) {
-//             console.log("Disconnecting socket...");
-//             socketRef.current.disconnect();
-//             socketRef.current = null; // Clear the ref
-//             setIsConnected(false);
-//         }
-//     }, []);
-
-//     useEffect(() => {
-//         // This useEffect manages the lifecycle of the socket connection
-//         if (user) { // Connect only if a Firebase user is logged in
-//             connectSocket();
-//         } else { // Disconnect if no Firebase user
-//             disconnectSocket();
-//         }
-
-//         // Cleanup function for when the component unmounts
-//         return () => {
-//             disconnectSocket();
-//         };
-//     }, [user, connectSocket, disconnectSocket]); // Re-run when firebaseUser or connect/disconnect callbacks change
-
-//     const value = {
-//         socket: socketRef.current, // Provide the current socket instance
-//         isConnected,
-//     };
-
-//     return (
-//         <SocketContext.Provider value={value}>
-//             {children}
-//         </SocketContext.Provider>
-//     );
-// };
-
-// export default SocketProvider;
-
-// export const useSocket = () => {
-//     const context = useContext(SocketContext);
-//     if (context === undefined) {
-//         throw new Error('useSocket must be used within a SocketProvider');
-//     }
-//     return context;
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-// 'use client';
+// "use client";
 
 // import React, {
-//     createContext,
-//     useContext,
-//     useEffect,
-//     useState,
-//     useRef,
-//     useCallback,
-//     ReactNode
-// } from 'react';
-// // CORRECTED: Import 'io' as the default export and 'Socket' as a named type export
-// import io, { Socket } from 'socket.io-client';
-// import { useAuth } from './AuthProvider';
+//   createContext,
+//   useContext,
+//   useEffect,
+//   useState,
+//   useCallback,
+//   ReactNode,
+// } from "react";
+
+// import io from "socket.io-client";
+// import type { Socket } from "socket.io-client/build/esm/socket";
+
+// import { useAuth } from "./AuthProvider";
 
 // const SOCKET_SERVER_URL =
-//     process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-//     'https://vartalaap-r36o.onrender.com';
+//   process.env.NEXT_PUBLIC_BACKEND_URL?.replace("/api", "") ||
+//   "https://vartalaap-r36o.onrender.com";
+
+// const NAMESPACE = "";
+
+// type SocketInstance = ReturnType<typeof io> & Socket;
 
 // interface SocketContextType {
-//     socket: Socket | null;
-//     isConnected: boolean;
-//     onlineUsers: string[];
+//   socket: SocketInstance | null;
+//   isConnected: boolean;
+//   onlineUsers: string[];
 // }
 
 // const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 // interface SocketProviderProps {
-//     children: ReactNode;
+//   children: ReactNode;
 // }
 
 // const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-//     const { getIdToken, user, mongoUser } = useAuth();
-//     // CORRECTED: Use 'Socket' type here
-//     const socketRef = useRef<Socket | null>(null);
-//     const [isConnected, setIsConnected] = useState(false);
-//     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+//   const { getIdToken, user, mongoUser } = useAuth();
 
-//     const connectSocket = useCallback(async () => {
-//         if (!user || !mongoUser) {
-//             console.log('No Firebase user or mongoUser authenticated, skipping socket connection');
-//             return;
+//   // useState for socket instead of useRef
+//   const [socket, setSocket] = useState<SocketInstance | null>(null);
+//   const [isConnected, setIsConnected] = useState(false);
+//   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+
+//   const connectSocket = useCallback(async () => {
+//     if (!user || !mongoUser) {
+//       console.log("No authenticated user, skipping socket connect");
+//       return;
+//     }
+
+//     if (socket && socket.connected) {
+//       return; // already connected
+//     }
+
+//     try {
+//       const token = await getIdToken();
+//       if (!token) {
+//         console.warn("No token for socket connection");
+//         socket?.disconnect();
+//         setSocket(null);
+//         setIsConnected(false);
+//         return;
+//       }
+
+//       const url = NAMESPACE
+//         ? `${SOCKET_SERVER_URL}${NAMESPACE}`
+//         : SOCKET_SERVER_URL;
+
+//       console.log("Connecting to socket:", url);
+
+//       socket?.disconnect();
+
+//       const newSocket = io(url, {
+//         auth: { token },
+//         transports: ["websocket", "polling"],
+//         reconnectionAttempts: 5,
+//         reconnectionDelay: 1000,
+//         timeout: 10000,
+//         forceNew: true,
+//       }) as SocketInstance;
+
+//       setSocket(newSocket);
+
+//       newSocket.on("connect", () => {
+//         console.log("Socket connected, ID:", newSocket.id);
+//         setIsConnected(true);
+
+//         newSocket.emit("user-online", {
+//           userId: mongoUser._id,
+//           name: mongoUser.name,
+//           avatarUrl: mongoUser.avatarUrl,
+//         });
+//       });
+
+//       newSocket.on("disconnect", (reason) => {
+//         console.log("Socket disconnected:", reason);
+//         setIsConnected(false);
+//         setOnlineUsers([]);
+//       });
+
+//       newSocket.on("connect_error", (error) => {
+//         console.error("Socket connection error:", error.message);
+//         setIsConnected(false);
+//       });
+
+//       newSocket.on("reconnect", () => {
+//         console.log("Socket reconnected");
+//         setIsConnected(true);
+
+//         newSocket.emit("user-online", {
+//           userId: mongoUser._id,
+//           name: mongoUser.name,
+//           avatarUrl: mongoUser.avatarUrl,
+//         });
+//       });
+
+//       newSocket.on("online_users", (users: string[]) => {
+//         console.log("Online users updated:", users);
+//         setOnlineUsers(users);
+//       });
+
+//       newSocket.on(
+//         "user-status-change",
+//         (data: { userId: string; status: "online" | "offline" }) => {
+//           console.log("User status changed:", data);
+//           setOnlineUsers((prev) =>
+//             data.status === "online"
+//               ? prev.includes(data.userId)
+//                 ? prev
+//                 : [...prev, data.userId]
+//               : prev.filter((id) => id !== data.userId)
+//           );
 //         }
+//       );
+//     } catch (error) {
+//       console.error("Error connecting socket:", error);
+//       setIsConnected(false);
+//     }
+//   }, [getIdToken, user, mongoUser, socket]);
 
-//         if (socketRef.current && socketRef.current.connected) return;
+//   const disconnectSocket = useCallback(() => {
+//     if (socket) {
+//       console.log("Disconnecting socket...");
+//       if (mongoUser) {
+//         socket.emit("user-offline", {
+//           userId: mongoUser._id,
+//         });
+//       }
+//       socket.disconnect();
+//       setSocket(null);
+//       setIsConnected(false);
+//       setOnlineUsers([]);
+//     }
+//   }, [mongoUser, socket]);
 
-//         try {
-//             const token = await getIdToken();
-//             if (!token) {
-//                 console.warn('No authentication token available for socket connection.');
-//                 socketRef.current?.disconnect();
-//                 socketRef.current = null;
-//                 setIsConnected(false);
-//                 return;
-//             }
+//   useEffect(() => {
+//     if (user && mongoUser) {
+//       connectSocket();
+//     } else {
+//       disconnectSocket();
+//     }
 
-//             console.log('Connecting to socket server:', SOCKET_SERVER_URL);
-
-//             // Clean any existing socket
-//             socketRef.current?.disconnect();
-
-//             const socket = io(SOCKET_SERVER_URL, {
-//                 auth: { token },
-//                 transports: ['websocket', 'polling'],
-//                 reconnectionAttempts: 5,
-//                 reconnectionDelay: 1000,
-//                 timeout: 10000,
-//                 forceNew: true
-//             });
-
-//             socketRef.current = socket;
-
-//             socket.on('connect', () => {
-//                 console.log('Socket connected:', socket.id);
-//                 setIsConnected(true);
-
-//                 socket.emit('user-online', {
-//                     userId: mongoUser._id, // ✅ send correct ID (should match backend)
-//                     name: mongoUser.name,
-//                     avatarUrl: mongoUser.avatarUrl
-//                 });
-//             });
-
-//             socket.on('disconnect', (reason) => {
-//                 console.log('Socket disconnected:', reason);
-//                 setIsConnected(false);
-//                 setOnlineUsers([]);
-//             });
-
-//             socket.on('connect_error', (error) => {
-//                 console.error('Socket connection error:', error.message);
-//                 setIsConnected(false);
-//             });
-
-//             socket.on('reconnect', () => {
-//                 console.log('Socket reconnected');
-//                 setIsConnected(true);
-//                 socket.emit('user-online', {
-//                     userId: mongoUser._id,
-//                     name: mongoUser.name,
-//                     avatarUrl: mongoUser.avatarUrl
-//                 });
-//             });
-
-//             // 🔄 Update online users
-//             socket.on('online_users', (users: string[]) => {
-//                 console.log('Online users updated:', users);
-//                 setOnlineUsers(users);
-//             });
-
-//             socket.on('user-status-change', (data: { userId: string; status: 'online' | 'offline' }) => {
-//                 console.log('User status change:', data);
-//                 setOnlineUsers((prev) =>
-//                     data.status === 'online'
-//                         ? prev.includes(data.userId)
-//                             ? prev
-//                             : [...prev, data.userId]
-//                         : prev.filter((id) => id !== data.userId)
-//                 );
-//             });
-
-//         } catch (error) {
-//             console.error('Error in connectSocket:', error);
-//             setIsConnected(false);
-//         }
-//     }, [getIdToken, user, mongoUser]);
-
-//     const disconnectSocket = useCallback(() => {
-//         if (socketRef.current) {
-//             console.log('Disconnecting socket...');
-//             if (mongoUser) {
-//                 socketRef.current.emit('user-offline', {
-//                     userId: mongoUser._id
-//                 });
-//             }
-
-//             socketRef.current.disconnect();
-//             socketRef.current = null;
-//             setIsConnected(false);
-//             setOnlineUsers([]);
-//         }
-//     }, [mongoUser]);
-
-//     useEffect(() => {
-//         if (user && mongoUser) {
-//             connectSocket();
-//         } else {
-//             disconnectSocket();
-//         }
-
-//         return () => {
-//             disconnectSocket();
-//         };
-//     }, [user, mongoUser, connectSocket, disconnectSocket]);
-
-//     const value = {
-//         socket: socketRef.current,
-//         isConnected,
-//         onlineUsers
+//     return () => {
+//       disconnectSocket();
 //     };
+//   }, [user, mongoUser, connectSocket, disconnectSocket]);
 
-//     return (
-//         <SocketContext.Provider value={value}>
-//             {children}
-//         </SocketContext.Provider>
-//     );
+//   const value: SocketContextType = {
+//     socket,
+//     isConnected,
+//     onlineUsers,
+//   };
+
+//   return (
+//     <SocketContext.Provider value={value}>
+//       {children}
+//     </SocketContext.Provider>
+//   );
 // };
 
 // export default SocketProvider;
 
 // export const useSocket = () => {
-//     const context = useContext(SocketContext);
-//     if (context === undefined) {
-//         throw new Error('useSocket must be used within a SocketProvider');
-//     }
-//     return context;
+//   const context = useContext(SocketContext);
+//   if (context === undefined) {
+//     throw new Error("useSocket must be used within SocketProvider");
+//   }
+//   return context;
 // };
+// client/components/SocketProvider.tsx
 
-// 'use client';
+'use client';
 
-// import React, {
-//     createContext,
-//     useContext,
-//     useEffect,
-//     useState,
-//     useRef,
-//     useCallback,
-//     ReactNode
-// } from 'react';
-
-// // Import 'io' as a default export (value)
-// // and 'Socket' specifically as a type export.
-// import io from 'socket.io-client';
-// import type { Socket } from 'socket.io-client';
-
-// import { useAuth } from './AuthProvider';
-
-// const SOCKET_SERVER_URL =
-//     process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-//     'https://vartalaap-r36o.onrender.com';
-
-// interface SocketContextType {
-//     socket: Socket | null;
-//     isConnected: boolean;
-//     onlineUsers: string[];
-// }
-
-// const SocketContext = createContext<SocketContextType | undefined>(undefined);
-
-// interface SocketProviderProps {
-//     children: ReactNode;
-// }
-
-// const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-//     const { getIdToken, user, mongoUser } = useAuth();
-//     // 'Socket' here now correctly refers to the imported type
-//     const socketRef = useRef<Socket | null>(null);
-//     const [isConnected, setIsConnected] = useState(false);
-//     const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
-
-//     const connectSocket = useCallback(async () => {
-//         if (!user || !mongoUser) {
-//             console.log('No Firebase user or mongoUser authenticated, skipping socket connection');
-//             return;
-//         }
-
-//         if (socketRef.current && socketRef.current.connected) return;
-
-//         try {
-//             const token = await getIdToken();
-//             if (!token) {
-//                 console.warn('No authentication token available for socket connection.');
-//                 socketRef.current?.disconnect();
-//                 socketRef.current = null;
-//                 setIsConnected(false);
-//                 return;
-//             }
-
-//             console.log('Connecting to socket server:', SOCKET_SERVER_URL);
-
-//             // Clean up any existing socket
-//             socketRef.current?.disconnect();
-
-//             const socket = io(SOCKET_SERVER_URL, {
-//                 auth: { token },
-//                 transports: ['websocket', 'polling'],
-//                 reconnectionAttempts: 5,
-//                 reconnectionDelay: 1000,
-//                 timeout: 10000,
-//                 forceNew: true
-//             });
-
-//             socketRef.current = socket;
-
-//             socket.on('connect', () => {
-//                 console.log('Socket connected:', socket.id);
-//                 setIsConnected(true);
-
-//                 socket.emit('user-online', {
-//                     userId: mongoUser._id,
-//                     name: mongoUser.name,
-//                     avatarUrl: mongoUser.avatarUrl
-//                 });
-//             });
-
-//             socket.on('disconnect', (reason) => {
-//                 console.log('Socket disconnected:', reason);
-//                 setIsConnected(false);
-//                 setOnlineUsers([]);
-//             });
-
-//             socket.on('connect_error', (error) => {
-//                 console.error('Socket connection error:', error.message);
-//                 setIsConnected(false);
-//             });
-
-//             socket.on('reconnect', () => {
-//                 console.log('Socket reconnected');
-//                 setIsConnected(true);
-//                 socket.emit('user-online', {
-//                     userId: mongoUser._id,
-//                     name: mongoUser.name,
-//                     avatarUrl: mongoUser.avatarUrl
-//                 });
-//             });
-
-//             // Update online users
-//             socket.on('online_users', (users: string[]) => {
-//                 console.log('Online users updated:', users);
-//                 setOnlineUsers(users);
-//             });
-
-//             socket.on('user-status-change', (data: { userId: string; status: 'online' | 'offline' }) => {
-//                 console.log('User status change:', data);
-//                 setOnlineUsers((prev) =>
-//                     data.status === 'online'
-//                         ? prev.includes(data.userId)
-//                             ? prev
-//                             : [...prev, data.userId]
-//                         : prev.filter((id) => id !== data.userId)
-//                 );
-//             });
-
-//         } catch (error) {
-//             console.error('Error in connectSocket:', error);
-//             setIsConnected(false);
-//         }
-//     }, [getIdToken, user, mongoUser]);
-
-//     const disconnectSocket = useCallback(() => {
-//         if (socketRef.current) {
-//             console.log('Disconnecting socket...');
-//             if (mongoUser) {
-//                 socketRef.current.emit('user-offline', {
-//                     userId: mongoUser._id
-//                 });
-//             }
-
-//             socketRef.current.disconnect();
-//             socketRef.current = null;
-//             setIsConnected(false);
-//             setOnlineUsers([]);
-//         }
-//     }, [mongoUser]);
-
-//     useEffect(() => {
-//         if (user && mongoUser) {
-//             connectSocket();
-//         } else {
-//             disconnectSocket();
-//         }
-
-//         return () => {
-//             disconnectSocket();
-//         };
-//     }, [user, mongoUser, connectSocket, disconnectSocket]);
-
-//     const value = {
-//         socket: socketRef.current,
-//         isConnected,
-//         onlineUsers
-//     };
-
-//     return (
-//         <SocketContext.Provider value={value}>
-//             {children}
-//         </SocketContext.Provider>
-//     );
-// };
-
-// export default SocketProvider;
-
-// export const useSocket = () => {
-//     const context = useContext(SocketContext);
-//     if (context === undefined) {
-//         throw new Error('useSocket must be used within a SocketProvider');
-//     }
-//     return context;
-// };
-
-
-
-
-
-
-
-
-// 'use client';
-
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-    useRef,
-    useCallback,
-    ReactNode
-} from 'react';
-
+import { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-// Remove this line to avoid potential ambiguity:
-// import type { Socket } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
+import type { ReactNode } from 'react';
 
-import { useAuth } from './AuthProvider';
-
-const SOCKET_SERVER_URL =
-    process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') ||
-    'https://vartalaap-r36o.onrender.com';
-
-// Derive the Socket type directly from the 'io' function's return type
-type SocketInstance = ReturnType<typeof io>;
-
-interface SocketContextType {
-    socket: SocketInstance | null; // Use the derived type here
-    isConnected: boolean;
-    onlineUsers: string[];
-}
+type SocketContextType = {
+  socket: Socket | null;
+};
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-interface SocketProviderProps {
-    children: ReactNode;
-}
+export const useSocket = (): SocketContextType => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
+};
 
-const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
-    const { getIdToken, user, mongoUser } = useAuth();
-    // Use the derived type for socketRef as well
-    const socketRef = useRef<SocketInstance | null>(null);
-    const [isConnected, setIsConnected] = useState(false);
-    const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+const SocketProvider = ({ children }: { children: ReactNode }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
-    const connectSocket = useCallback(async () => {
-        if (!user || !mongoUser) {
-            console.log('No Firebase user or mongoUser authenticated, skipping socket connection');
-            return;
-        }
+  useEffect(() => {
+    const newSocket: Socket = io(process.env.NEXT_PUBLIC_BACKEND_URL!, {
+      transports: ['websocket'], // ✅ recommended
+      // auth: { token: 'your_jwt_token_here' } // optional
+    });
 
-        if (socketRef.current && socketRef.current.connected) return;
+    setSocket(newSocket);
 
-        try {
-            const token = await getIdToken();
-            if (!token) {
-                console.warn('No authentication token available for socket connection.');
-                socketRef.current?.disconnect();
-                socketRef.current = null;
-                setIsConnected(false);
-                return;
-            }
-
-            console.log('Connecting to socket server:', SOCKET_SERVER_URL);
-
-            // Clean up any existing socket
-            socketRef.current?.disconnect();
-
-            const socket = io(SOCKET_SERVER_URL, {
-                auth: { token },
-                transports: ['websocket', 'polling'],
-                reconnectionAttempts: 5,
-                reconnectionDelay: 1000,
-                timeout: 10000,
-                forceNew: true
-            });
-
-            socketRef.current = socket;
-
-            socket.on('connect', () => {
-                console.log('Socket connected:', socket.id);
-                setIsConnected(true);
-
-                socket.emit('user-online', {
-                    userId: mongoUser._id,
-                    name: mongoUser.name,
-                    avatarUrl: mongoUser.avatarUrl
-                });
-            });
-
-            socket.on('disconnect', (reason) => {
-                console.log('Socket disconnected:', reason);
-                setIsConnected(false);
-                setOnlineUsers([]);
-            });
-
-            socket.on('connect_error', (error) => {
-                console.error('Socket connection error:', error.message);
-                setIsConnected(false);
-            });
-
-            socket.on('reconnect', () => {
-                console.log('Socket reconnected');
-                setIsConnected(true);
-                socket.emit('user-online', {
-                    userId: mongoUser._id,
-                    name: mongoUser.name,
-                    avatarUrl: mongoUser.avatarUrl
-                });
-            });
-
-            // Update online users
-            socket.on('online_users', (users: string[]) => {
-                console.log('Online users updated:', users);
-                setOnlineUsers(users);
-            });
-
-            socket.on('user-status-change', (data: { userId: string; status: 'online' | 'offline' }) => {
-                console.log('User status change:', data);
-                setOnlineUsers((prev) =>
-                    data.status === 'online'
-                        ? prev.includes(data.userId)
-                            ? prev
-                            : [...prev, data.userId]
-                        : prev.filter((id) => id !== data.userId)
-                );
-            });
-
-        } catch (error) {
-            console.error('Error in connectSocket:', error);
-            setIsConnected(false);
-        }
-    }, [getIdToken, user, mongoUser]);
-
-    const disconnectSocket = useCallback(() => {
-        if (socketRef.current) {
-            console.log('Disconnecting socket...');
-            if (mongoUser) {
-                socketRef.current.emit('user-offline', {
-                    userId: mongoUser._id
-                });
-            }
-
-            socketRef.current.disconnect();
-            socketRef.current = null;
-            setIsConnected(false);
-            setOnlineUsers([]);
-        }
-    }, [mongoUser]);
-
-    useEffect(() => {
-        if (user && mongoUser) {
-            connectSocket();
-        } else {
-            disconnectSocket();
-        }
-
-        return () => {
-            disconnectSocket();
-        };
-    }, [user, mongoUser, connectSocket, disconnectSocket]);
-
-    const value = {
-        socket: socketRef.current,
-        isConnected,
-        onlineUsers
+    return () => {
+      newSocket.disconnect();
     };
+  }, []);
 
-    return (
-        <SocketContext.Provider value={value}>
-            {children}
-        </SocketContext.Provider>
-    );
+  return (
+    <SocketContext.Provider value={{ socket }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export default SocketProvider;
-
-export const useSocket = () => {
-    const context = useContext(SocketContext);
-    if (context === undefined) {
-        throw new Error('useSocket must be used within a SocketProvider');
-    }
-    return context;
-};

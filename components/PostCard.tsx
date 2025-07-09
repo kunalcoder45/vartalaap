@@ -2263,9 +2263,9 @@ const PostCard = ({
                             src={postMediaFullUrl}
                             controls
                             className="w-full h-auto max-h-96 object-contain rounded-lg"
-                            onError={(e) => {
-                                console.error('Video load error:', e);
-                            }}
+                            // onError={(e) => {
+                            //     console.error('Video load error:', e);
+                            // }}
                         />
                     )}
                 </div>

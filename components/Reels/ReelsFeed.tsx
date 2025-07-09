@@ -920,7 +920,7 @@ const ReelsFeed: React.FC<ReelsFeedProps> = ({ currentUser }) => { // Accept cur
                                     onEnded={() => navigateReels('down')}
                                     onTimeUpdate={handleTimeUpdate} // Update progress
                                     onLoadedData={handleVideoLoadedData} // Added for better initial icon state
-                                    onError={(e) => console.error("Video load error:", e, reel.mediaUrl)}
+                                    // onError={(e) => console.error("Video load error:", e, reel.mediaUrl)}
                                     onClick={togglePlayPause} // ADDED: Click to play/pause
                                 />
                             ) : (

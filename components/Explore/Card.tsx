@@ -27,7 +27,7 @@ interface CardProps {
     post: Post;
 }
 
-const defaultAvatar = '../../app/assets/userLogo.png';
+const defaultAvatar = '/userLogo.png';
 
 const BACKEND_STATIC_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL?.replace('/api', '') || 'https://vartalaap-r36o.onrender.com';
 
@@ -38,7 +38,8 @@ const Card: React.FC<CardProps> = ({ post }) => {
         ? post.author.avatarUrl.startsWith('http') || post.author.avatarUrl.startsWith('data:')
             ? post.author.avatarUrl
             : `${BACKEND_STATIC_BASE_URL}${post.author.avatarUrl.startsWith('/') ? '' : '/'}${post.author.avatarUrl}`
-        : `${BACKEND_STATIC_BASE_URL}${defaultAvatar}`;
+        // : `${BACKEND_STATIC_BASE_URL}${defaultAvatar}`;
+        : defaultAvatar;
 
     const fullMediaUrl = post.mediaUrl
         ? post.mediaUrl.startsWith('http') || post.mediaUrl.startsWith('data:')
