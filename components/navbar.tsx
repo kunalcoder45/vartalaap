@@ -2142,7 +2142,7 @@ const Navbar: React.FC = () => {
   const avatarSrc = typeof userAvatar === 'string' ? userAvatar : defaultUserLogo;
 
   return (
-    <div className='z-120'>
+    <div className='z-999'>
       {(showNotificationDropdown || showProfileDropdown || isMenuOpen) && (
         <div
           className="fixed inset-0 bg-opacity-30 backdrop-blur-sm"
@@ -2210,7 +2210,7 @@ const Navbar: React.FC = () => {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute hide-scrollbar right-0 mt-3 z-999 w-80 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden transform origin-top-right max-h-auto overflow-y-auto"
+                  className="absolute hide-scrollbar right-0 mt-3 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right max-h-auto overflow-y-auto"
                 >
                   <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                     <h3 className="font-semibold text-gray-800">Notifications</h3>
