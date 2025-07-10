@@ -1089,8 +1089,8 @@ const ActivityBar = ({ userId, className, onCloseMobile }: ActivityBarProps) => 
                     currentUserData={currentUserOwnStatuses}
                     getFullMediaUrl={getFullMediaUrl}
                     defaultAvatarUrl={defaultAvatarUrl}
-                    markAsViewed={handleStatusMarkAsViewed}
-                    fetchUserDetails={fetchUserDetails}
+                    // markAsViewed={handleStatusMarkAsViewed}
+                    // fetchUserDetails={fetchUserDetails}
                     onDeleteStatus={handleDeleteStatus}
                 />
             )}
