@@ -267,7 +267,7 @@ export default function Dashboard() {
         </div>
 
         {/* Main Bar */}
-        <div className="flex-grow z-999 w-full h-auto md:w-3/5 mt-0 md:mt-3">
+        <div className="flex-grow z-995 w-full h-auto md:w-3/5 mt-0 md:mt-3">
           <MainBar className="w-full h-full overflow-auto" />
         </div>
 

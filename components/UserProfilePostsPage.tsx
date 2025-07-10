@@ -460,7 +460,7 @@ import PostCard from '@/components/PostCard'; // Assuming aliased path
 import ConnectionsModal from '@/components/ConnectionsModal'; // <--- NEW IMPORT
 import toast, { Toaster } from 'react-hot-toast';
 import LoadingBar from 'react-top-loading-bar';
-import { ArrowLeft, Menu } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -773,7 +773,6 @@ export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePo
                         `}
                         aria-label="Toggle sidebar"
                     >
-                        <Menu size={24} />
                     </button>
 
                     {/* Overlay for mobile view when sidebar is open */}
