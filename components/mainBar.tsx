@@ -20,8 +20,8 @@ const MainBar = ({ className }: MainBarProps) => {
         <div
             className={`
                 flex-grow p-0 pt-0 space-y-6 overflow-y-auto max-w-2xl mx-auto hide-scrollbar rounded-3xl
-                h-[calc(100vh-${navbarHeight})] /* Mobile: Full viewport height minus Navbar */
-                md:h-[calc(100vh-${desktopAdjustment})] /* Desktop: Your specified height */
+                h-[calc(100vh-${navbarHeight})]
+                md:h-[calc(100vh-${desktopAdjustment})]
                 ${className || ''}
             `}
         >

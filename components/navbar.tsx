@@ -2142,16 +2142,16 @@ const Navbar: React.FC = () => {
   const avatarSrc = typeof userAvatar === 'string' ? userAvatar : defaultUserLogo;
 
   return (
-    <>
+    <div className='z-120'>
       {(showNotificationDropdown || showProfileDropdown || isMenuOpen) && (
         <div
-          className="fixed inset-0 bg-opacity-30 backdrop-blur-sm z-[190]"
+          className="fixed inset-0 bg-opacity-30 backdrop-blur-sm"
           style={{ top: '64px' }}
           onClick={closeAllDropdowns}
         />
       )}
 
-      <nav className="bg-white shadow-lg p-3 flex items-center justify-between fixed top-0 left-0 w-full z-[300]">
+      <nav className="bg-white shadow-lg p-3 flex items-center justify-between fixed top-0 left-0 w-full">
         <div className="flex items-center space-x-2 md:pl-8">
           <Link href="/dashboard" className="text-2xl font-extrabold text-blue-600 tracking-tight">
             Vartalaap<span className="text-yellow-500 text-3xl">.</span>
@@ -2405,7 +2405,7 @@ const Navbar: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

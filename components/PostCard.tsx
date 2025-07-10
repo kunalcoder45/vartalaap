@@ -2175,7 +2175,7 @@ const PostCard = ({
     };
     const postAuthorFirebaseUid = post?.author?.firebaseUid || post?.author?._id || 'unknown';
     return (
-        <div className="bg-white rounded-lg shadow-md m-4 p-4 mt-1">
+        <div className="bg-white rounded-lg shadow-md m-4 p-4 mt-1 z-0">
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                     <Link href={`/users/${postAuthorFirebaseUid}`} className="flex items-center space-x-3 group">
@@ -2243,7 +2243,7 @@ const PostCard = ({
             <p className="text-gray-700 mb-4">{post.text}</p>
 
             {postMediaFullUrl && (
-                <div className="mb-4 rounded-lg overflow-hidden relative">
+                <div className="mb-4 rounded-lg overflow-hidden relative z-0">
                     {post.mediaType === 'image' ? (
                         <Image
                             src={postMediaFullUrl}

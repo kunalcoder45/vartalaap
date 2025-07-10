@@ -1499,6 +1499,504 @@
 
 
 
+// 'use client';
+
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import { X, ChevronLeft, ChevronRight, Eye, Trash2, Play, Pause } from 'lucide-react';
+// import Image from 'next/image';
+// import {
+//     Status,
+//     CurrentUserActivityData,
+//     ConnectionActivityData,
+//     User
+// } from '../types/activity';
+// import DeleteConfirmationModal from './DeleteConfirmationModal';
+
+// import { fetchUserDetails, markStatusAsViewed, deleteStatus } from '@/utils/api';
+
+// interface DeleteConfirmationModalProps {
+//     message: string;
+//     onConfirm: () => void;
+//     onCancel: () => void;
+//     title?: string;
+// }
+
+// interface StatusViewerProps {
+//     isOpen: boolean;
+//     onClose: () => void;
+//     user: any; // Or proper type
+//     statuses: Status[];
+//     currentUserData: CurrentUserActivityData | null;
+//     getFullMediaUrl: (url?: string) => string;
+//     defaultAvatarUrl: string;
+//     markAsViewed: (statusId: string) => void; // ✅ Add this line
+//     fetchUserDetails: (userIds: string[]) => Promise<User[]>;
+//     onDeleteStatus: (statusId: string) => Promise<void>;
+// }
+
+// const StatusViewer: React.FC<StatusViewerProps> = ({
+//     isOpen,
+//     onClose,
+//     user,
+//     statuses: initialStatuses,
+//     currentUserData,
+//     getFullMediaUrl,
+//     defaultAvatarUrl,
+// }) => {
+//     const [statuses, setStatuses] = useState<Status[]>(initialStatuses);
+//     const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
+//     const [progress, setProgress] = useState(0);
+//     const [isPlaying, setIsPlaying] = useState(true);
+//     const [viewedByDropdownOpen, setViewedByDropdownOpen] = useState(false);
+//     const [viewedByUsers, setViewedByUsers] = useState<User[]>([]);
+//     const [fetchingViewedBy, setFetchingViewedBy] = useState(false);
+//     const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+//     const videoRef = useRef<HTMLVideoElement>(null);
+//     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+
+//     const currentStatus = statuses[currentStatusIndex];
+//     const isOwnerOfCurrentStatus = currentUserData?._id === user._id;
+
+//     const viewedStatusIdsRef = useRef<Set<string>>(new Set());
+
+//     // Reset statuses when prop changes
+//     useEffect(() => {
+//         setStatuses(initialStatuses);
+//         setCurrentStatusIndex(0);
+//         setProgress(0);
+//         viewedStatusIdsRef.current.clear();
+//         setIsPlaying(true);
+//     }, [initialStatuses]);
+
+//     // Update status viewedBy locally
+//     const updateStatusViewsLocally = useCallback((statusId: string, newViewedBy: string[]) => {
+//         setStatuses((prev) =>
+//             prev.map((status) =>
+//                 status._id === statusId ? { ...status, viewedBy: newViewedBy } : status
+//             )
+//         );
+//     }, []);
+
+//     // Mark status as viewed on backend + update local state
+//     const handleMarkAsViewed = useCallback(
+//         async (statusId: string) => {
+//             if (isOwnerOfCurrentStatus || viewedStatusIdsRef.current.has(statusId)) return;
+
+//             try {
+//                 const response = await markStatusAsViewed(statusId);
+//                 viewedStatusIdsRef.current.add(statusId);
+
+//                 if (response?.updatedStatus) {
+//                     const updatedStatus = response.updatedStatus;
+//                     const newViewedBy = (updatedStatus.viewedBy || []).map((id: any) =>
+//                         typeof id === 'object' && id.$oid ? id.$oid : String(id)
+//                     );
+//                     updateStatusViewsLocally(statusId, newViewedBy);
+//                 }
+//             } catch (err) {
+//                 console.error('Failed to mark as viewed:', err);
+//             }
+//         },
+//         [isOwnerOfCurrentStatus, updateStatusViewsLocally]
+//     );
+
+//     // On open, mark first status viewed
+//     useEffect(() => {
+//         if (isOpen && statuses.length) {
+//             setCurrentStatusIndex(0);
+//             setProgress(0);
+//             setIsPlaying(true);
+//             setViewedByDropdownOpen(false);
+//             viewedStatusIdsRef.current.clear();
+
+//             setTimeout(() => {
+//                 handleMarkAsViewed(statuses[0]._id);
+//             }, 100);
+//         }
+//     }, [isOpen, statuses, handleMarkAsViewed]);
+
+//     // Progress interval for auto advancing statuses
+//     useEffect(() => {
+//         if (!isOpen || !isPlaying || !currentStatus) {
+//             if (progressIntervalRef.current) {
+//                 clearInterval(progressIntervalRef.current);
+//                 progressIntervalRef.current = null;
+//             }
+//             return;
+//         }
+
+//         const duration =
+//             currentStatus.mediaType === 'video' && videoRef.current && !isNaN(videoRef.current.duration)
+//                 ? videoRef.current.duration * 1000
+//                 : 5000;
+
+//         if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+//         const startTime = Date.now() - (progress / 100) * duration;
+
+//         progressIntervalRef.current = setInterval(() => {
+//             const elapsed = Date.now() - startTime;
+//             const newProgress = (elapsed / duration) * 100;
+//             setProgress(newProgress);
+
+//             if (newProgress >= 100) {
+//                 clearInterval(progressIntervalRef.current!);
+//                 progressIntervalRef.current = null;
+
+//                 if (currentStatusIndex < statuses.length - 1) {
+//                     setCurrentStatusIndex((i) => i + 1);
+//                     setProgress(0);
+//                     setIsPlaying(true);
+//                     handleMarkAsViewed(statuses[currentStatusIndex + 1]._id);
+//                 } else {
+//                     // Don't auto-close. Instead, stop at the last status.
+//                     setIsPlaying(false);
+//                     setProgress(100);
+//                 }
+//             }
+//         }, 50);
+
+//         return () => {
+//             if (progressIntervalRef.current) {
+//                 clearInterval(progressIntervalRef.current);
+//                 progressIntervalRef.current = null;
+//             }
+//         };
+//     }, [isOpen, isPlaying, currentStatus, currentStatusIndex, statuses, onClose, progress, handleMarkAsViewed]);
+
+//     // Navigation handlers
+//     const handleNextStatus = useCallback(() => {
+//         setIsPlaying(false);
+//         if (currentStatusIndex < statuses.length - 1) {
+//             setCurrentStatusIndex((i) => i + 1);
+//             setProgress(0);
+//             setIsPlaying(true);
+//             handleMarkAsViewed(statuses[currentStatusIndex + 1]._id);
+//         } else {
+//             onClose();
+//         }
+//     }, [currentStatusIndex, statuses, onClose, handleMarkAsViewed]);
+
+//     const handlePrevStatus = useCallback(() => {
+//         setIsPlaying(false);
+//         if (currentStatusIndex > 0) {
+//             setCurrentStatusIndex((i) => i - 1);
+//             setProgress(0);
+//             setIsPlaying(true);
+//         }
+//     }, [currentStatusIndex]);
+
+//     const togglePlayPause = useCallback(() => setIsPlaying((p) => !p), []);
+
+//     // For video progress updates
+//     const handleVideoProgress = useCallback(() => {
+//         if (!videoRef.current || currentStatus?.mediaType !== 'video') return;
+
+//         const videoDuration = videoRef.current.duration;
+//         const videoCurrentTime = videoRef.current.currentTime;
+//         const newProgress = (videoCurrentTime / videoDuration) * 100;
+//         setProgress(newProgress);
+
+//         if (videoCurrentTime >= videoDuration) {
+//             if (currentStatusIndex < statuses.length - 1) {
+//                 handleNextStatus();
+//             } else {
+//                 onClose();
+//             }
+//         }
+//     }, [currentStatus, currentStatusIndex, statuses.length, handleNextStatus, onClose]);
+
+//     // Keyboard navigation
+//     useEffect(() => {
+//         const handler = (e: KeyboardEvent) => {
+//             if (!isOpen) return;
+
+//             switch (e.key) {
+//                 case 'ArrowRight':
+//                     handleNextStatus();
+//                     break;
+//                 case 'ArrowLeft':
+//                     handlePrevStatus();
+//                     break;
+//                 case 'Escape':
+//                     onClose();
+//                     break;
+//                 case ' ':
+//                     e.preventDefault();
+//                     togglePlayPause();
+//                     break;
+//             }
+//         };
+
+//         window.addEventListener('keydown', handler);
+//         return () => window.removeEventListener('keydown', handler);
+//     }, [isOpen, handleNextStatus, handlePrevStatus, onClose, togglePlayPause]);
+
+//     // Play/pause video on isPlaying change
+//     useEffect(() => {
+//         if (!videoRef.current) return;
+//         if (isPlaying) {
+//             videoRef.current.play().catch(() => { });
+//         } else {
+//             videoRef.current.pause();
+//         }
+//     }, [isPlaying, currentStatus]);
+
+//     const handleMediaLoaded = useCallback(() => {
+//         setIsPlaying(true);
+//         if (currentStatus?.mediaType === 'image') {
+//             setProgress(0);
+//         } else if (videoRef.current) {
+//             videoRef.current.currentTime = 0;
+//             videoRef.current.play().catch(() => { });
+//         }
+//     }, [currentStatus]);
+
+//     // Fetch viewedBy users for dropdown
+//     const fetchViewedByUsers = useCallback(async () => {
+//         if (!currentStatus?.viewedBy || currentStatus.viewedBy.length === 0) {
+//             setViewedByUsers([]);
+//             return;
+//         }
+
+//         setFetchingViewedBy(true);
+//         try {
+//             const res = await fetchUserDetails(currentStatus.viewedBy);
+//             if (res.success && Array.isArray(res.users)) {
+//                 setViewedByUsers(res.users);
+//             } else {
+//                 setViewedByUsers([]);
+//             }
+//         } catch (e) {
+//             console.error("Error fetching viewedBy users:", e);
+//             setViewedByUsers([]);
+//         } finally {
+//             setFetchingViewedBy(false);
+//         }
+//     }, [currentStatus]);
+
+//     useEffect(() => {
+//         if (viewedByDropdownOpen && currentStatus) {
+//             fetchViewedByUsers();
+//             setIsPlaying(false);
+//         } else {
+//             setViewedByUsers([]);
+//             setIsPlaying(true);
+//         }
+//     }, [viewedByDropdownOpen, currentStatus, fetchViewedByUsers]);
+
+//     // Delete modal controls
+//     const confirmDelete = useCallback(() => {
+//         setShowDeleteConfirmModal(true);
+//         setIsPlaying(false);
+//     }, []);
+
+//     const executeDelete = useCallback(async () => {
+//         if (!currentStatus) return;
+
+//         try {
+//             await deleteStatus(currentStatus._id);
+//             setShowDeleteConfirmModal(false);
+
+//             const filtered = statuses.filter((s) => s._id !== currentStatus._id);
+
+//             if (filtered.length > 0) {
+//                 const newIndex = currentStatusIndex >= filtered.length ? filtered.length - 1 : currentStatusIndex;
+//                 setStatuses(filtered);
+//                 setCurrentStatusIndex(newIndex);
+//                 setProgress(0);
+//                 setIsPlaying(true);
+//                 handleMarkAsViewed(filtered[newIndex]._id);
+//             } else {
+//                 onClose();
+//             }
+//         } catch (e) {
+//             console.error("Delete error:", e);
+//             alert("Failed to delete status. Try again.");
+//             setShowDeleteConfirmModal(false);
+//             setIsPlaying(true);
+//         }
+//     }, [currentStatus, statuses, currentStatusIndex, handleMarkAsViewed, onClose]);
+
+//     if (!isOpen || !currentStatus) return null;
+
+//     return (
+//         <>
+//             <div className="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-40 p-1 md:p-4">
+//                 <div className="relative w-full max-w-2xl h-full max-h-[85vh] bg-gray-900 rounded-lg flex flex-col overflow-hidden">
+
+//                     {/* Close button */}
+//                     <button
+//                         onClick={onClose}
+//                         aria-label="Close status viewer"
+//                         className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-gray-700 transition-colors"
+//                     >
+//                         <X size={24} />
+//                     </button>
+
+//                     {/* User Info */}
+//                     <div className="absolute top-4 left-4 z-50 flex items-center space-x-3">
+//                         <img
+//                             src={getFullMediaUrl(user.avatarUrl)}
+//                             alt={user.name}
+//                             className="w-10 h-10 rounded-full object-cover border-2 border-white"
+//                             onError={(e) => { (e.target as HTMLImageElement).src = defaultAvatarUrl; }}
+//                         />
+//                         <span className="text-white font-semibold">{user.name}</span>
+//                         <span className="text-gray-400 text-sm">
+//                             {new Date(currentStatus.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+//                         </span>
+//                     </div>
+
+//                     {/* Delete button for owner */}
+//                     {isOwnerOfCurrentStatus && (
+//                         <button
+//                             onClick={confirmDelete}
+//                             aria-label="Delete status"
+//                             className="absolute bottom-4 right-4 z-50 p-2 rounded-full bg-red-600 bg-opacity-70 text-white hover:bg-red-700 transition-colors"
+//                         >
+//                             <Trash2 size={18} />
+//                         </button>
+//                     )}
+
+//                     {/* Progress bars */}
+//                     <div className="absolute top-0 left-0 right-0 z-30 flex space-x-1 px-4 pt-2">
+//                         {statuses.map((_, idx) => (
+//                             <div key={idx} className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+//                                 <div
+//                                     className="h-full bg-white rounded-full transition-all duration-50 ease-linear"
+//                                     style={{
+//                                         width: idx < currentStatusIndex ? '100%' : idx === currentStatusIndex ? `${progress}%` : '0%',
+//                                     }}
+//                                 />
+//                             </div>
+//                         ))}
+//                     </div>
+
+//                     {/* Media content */}
+//                     <div className="flex-1 flex items-center justify-center w-full h-full relative cursor-pointer" onClick={togglePlayPause}>
+//                         {currentStatus.mediaType === 'image' ? (
+//                             <Image
+//                                 src={currentStatus.mediaUrl}
+//                                 alt="Status image"
+//                                 fill
+//                                 className="object-contain"
+//                                 onLoadingComplete={handleMediaLoaded}
+//                                 priority
+//                             />
+//                         ) : (
+//                             <video
+//                                 ref={videoRef}
+//                                 src={currentStatus.mediaUrl}
+//                                 className="object-contain w-full h-full"
+//                                 onLoadedData={handleMediaLoaded}
+//                                 onTimeUpdate={handleVideoProgress}
+//                                 onEnded={handleNextStatus}
+//                                 autoPlay
+//                                 playsInline
+//                                 preload="auto"
+//                             />
+//                         )}
+
+//                         {!isPlaying && (
+//                             <div className="absolute inset-0 flex items-center justify-center">
+//                                 <button
+//                                     onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
+//                                     aria-label={isPlaying ? 'Pause' : 'Play'}
+//                                     className="p-4 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors cursor-pointer"
+//                                 >
+//                                     <Play size={24} />
+//                                 </button>
+//                             </div>
+//                         )}
+//                     </div>
+
+//                     {/* Navigation arrows */}
+//                     {currentStatusIndex > 0 && (
+//                         <button
+//                             onClick={(e) => { e.stopPropagation(); handlePrevStatus(); }}
+//                             aria-label="Previous status"
+//                             className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors z-40"
+//                         >
+//                             <ChevronLeft size={24} />
+//                         </button>
+//                     )}
+//                     {currentStatusIndex < statuses.length - 1 && (
+//                         <button
+//                             onClick={(e) => { e.stopPropagation(); handleNextStatus(); }}
+//                             aria-label="Next status"
+//                             className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors z-40"
+//                         >
+//                             <ChevronRight size={24} />
+//                         </button>
+//                     )}
+
+//                     {/* Viewed By (owner only) */}
+//                     {/* {isOwnerOfCurrentStatus && (
+//                         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+//                             <button
+//                                 onClick={() => setViewedByDropdownOpen((v) => !v)}
+//                                 className="flex items-center space-x-2 cursor-pointer text-white bg-black bg-opacity-50 px-4 py-2 rounded-full hover:bg-opacity-75 transition-colors"
+//                             >
+//                                 <Eye size={16} />
+//                                 <span className="text-sm">{currentStatus.viewedBy.length} Views</span>
+//                             </button>
+
+//                             {viewedByDropdownOpen && (
+//                                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 max-h-60 overflow-y-auto bg-white rounded-lg shadow-lg border">
+//                                     <div className="p-3 border-b bg-gray-50">
+//                                         <h4 className="text-gray-800 font-semibold text-sm">Viewed By ({currentStatus.viewedBy.length})</h4>
+//                                     </div>
+//                                     <div className="p-2">
+//                                         {fetchingViewedBy ? (
+//                                             <div className="flex items-center justify-center py-4">
+//                                                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
+//                                                 <span className="ml-2 text-gray-600 text-sm">Loading...</span>
+//                                             </div>
+//                                         ) : viewedByUsers.length > 0 ? (
+//                                             viewedByUsers.map((viewer) => (
+//                                                 <div
+//                                                     key={viewer._id}
+//                                                     className="flex items-center space-x-3 p-2 hover:bg-gray-100 rounded cursor-pointer"
+//                                                 >
+//                                                     <img
+//                                                         src={getFullMediaUrl(viewer.avatarUrl)}
+//                                                         alt={viewer.name}
+//                                                         className="w-8 h-8 rounded-full object-cover"
+//                                                         onError={(e) => {
+//                                                             (e.target as HTMLImageElement).src = defaultAvatarUrl;
+//                                                         }}
+//                                                     />
+//                                                     <span className="text-gray-700 text-sm">{viewer.name}</span>
+//                                                 </div>
+//                                             ))
+//                                         ) : (
+//                                             <p className="text-gray-500 text-center py-4 text-sm">No views yet.</p>
+//                                         )}
+//                                     </div>
+//                                 </div>
+//                             )}
+//                         </div>
+//                     )} */}
+//                 </div>
+//             </div>
+
+//             {/* Delete Confirmation Modal */}
+//             {showDeleteConfirmModal && (
+//                 <DeleteConfirmationModal
+//                     message="Are you sure you want to delete this status? This action cannot be undone."
+//                     onConfirm={executeDelete}
+//                     onCancel={() => {
+//                         setShowDeleteConfirmModal(false);
+//                         setIsPlaying(true);
+//                     }}
+//                 />
+//             )}
+//         </>
+//     );
+// };
+
+// export default StatusViewer;
+
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -1506,65 +2004,23 @@ import { X, ChevronLeft, ChevronRight, Eye, Trash2, Play, Pause } from 'lucide-r
 import Image from 'next/image';
 import {
     Status,
-    CurrentUserActivityData,
-    ConnectionActivityData,
     User
-} from '../types/activity';
+} from '../types/activity'; // Ensure this path is correct for your types
 
+// Import the DeleteConfirmationModal component
+import DeleteConfirmationModal from './DeleteConfirmationModal'; // Adjust path if necessary
 
-import { fetchUserDetails, markStatusAsViewed, deleteStatus } from '@/utils/api';
-
-interface DeleteConfirmationModalProps {
-    message: string;
-    onConfirm: () => void;
-    onCancel: () => void;
-    title?: string;
-}
-
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
-    message,
-    onConfirm,
-    onCancel,
-    title = 'Confirm Deletion',
-}) => (
-    <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl shadow-2xl w-full max-w-xs sm:max-w-sm overflow-hidden transform transition-opacity duration-300 ease-out animate-scale-in">
-            {title && (
-                <div className="px-6 py-4 text-center">
-                    <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-                </div>
-            )}
-            <div className="px-6 py-2 text-center">
-                <p className="text-gray-700 text-sm">{message}</p>
-            </div>
-            <div className="mt-4 flex border-t border-gray-200">
-                <button
-                    onClick={onCancel}
-                    className="flex-1 px-4 py-3 text-blue-600 font-medium text-center border-r border-gray-200 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors cursor-pointer"
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={onConfirm}
-                    className="flex-1 px-4 py-3 text-red-600 font-medium text-center hover:bg-red-50 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors cursor-pointer"
-                >
-                    Delete
-                </button>
-            </div>
-        </div>
-    </div>
-);
+import { fetchUserDetails, markStatusAsViewed } from '@/utils/api';
+import toast from 'react-hot-toast';
 
 interface StatusViewerProps {
     isOpen: boolean;
     onClose: () => void;
-    user: any; // Or proper type
-    statuses: Status[];
-    currentUserData: CurrentUserActivityData | null;
+    user: any; // Or proper type for the user whose statuses are being viewed
+    statuses: Status[]; // These are the statuses belonging to the 'user' prop
+    currentUserData: { _id: string; name: string; avatarUrl?: string; allActiveStatuses: Status[] } | null; // This is the currently logged-in user
     getFullMediaUrl: (url?: string) => string;
     defaultAvatarUrl: string;
-    markAsViewed: (statusId: string) => void; // ✅ Add this line
-    fetchUserDetails: (userIds: string[]) => Promise<User[]>;
     onDeleteStatus: (statusId: string) => Promise<void>;
 }
 
@@ -1576,6 +2032,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
     currentUserData,
     getFullMediaUrl,
     defaultAvatarUrl,
+    onDeleteStatus,
 }) => {
     const [statuses, setStatuses] = useState<Status[]>(initialStatuses);
     const [currentStatusIndex, setCurrentStatusIndex] = useState(0);
@@ -1586,23 +2043,28 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
     const [fetchingViewedBy, setFetchingViewedBy] = useState(false);
     const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+
     const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+    // New state for controlling the visibility of the play/pause button
+    const [showPlayPauseButton, setShowPlayPauseButton] = useState(true);
+    const playPauseButtonTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
 
     const currentStatus = statuses[currentStatusIndex];
     const isOwnerOfCurrentStatus = currentUserData?._id === user._id;
 
     const viewedStatusIdsRef = useRef<Set<string>>(new Set());
 
-    // Reset statuses when prop changes
     useEffect(() => {
         setStatuses(initialStatuses);
         setCurrentStatusIndex(0);
         setProgress(0);
         viewedStatusIdsRef.current.clear();
         setIsPlaying(true);
+        setViewedByDropdownOpen(false);
+        setShowPlayPauseButton(true); // Ensure button is visible when opening for a new set of statuses
     }, [initialStatuses]);
 
-    // Update status viewedBy locally
     const updateStatusViewsLocally = useCallback((statusId: string, newViewedBy: string[]) => {
         setStatuses((prev) =>
             prev.map((status) =>
@@ -1611,7 +2073,6 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
         );
     }, []);
 
-    // Mark status as viewed on backend + update local state
     const handleMarkAsViewed = useCallback(
         async (statusId: string) => {
             if (isOwnerOfCurrentStatus || viewedStatusIdsRef.current.has(statusId)) return;
@@ -1634,7 +2095,6 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
         [isOwnerOfCurrentStatus, updateStatusViewsLocally]
     );
 
-    // On open, mark first status viewed
     useEffect(() => {
         if (isOpen && statuses.length) {
             setCurrentStatusIndex(0);
@@ -1642,6 +2102,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
             setIsPlaying(true);
             setViewedByDropdownOpen(false);
             viewedStatusIdsRef.current.clear();
+            setShowPlayPauseButton(true); // Start visible for a new session
 
             setTimeout(() => {
                 handleMarkAsViewed(statuses[0]._id);
@@ -1665,6 +2126,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 : 5000;
 
         if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+
         const startTime = Date.now() - (progress / 100) * duration;
 
         progressIntervalRef.current = setInterval(() => {
@@ -1682,7 +2144,6 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                     setIsPlaying(true);
                     handleMarkAsViewed(statuses[currentStatusIndex + 1]._id);
                 } else {
-                    // Don't auto-close. Instead, stop at the last status.
                     setIsPlaying(false);
                     setProgress(100);
                 }
@@ -1695,15 +2156,15 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 progressIntervalRef.current = null;
             }
         };
-    }, [isOpen, isPlaying, currentStatus, currentStatusIndex, statuses, onClose, progress, handleMarkAsViewed]);
+    }, [isOpen, isPlaying, currentStatus, currentStatusIndex, statuses, progress, handleMarkAsViewed]);
 
-    // Navigation handlers
     const handleNextStatus = useCallback(() => {
-        setIsPlaying(false);
+        setIsPlaying(false); // Pause current status playback temporarily
         if (currentStatusIndex < statuses.length - 1) {
             setCurrentStatusIndex((i) => i + 1);
             setProgress(0);
-            setIsPlaying(true);
+            setIsPlaying(true); // Start playing the new status
+            setShowPlayPauseButton(true); // Show button for new status
             handleMarkAsViewed(statuses[currentStatusIndex + 1]._id);
         } else {
             onClose();
@@ -1711,17 +2172,25 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
     }, [currentStatusIndex, statuses, onClose, handleMarkAsViewed]);
 
     const handlePrevStatus = useCallback(() => {
-        setIsPlaying(false);
+        setIsPlaying(false); // Pause current status playback temporarily
         if (currentStatusIndex > 0) {
             setCurrentStatusIndex((i) => i - 1);
             setProgress(0);
-            setIsPlaying(true);
+            setIsPlaying(true); // Start playing the new status
+            setShowPlayPauseButton(true); // Show button for new status
         }
     }, [currentStatusIndex]);
 
-    const togglePlayPause = useCallback(() => setIsPlaying((p) => !p), []);
+    const togglePlayPause = useCallback(() => {
+        setIsPlaying((p) => !p);
+        setShowPlayPauseButton(true); // Always show button immediately on toggle
+        // Clear any existing timeout for auto-hide
+        if (playPauseButtonTimeoutRef.current) {
+            clearTimeout(playPauseButtonTimeoutRef.current);
+            playPauseButtonTimeoutRef.current = null;
+        }
+    }, []);
 
-    // For video progress updates
     const handleVideoProgress = useCallback(() => {
         if (!videoRef.current || currentStatus?.mediaType !== 'video') return;
 
@@ -1729,15 +2198,15 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
         const videoCurrentTime = videoRef.current.currentTime;
         const newProgress = (videoCurrentTime / videoDuration) * 100;
         setProgress(newProgress);
+    }, [currentStatus]);
 
-        if (videoCurrentTime >= videoDuration) {
-            if (currentStatusIndex < statuses.length - 1) {
-                handleNextStatus();
-            } else {
-                onClose();
-            }
+    const handleVideoEnded = useCallback(() => {
+        if (currentStatusIndex < statuses.length - 1) {
+            handleNextStatus();
+        } else {
+            onClose();
         }
-    }, [currentStatus, currentStatusIndex, statuses.length, handleNextStatus, onClose]);
+    }, [currentStatusIndex, statuses.length, handleNextStatus, onClose]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -1754,7 +2223,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 case 'Escape':
                     onClose();
                     break;
-                case ' ':
+                case ' ': // Spacebar for play/pause
                     e.preventDefault();
                     togglePlayPause();
                     break;
@@ -1765,27 +2234,29 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
         return () => window.removeEventListener('keydown', handler);
     }, [isOpen, handleNextStatus, handlePrevStatus, onClose, togglePlayPause]);
 
-    // Play/pause video on isPlaying change
+    // Play/pause video when isPlaying state changes
     useEffect(() => {
         if (!videoRef.current) return;
         if (isPlaying) {
-            videoRef.current.play().catch(() => { });
+            videoRef.current.play().catch((e) => console.error("Video play error:", e));
         } else {
             videoRef.current.pause();
         }
-    }, [isPlaying, currentStatus]);
+    }, [isPlaying, currentStatus, currentStatusIndex]);
 
+    // Handle media (image/video) loaded event
     const handleMediaLoaded = useCallback(() => {
         setIsPlaying(true);
-        if (currentStatus?.mediaType === 'image') {
-            setProgress(0);
-        } else if (videoRef.current) {
+        setProgress(0);
+
+        if (currentStatus?.mediaType === 'video' && videoRef.current) {
             videoRef.current.currentTime = 0;
-            videoRef.current.play().catch(() => { });
+            videoRef.current.play().catch((e) => console.error("Video play error on load:", e));
         }
+        setShowPlayPauseButton(true); // Show button when new media loads
     }, [currentStatus]);
 
-    // Fetch viewedBy users for dropdown
+    // Fetch viewedBy users for dropdown (only if current user is owner)
     const fetchViewedByUsers = useCallback(async () => {
         if (!currentStatus?.viewedBy || currentStatus.viewedBy.length === 0) {
             setViewedByUsers([]);
@@ -1794,9 +2265,9 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
 
         setFetchingViewedBy(true);
         try {
-            const res = await fetchUserDetails(currentStatus.viewedBy);
-            if (res.success && Array.isArray(res.users)) {
-                setViewedByUsers(res.users);
+            const users = await fetchUserDetails(currentStatus.viewedBy);
+            if (Array.isArray(users)) {
+                setViewedByUsers(users);
             } else {
                 setViewedByUsers([]);
             }
@@ -1814,49 +2285,78 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
             setIsPlaying(false);
         } else {
             setViewedByUsers([]);
-            setIsPlaying(true);
-        }
-    }, [viewedByDropdownOpen, currentStatus, fetchViewedByUsers]);
-
-    // Delete modal controls
-    const confirmDelete = useCallback(() => {
-        setShowDeleteConfirmModal(true);
-        setIsPlaying(false);
-    }, []);
-
-    const executeDelete = useCallback(async () => {
-        if (!currentStatus) return;
-
-        try {
-            await deleteStatus(currentStatus._id);
-            setShowDeleteConfirmModal(false);
-
-            const filtered = statuses.filter((s) => s._id !== currentStatus._id);
-
-            if (filtered.length > 0) {
-                const newIndex = currentStatusIndex >= filtered.length ? filtered.length - 1 : currentStatusIndex;
-                setStatuses(filtered);
-                setCurrentStatusIndex(newIndex);
-                setProgress(0);
+            if (!showDeleteConfirmModal) {
                 setIsPlaying(true);
-                handleMarkAsViewed(filtered[newIndex]._id);
-            } else {
-                onClose();
             }
-        } catch (e) {
-            console.error("Delete error:", e);
-            alert("Failed to delete status. Try again.");
-            setShowDeleteConfirmModal(false);
-            setIsPlaying(true);
         }
-    }, [currentStatus, statuses, currentStatusIndex, handleMarkAsViewed, onClose]);
+    }, [viewedByDropdownOpen, currentStatus, fetchViewedByUsers, showDeleteConfirmModal]);
+
+    // Auto-hide Play/Pause button logic
+    useEffect(() => {
+        if (isPlaying && showPlayPauseButton) {
+            if (playPauseButtonTimeoutRef.current) {
+                clearTimeout(playPauseButtonTimeoutRef.current);
+            }
+            playPauseButtonTimeoutRef.current = setTimeout(() => {
+                setShowPlayPauseButton(false);
+            }, 2000); // Hide after 2 seconds of playing
+        } else if (!isPlaying) {
+            // If paused, always show the button
+            setShowPlayPauseButton(true);
+            if (playPauseButtonTimeoutRef.current) {
+                clearTimeout(playPauseButtonTimeoutRef.current);
+                playPauseButtonTimeoutRef.current = null;
+            }
+        }
+    }, [isPlaying, showPlayPauseButton, currentStatusIndex]); // Re-evaluate when status changes
+
+    // Mouse movement to show play/pause button
+    const handleMouseMove = useCallback(() => {
+        if (!isPlaying) return; // Only apply if playing
+
+        setShowPlayPauseButton(true);
+        if (playPauseButtonTimeoutRef.current) {
+            clearTimeout(playPauseButtonTimeoutRef.current);
+        }
+        playPauseButtonTimeoutRef.current = setTimeout(() => {
+            setShowPlayPauseButton(false);
+        }, 2000); // Re-hide after 2 seconds of no activity
+    }, [isPlaying]);
+
+
+    const handleDeleteClick = useCallback((event: React.MouseEvent) => {
+        event.stopPropagation();
+        if (currentStatus) {
+            setShowDeleteConfirmModal(true);
+            setIsPlaying(false);
+        }
+    }, [currentStatus]);
+
+    const handleConfirmDelete = useCallback(async () => {
+        if (currentStatus) {
+            setShowDeleteConfirmModal(false);
+            await onDeleteStatus(currentStatus._id);
+            toast.success('Status will be deleted.')
+        } else {
+            toast.error('Status not be deleted due to some reasons.')
+        }
+    }, [currentStatus, onDeleteStatus]);
+
+    const handleCancelDelete = useCallback(() => {
+        setShowDeleteConfirmModal(false);
+        setIsPlaying(true);
+    }, []);
 
     if (!isOpen || !currentStatus) return null;
 
     return (
         <>
-            <div className="fixed inset-0 bg-black bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-40 p-1 md:p-4">
-                <div className="relative w-full max-w-2xl h-full max-h-[85vh] bg-gray-900 rounded-lg flex flex-col overflow-hidden">
+            <div
+                className="fixed inset-0 bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-40 p-1 md:p-4"
+                onMouseMove={handleMouseMove} // Add mouse move listener to show button
+                onClick={togglePlayPause} // Toggle play/pause on click
+            >
+                <div className="relative w-full max-w-2xl h-full max-h-[85vh] bg-black rounded-lg flex flex-col overflow-hidden">
 
                     {/* Close button */}
                     <button
@@ -1884,13 +2384,28 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                     {/* Delete button for owner */}
                     {isOwnerOfCurrentStatus && (
                         <button
-                            onClick={confirmDelete}
+                            onClick={handleDeleteClick}
                             aria-label="Delete status"
-                            className="absolute bottom-4 right-4 z-50 p-2 rounded-full bg-red-600 bg-opacity-70 text-white hover:bg-red-700 transition-colors"
+                            className="absolute cursor-pointer bottom-4 left-1/2 z-50 p-2 rounded-full bg-red-600 bg-opacity-70 text-white hover:bg-red-700 transition-colors"
                         >
-                            <Trash2 size={18} />
+                            <Trash2 size={16} />
                         </button>
                     )}
+
+                    {/* Play/Pause Button - Conditionally Rendered and Positioned */}
+                    {showPlayPauseButton && ( // Only render if showPlayPauseButton is true
+                        <div className="absolute left-7/9 top-9 -translate-x-1/2 -translate-y-1/2 z-50">
+                            <button
+                                onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
+                                aria-label={isPlaying ? 'Pause' : 'Play'}
+                                className="p-3 rounded-full text-white hover:bg-opacity-75 transition-opacity duration-200"
+                            >
+                                {/* Corrected icon logic: if playing show Pause, otherwise show Play */}
+                                {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+                            </button>
+                        </div>
+                    )}
+
 
                     {/* Progress bars */}
                     <div className="absolute top-0 left-0 right-0 z-30 flex space-x-1 px-4 pt-2">
@@ -1907,10 +2422,10 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                     </div>
 
                     {/* Media content */}
-                    <div className="flex-1 flex items-center justify-center w-full h-full relative cursor-pointer" onClick={togglePlayPause}>
+                    <div className="flex-1 flex items-center justify-center w-full h-full relative"> {/* Removed onClick from here as it's now on the parent div */}
                         {currentStatus.mediaType === 'image' ? (
                             <Image
-                                src={currentStatus.mediaUrl}
+                                src={getFullMediaUrl(currentStatus.mediaUrl)}
                                 alt="Status image"
                                 fill
                                 className="object-contain"
@@ -1920,27 +2435,15 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                         ) : (
                             <video
                                 ref={videoRef}
-                                src={currentStatus.mediaUrl}
+                                src={getFullMediaUrl(currentStatus.mediaUrl)}
                                 className="object-contain w-full h-full"
                                 onLoadedData={handleMediaLoaded}
                                 onTimeUpdate={handleVideoProgress}
-                                onEnded={handleNextStatus}
-                                autoPlay
+                                onEnded={handleVideoEnded}
+                                autoPlay={isPlaying} // Control autoplay based on isPlaying state
                                 playsInline
                                 preload="auto"
                             />
-                        )}
-
-                        {!isPlaying && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
-                                    aria-label={isPlaying ? 'Pause' : 'Play'}
-                                    className="p-4 rounded-full bg-black bg-opacity-50 text-white hover:bg-opacity-75 transition-colors cursor-pointer"
-                                >
-                                    <Play size={24} />
-                                </button>
-                            </div>
                         )}
                     </div>
 
@@ -1968,7 +2471,7 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                     {/* {isOwnerOfCurrentStatus && (
                         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
                             <button
-                                onClick={() => setViewedByDropdownOpen((v) => !v)}
+                                onClick={(e) => { e.stopPropagation(); setViewedByDropdownOpen((v) => !v); }}
                                 className="flex items-center space-x-2 cursor-pointer text-white bg-black bg-opacity-50 px-4 py-2 rounded-full hover:bg-opacity-75 transition-colors"
                             >
                                 <Eye size={16} />
@@ -2014,15 +2517,12 @@ const StatusViewer: React.FC<StatusViewerProps> = ({
                 </div>
             </div>
 
-            {/* Delete Confirmation Modal */}
             {showDeleteConfirmModal && (
                 <DeleteConfirmationModal
-                    message="Are you sure you want to delete this status? This action cannot be undone."
-                    onConfirm={executeDelete}
-                    onCancel={() => {
-                        setShowDeleteConfirmModal(false);
-                        setIsPlaying(true);
-                    }}
+                    title="Delete Status"
+                    message="Are you sure you want to permanently delete this status? This action cannot be undone."
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
                 />
             )}
         </>

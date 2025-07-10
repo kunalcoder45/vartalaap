@@ -75,7 +75,7 @@ export const metadata: Metadata = {
         // --- IMPORTANT CORRECTION: Use a high-quality image, NOT favicon.ico for OG images ---
         // Create an image like 'vartalaap-og-image.jpg' (1200x630px recommended)
         // and place it in your 'public' folder. Then update the URL below.
-        url: 'https://vartalaap-sable.vercel.app/favicon.ico', // !!! IMPORTANT: Replace with your actual high-quality image URL
+        url: 'https://vartalaap-sable.vercel.app/favicon.ico',
         width: 1200, // Recommended width for OG images
         height: 630, // Recommended height for OG images
         alt: 'Vartalaap Social Media App - Connect and Share',
@@ -92,14 +92,14 @@ export const metadata: Metadata = {
   //   card: 'summary_large_image', // Displays a prominent image
   //   title: 'Vartalaap - Connect, Share & Discover Your Community',
   //   description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-  //   creator: '@VartalaapApp', // !!! IMPORTANT: Replace with your app's Twitter handle (e.g., @VartalaapApp)
-  //   images: ['https://vartalaap-sable.vercel.app/vartalaap-twitter-image.jpg'], // !!! IMPORTANT: Replace with a high-quality image URL optimized for Twitter (e.g., 1200x675px)
+  //   creator: '@VartalaapApp',
+  //   images: ['https://vartalaap-sable.vercel.app/vartalaap-twitter-image.jpg'],
   // },
 
   // --- UNCOMMENTED & FILLED: Canonical URL ---
   // Helps prevent duplicate content issues if your site is accessible via multiple URLs.
   alternates: {
-    canonical: 'https://vartalaap-sable.vercel.app', // !!! IMPORTANT: Replace with your actual canonical domain
+    canonical: 'https://vartalaap-sable.vercel.app',
   },
 };
 
