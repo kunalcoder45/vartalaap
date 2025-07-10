@@ -1168,8 +1168,6 @@
 
 
 
-
-
 "use client";
 
 import React, {
@@ -1182,24 +1180,44 @@ import React, {
 } from "react";
 import Peer from "simple-peer";
 import io from "socket.io-client";
-import type { Socket } from "socket.io-client";
-import { useAuth } from "../../components/AuthProvider";
+import { useAuth } from "../../components/AuthProvider"; // Adjust path as needed
 
+// Define interfaces for call information
+interface CallInfo {
+  callerId: string; // Firebase UID of the caller
+  callerName: string;
+  callerAvatar: string | null;
+  signal: any; // Peer signal data
+  isAudioCall: boolean; // True for audio-only, false for video
+}
+
+interface CallingInfo {
+  targetUserId: string; // Firebase UID of the person being called
+  targetUserName: string;
+  targetUserAvatar: string | null;
+  isAudioCall: boolean; // True for audio-only, false for video
+}
+
+// Update CallContextType to include missing properties
 interface CallContextType {
   callAccepted: boolean;
   callEnded: boolean;
   isReceivingCall: boolean;
-  callerSignal: any;
+  callInfo: CallInfo | null; // Added
+  isOutgoingCall: boolean; // Added
+  callingInfo: CallingInfo | null; // Added
+  // callerSignal: any; // No longer needed here, now part of callInfo
   stream: MediaStream | null;
   remoteStream: MediaStream | null;
 
-  startCall: (userId: string, callType: "audio" | "video") => void;
-  callUser: (userId: string, video: boolean) => void;
+  startCall: (userId: string, targetUserName: string, targetUserAvatar: string | null, callType: "audio" | "video") => void; // Updated signature
+  // callUser: (userId: string, video: boolean) => void; // Removed, replaced by startCall for cleaner API
   answerCall: () => void;
-  leaveCall: () => void;
+  declineCall: () => void; // Used for declining incoming and ending outgoing before accepted
+  endCall: () => void; // Used for ending an active call (renamed from leaveCall)
   toggleMute: () => void;
   toggleVideo: () => void;
-
+  isCallActive: boolean;
   muted: boolean;
   videoOff: boolean;
   isInCall: boolean;
@@ -1217,7 +1235,9 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const [callAccepted, setCallAccepted] = useState(false);
   const [callEnded, setCallEnded] = useState(false);
   const [isReceivingCall, setIsReceivingCall] = useState(false);
-  const [callerSignal, setCallerSignal] = useState<any>(null);
+  const [callInfo, setCallInfo] = useState<CallInfo | null>(null); // Added
+  const [isOutgoingCall, setIsOutgoingCall] = useState(false); // Added
+  const [callingInfo, setCallingInfo] = useState<CallingInfo | null>(null); // Added
 
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
@@ -1225,7 +1245,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
   const [muted, setMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
 
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const peerRef = useRef<Peer.Instance | null>(null);
   const userVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -1246,12 +1266,34 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         socketRef.current?.emit("join", mongoUser._id);
       });
 
-      socketRef.current.on("callUser", (data: any) => {
+      // Listener for incoming calls
+      socketRef.current.on("callUser", (data: {
+        signal: any,
+        from: string,
+        name: string,
+        avatar: string | null, // Assuming avatar is sent
+        isAudioCall: boolean // Assuming call type is sent
+      }) => {
+        console.log("Receiving call from:", data.name, "Is audio call:", data.isAudioCall);
         setIsReceivingCall(true);
-        setCallerSignal(data.signal);
+        setCallInfo({
+          callerId: data.from,
+          callerName: data.name,
+          callerAvatar: data.avatar,
+          signal: data.signal,
+          isAudioCall: data.isAudioCall,
+        });
       });
 
+      // Listener for when the call is accepted by the other party
+      socketRef.current.on("callAccepted", (signal: any) => {
+        setCallAccepted(true);
+        peerRef.current?.signal(signal);
+      });
+
+      // Listener for when the call ends (either hung up by self or other party)
       socketRef.current.on("callEnded", () => {
+        console.log("Call ended by other party or server.");
         endCallCleanup();
       });
     };
@@ -1263,30 +1305,48 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
       }
+      endCallCleanup(); // Ensure cleanup on unmount
     };
-  }, [user, mongoUser, getIdToken]);
+  }, [user, mongoUser, getIdToken]); // Dependencies
 
-  const getUserMedia = async (video: boolean) => {
+  const getUserMedia = async (video: boolean, audio: boolean = true) => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video,
-        audio: true,
+        video: video ? { width: 1280, height: 720 } : false, // Request specific video resolution or false
+        audio: audio,
       });
       setStream(mediaStream);
       if (userVideoRef.current) {
         userVideoRef.current.srcObject = mediaStream;
+        userVideoRef.current.play(); // Start playing local video
       }
       return mediaStream;
     } catch (err) {
       console.error("Error accessing media devices", err);
+      // alert("Error accessing microphone/camera. Please check permissions."); // Provide user feedback
       return null;
     }
   };
 
-  const callUser = async (idToCall: string, video: boolean) => {
-    if (!socketRef.current) return;
-    const mediaStream = await getUserMedia(video);
-    if (!mediaStream) return;
+  const callUser = async (idToCall: string, targetUserName: string, targetUserAvatar: string | null, isVideoCall: boolean) => {
+    if (!socketRef.current || !mongoUser) return; // Ensure mongoUser is available
+
+    console.log("Initiating call to:", targetUserName, " (Video:", isVideoCall, ")");
+
+    setIsOutgoingCall(true);
+    setCallingInfo({
+      targetUserId: idToCall,
+      targetUserName: targetUserName,
+      targetUserAvatar: targetUserAvatar,
+      isAudioCall: !isVideoCall, // If not video, it's audio
+    });
+
+    const mediaStream = await getUserMedia(isVideoCall);
+    if (!mediaStream) {
+      setIsOutgoingCall(false); // Reset if media access fails
+      setCallingInfo(null);
+      return;
+    }
 
     peerRef.current = new Peer({
       initiator: true,
@@ -1300,6 +1360,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         signalData,
         from: mongoUser._id,
         name: mongoUser.name,
+        avatar: mongoUser.avatarUrl, // Send caller's avatar
+        isAudioCall: !isVideoCall, // Send call type
       });
     });
 
@@ -1307,27 +1369,33 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       setRemoteStream(remoteStream);
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream;
+        remoteVideoRef.current.play(); // Start playing remote video
       }
     });
 
-    socketRef.current.on("callAccepted", (signal: any) => {
-      setCallAccepted(true);
-      peerRef.current?.signal(signal);
+    peerRef.current.on("close", () => {
+      console.log("Peer connection closed during outgoing call setup.");
+      endCallCleanup();
     });
 
-    socketRef.current.on("callEnded", () => {
+    peerRef.current.on("error", (err) => {
+      console.error("Peer error during outgoing call:", err);
       endCallCleanup();
     });
   };
 
-  const answerCall = async () => {
-    if (!socketRef.current) return;
 
-    const mediaStream = await getUserMedia(!videoOff);
+  const answerCall = async () => {
+    if (!socketRef.current || !callInfo || !mongoUser) return; // Ensure callInfo and mongoUser are available
+
+    console.log("Answering call from:", callInfo.callerName, " (Video:", !callInfo.isAudioCall, ")");
+
+    const mediaStream = await getUserMedia(!callInfo.isAudioCall); // Use video setting from incoming call
     if (!mediaStream) return;
 
     setCallAccepted(true);
-    setIsReceivingCall(false);
+    setIsReceivingCall(false); // Clear incoming call state
+    setCallInfo(null); // Clear call info once answered
 
     peerRef.current = new Peer({
       initiator: false,
@@ -1338,7 +1406,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     peerRef.current.on("signal", (signal) => {
       socketRef.current?.emit("answerCall", {
         signal,
-        to: mongoUser._id,
+        to: callInfo.callerId, // Send signal back to the caller
+        from: mongoUser._id, // Identify who is answering
       });
     });
 
@@ -1346,58 +1415,124 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
       setRemoteStream(remoteStream);
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream;
+        remoteVideoRef.current.play();
       }
     });
 
-    peerRef.current.signal(callerSignal);
+    peerRef.current.on("close", () => {
+      console.log("Peer connection closed after answering.");
+      endCallCleanup();
+    });
+
+    peerRef.current.on("error", (err) => {
+      console.error("Peer error after answering call:", err);
+      endCallCleanup();
+    });
+
+    peerRef.current.signal(callInfo.signal); // Use the signal received from the caller
   };
 
-  const leaveCall = () => {
+  const declineCall = () => {
     if (!socketRef.current) return;
-    socketRef.current.emit("endCall", { to: mongoUser._id });
+
+    // If receiving call, send decline to caller
+    if (isReceivingCall && callInfo) {
+      socketRef.current.emit("declineCall", { to: callInfo.callerId });
+    }
+    // If outgoing call not yet accepted, just reset state
+    else if (isOutgoingCall && callingInfo) {
+      socketRef.current.emit("cancelCall", { to: callingInfo.targetUserId });
+    }
+
+    console.log("Call declined/canceled.");
+    endCallCleanup();
+  };
+
+
+  // Renamed from leaveCall to endCall as per CallUIWrapper usage
+  const endCall = () => {
+    if (!socketRef.current) return;
+
+    // Inform the other party that the call is ending
+    if (callAccepted && remoteStream && peerRef.current) {
+      // Determine the ID of the person we're talking to
+      let partnerId = '';
+      if (callingInfo) partnerId = callingInfo.targetUserId;
+      else if (callInfo) partnerId = callInfo.callerId;
+
+      if (partnerId) {
+        socketRef.current.emit("endCall", { to: partnerId });
+      }
+    } else if (isOutgoingCall && callingInfo) {
+      // If outgoing call was placed but not yet accepted
+      socketRef.current.emit("cancelCall", { to: callingInfo.targetUserId });
+    } else if (isReceivingCall && callInfo) {
+      // If incoming call was not accepted but rejected
+      socketRef.current.emit("declineCall", { to: callInfo.callerId });
+    }
+
+    console.log("Call ended by user action.");
     endCallCleanup();
   };
 
   const endCallCleanup = () => {
+    console.log("Performing end call cleanup...");
     setCallAccepted(false);
-    setCallEnded(true);
+    setCallEnded(true); // Mark call as ended
     setIsReceivingCall(false);
-    setCallerSignal(null);
-    setRemoteStream(null);
+    setCallInfo(null);
+    setIsOutgoingCall(false); // Reset outgoing state
+    setCallingInfo(null); // Reset calling info
 
     if (peerRef.current) {
-      peerRef.current.destroy();
+      peerRef.current.destroy(); // Destroy the peer connection
       peerRef.current = null;
     }
 
     if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+      stream.getTracks().forEach((track) => track.stop()); // Stop local media tracks
       setStream(null);
     }
+    setRemoteStream(null); // Clear remote stream
+
+    setMuted(false); // Reset mute state
+    setVideoOff(false); // Reset video off state
   };
+
 
   const toggleMute = () => {
     if (!stream) return;
-    stream.getAudioTracks().forEach((track) => {
-      track.enabled = !track.enabled;
-      setMuted(!track.enabled);
-    });
+    const audioTracks = stream.getAudioTracks();
+    if (audioTracks.length > 0) {
+      const newMutedState = !audioTracks[0].enabled;
+      audioTracks.forEach((track) => {
+        track.enabled = newMutedState;
+      });
+      setMuted(!newMutedState); // Invert because muted means track.enabled is false
+    }
   };
 
   const toggleVideo = () => {
     if (!stream) return;
-    stream.getVideoTracks().forEach((track) => {
-      track.enabled = !track.enabled;
-      setVideoOff(!track.enabled);
-    });
+    const videoTracks = stream.getVideoTracks();
+    if (videoTracks.length > 0) {
+      const newVideoOffState = !videoTracks[0].enabled;
+      videoTracks.forEach((track) => {
+        track.enabled = newVideoOffState;
+      });
+      setVideoOff(!newVideoOffState); // Invert because videoOff means track.enabled is false
+    }
   };
 
   // Wrapper for chatHeader style startCall(userId, callType)
-  const startCall = (userId: string, callType: "audio" | "video") => {
-    callUser(userId, callType === "video");
+  // This function is what CallUIWrapper (and other components) will use to initiate a call
+  const startCall = (userId: string, targetUserName: string, targetUserAvatar: string | null, callType: "audio" | "video") => {
+    callUser(userId, targetUserName, targetUserAvatar, callType === "video");
   };
 
+  // Determine if a call is currently active (accepted and not ended)
   const isInCall = callAccepted && !callEnded;
+
 
   return (
     <CallContext.Provider
@@ -1405,17 +1540,20 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         callAccepted,
         callEnded,
         isReceivingCall,
-        callerSignal,
+        callInfo, // Provided
+        isOutgoingCall, // Provided
+        callingInfo, // Provided
         stream,
         remoteStream,
         startCall,
-        callUser,
         answerCall,
-        leaveCall,
+        declineCall,
+        endCall, // Renamed from leaveCall
         toggleMute,
         toggleVideo,
         muted,
         videoOff,
+        isCallActive: isInCall,
         isInCall,
       }}
     >
@@ -1426,14 +1564,14 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         ref={userVideoRef}
         autoPlay
         playsInline
-        muted
-        style={{ display: "none" }}
+        muted // Mute local video to prevent echo
+        style={{ display: isInCall ? "block" : "none", maxWidth: "200px", border: "1px solid red" }} // Show only when in call
       />
       <video
         ref={remoteVideoRef}
         autoPlay
         playsInline
-        style={{ display: "none" }}
+        style={{ display: isInCall ? "block" : "none", maxWidth: "200px", border: "1px solid blue" }} // Show only when in call
       />
     </CallContext.Provider>
   );
@@ -1441,6 +1579,6 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
 export const useCall = () => {
   const context = useContext(CallContext);
-  if (!context) throw new Error("useCall must be inside CallProvider");
+  if (!context) throw new Error("useCall must be used within a CallProvider");
   return context;
 };

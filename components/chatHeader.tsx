@@ -280,7 +280,6 @@
 
 
 
-
 'use client';
 
 import React, { FC, useState, useRef, useEffect } from 'react';
@@ -407,7 +406,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({
       alert('Already in a call');
       return;
     }
-    startCall(chatUser._id, 'audio');
+    // Corrected: Passing all 4 required arguments
+    startCall(chatUser._id, chatUser.name || chatUser.username, chatUser.avatarUrl || null, 'audio');
   };
 
   // Video call button handler
@@ -416,7 +416,8 @@ const ChatHeader: FC<ChatHeaderProps> = ({
       alert('Already in a call');
       return;
     }
-    startCall(chatUser._id, 'video');
+    // Corrected: Passing all 4 required arguments
+    startCall(chatUser._id, chatUser.name || chatUser.username, chatUser.avatarUrl || null, 'video');
   };
 
   return (

@@ -458,7 +458,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect, ReactNode } from "react";
 import Peer from "simple-peer";
 import io from "socket.io-client";
-import type { Socket } from "socket.io-client";
 import { useAuth } from "../components/AuthProvider";
 
 interface CallContextType {
@@ -507,7 +506,7 @@ export const CallProvider = ({
   const [muted, setMuted] = useState(false);
   const [videoOff, setVideoOff] = useState(false);
 
-  const socketRef = useRef<Socket | null>(null);
+   const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const peerRef = useRef<Peer.Instance | null>(null);
 
   useEffect(() => {

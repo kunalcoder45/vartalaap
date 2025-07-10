@@ -448,7 +448,6 @@
 //     );
 // }
 
-
 'use client';
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
@@ -465,7 +464,7 @@ import { ArrowLeft, Menu } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api'; // Corrected localhost to render.com for consistency based on previous output
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://vartalaap-r36o.onrender.com/api';
 
 interface Post {
     _id: string;
@@ -499,13 +498,12 @@ interface UserType {
     username?: string;
 }
 
+// REMOVED 'id' and 'token' as they are not needed as props
 interface UserProfilePostsPageProps {
     uid: string; // This is firebaseUid
-    id: string; // This is mongoId
-    token: string; // This token might not be directly passed via props from Next.js dynamic routes
 }
 
-export default function UserProfilePostsPage({ uid: firebaseUid, id: mongoId, token: token }: UserProfilePostsPageProps) {
+export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePostsPageProps) {
     const { user: currentUser, getIdToken } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
@@ -519,7 +517,6 @@ export default function UserProfilePostsPage({ uid: firebaseUid, id: mongoId, to
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const loadingBarRef = useRef<any>(null);
 
-    // --- NEW STATE FOR MODAL ---
     const [isConnectionsModalOpen, setIsConnectionsModalOpen] = useState(false);
 
     const toggleSidebar = useCallback(() => {
@@ -776,7 +773,7 @@ export default function UserProfilePostsPage({ uid: firebaseUid, id: mongoId, to
                         `}
                         aria-label="Toggle sidebar"
                     >
-                        <Menu size={24} /> {/* Ensure you have Menu icon from lucide-react */}
+                        <Menu size={24} />
                     </button>
 
                     {/* Overlay for mobile view when sidebar is open */}
@@ -915,7 +912,6 @@ export default function UserProfilePostsPage({ uid: firebaseUid, id: mongoId, to
                 <Toaster />
 
                 {/* Connections Modal */}
-                {/* Ensure firebaseUid is passed correctly from your page props/params */}
                 <ConnectionsModal
                     firebaseUid={firebaseUid}
                     isOpen={isConnectionsModalOpen}

@@ -243,3 +243,36 @@
 // };
 
 // export default CallScreen;
+
+
+// components/chat/CallScreen.tsx
+'use client'; // If it's a client component
+
+import React from 'react';
+// import any other necessary components or hooks here
+
+interface CallScreenProps {
+  targetName: string;
+  targetAvatar: string | null;
+  // Add other props relevant to your CallScreen component (e.g., onEndCall, mediaStream, etc.)
+}
+
+const CallScreen: React.FC<CallScreenProps> = ({ targetName, targetAvatar }) => {
+  // Your CallScreen logic and UI here
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center text-white z-50">
+      <div className="text-center">
+        {targetAvatar && (
+          <img src={targetAvatar} alt={targetName} className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+        )}
+        <h2 className="text-3xl font-bold mb-2">{targetName}</h2>
+        <p className="text-xl">Call in progress...</p>
+        {/* Add video/audio elements, call controls, etc. */}
+      </div>
+      {/* Example: A button to end the call (you'll likely pass an onEndCall prop) */}
+      {/* <button onClick={onEndCall} className="mt-8 px-6 py-3 bg-red-600 rounded-full text-lg">End Call</button> */}
+    </div>
+  );
+};
+
+export default CallScreen; // <--- THIS IS THE CRUCIAL LINE YOU'RE LIKELY MISSING OR MISCONFIGURED
