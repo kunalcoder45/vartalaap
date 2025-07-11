@@ -174,7 +174,7 @@ export default function Register() {
     <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
       <Particles
         particleCount={300}
-        particleColors={['#ffffff']}
+        particleColors={["#ffffff", "#3b82f6", "#8b5cf6"]}
         particleBaseSize={140}
         alphaParticles={true}
         cameraDistance={25}
@@ -188,7 +188,7 @@ export default function Register() {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="z-10 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 md:p-10 w-full max-w-md rounded-xl text-white"
+        className="z-10 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 md:p-10 w-full max-w-md text-white"
       >
         <h1 className="text-2xl font-bold mb-6 text-center">Create Your Account</h1>
 

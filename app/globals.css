@@ -17,6 +17,25 @@
   }
 }
 
+/* styles/globals.css or app/globals.css */
+html,
+body {
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+html,
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .animate-scale-in {
   animation: scaleIn 0.3s ease-out forwards;
 }
