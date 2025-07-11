@@ -240,12 +240,12 @@ export default function Dashboard() {
       <Navbar />
 
       {/* Mobile sidebar toggles */}
-      <div className="md:hidden fixed left-0 py-12 px-1 top-1/2 rounded-r-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
-      <div className="md:hidden fixed right-0 px-1 py-12 top-1/2 rounded-l-md bg-blue-400 z-40 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
+      <div className="md:hidden fixed left-0 py-12 px-1 top-1/2 rounded-r-md bg-blue-400 z-996 cursor-pointer" onClick={() => { setLeftOpen(true); setRightOpen(false); }} />
+      <div className="md:hidden fixed right-0 px-1 py-12 top-1/2 rounded-l-md bg-blue-400 z-996 cursor-pointer" onClick={() => { setRightOpen(true); setLeftOpen(false); }} />
 
       {(leftOpen || rightOpen) && (
         <div
-          className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-30 md:hidden"
+          className="fixed inset-0 bg-opacity-40 backdrop-blur-sm z-996 md:hidden"
           onClick={() => { setLeftOpen(false); setRightOpen(false); }}
         />
       )}
@@ -255,7 +255,7 @@ export default function Dashboard() {
         {/* Left Sidebar */}
         <div className={`
           transition-transform duration-300 ease-in-out
-          fixed left-0 bg-gray-100 shadow-lg z-50
+          fixed left-0 bg-gray-100 shadow-lg z-996
           md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
           ${leftOpen ? 'translate-x-0 w-4/5 top-14 h-full' : '-translate-x-full w-0 invisible top-0'}
         `}>
@@ -274,7 +274,7 @@ export default function Dashboard() {
         {/* Right Sidebar */}
         <div className={`
           transition-transform duration-300 ease-in-out
-          fixed right-0 bg-white shadow-lg z-50
+          fixed right-0 bg-white shadow-lg z-996
           md:relative md:translate-x-0 md:flex md:w-2/6 md:visible md:h-auto md:my-0
           ${rightOpen ? 'translate-x-0 w-5/5 top-14 h-full' : 'translate-x-full w-0 invisible top-0 h-full'}
         `}>
@@ -292,7 +292,7 @@ export default function Dashboard() {
           {showInstallBtn && (
             <button
               onClick={handleInstallClick}
-              className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
+              className="fixed bottom-6 right-6 z-996 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full shadow-lg transition-all duration-300"
             >
               Install App
             </button>
