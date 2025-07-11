@@ -6,24 +6,13 @@ import CallUIWrapper from "../components/CallUIWrapper";
 import ClickSpark from "@/components/ClickSpark";
 import OfflineOverlay from "@/components/OfflineOverlay";
 import { NotificationProvider } from "@/src/contexts/NotificationContext";
-import type { Metadata } from 'next'; // Import Metadata type for type safety
+import type { Metadata } from 'next';
 
-// --- SEO Metadata Configuration ---
-// This 'metadata' object is automatically used by Next.js to generate <head> tags.
-// It's a server-side feature, which is great for SEO as content is available before JS loads.
 export const metadata: Metadata = {
-  // Primary Title: Appears in browser tabs and search results.
-  // Keep it concise and include your main keywords.
   title: 'Vartalaap - Connect, Share & Discover Your Community',
-
-  // Meta Description: A brief, compelling summary of your app.
-  // This often appears under the title in search results.
   description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-
-  // Keywords: A list of relevant terms. While less impactful for Google now,
-  // still useful for other search engines and for internal categorization.
   keywords: [
-    'Vartalaap', // Your app's specific name
+    'Vartalaap',
     'Social media app',
     'Connect with friends',
     'Share photos',
@@ -45,61 +34,55 @@ export const metadata: Metadata = {
     'Content sharing',
     'Friend finder',
     'Group chat',
-    'Live calls', // Based on CallProvider/CallUIWrapper
+    'Live calls',
   ],
-
-  // --- NEW: Robots Meta Tag for Crawler Control ---
-  // This tells search engine crawlers how to interact with your site.
   robots: {
-    index: true, // Allow search engines to index this page
-    follow: true, // Allow search engines to follow links on this page
-    nocache: false, // Allow caching (default, but good to be explicit)
-    googleBot: { // Specific rules for Googlebot
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
       index: true,
       follow: true,
-      noimageindex: false, // Allow Googlebot to index images
-      'max-video-preview': -1, // Allow full video previews
-      'max-snippet': -1, // Allow full text snippets
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-snippet': -1,
     },
   },
-
-  // Open Graph (OG) Tags: Crucial for how your content appears when shared on
-  // social media platforms like Facebook, LinkedIn, etc.
   openGraph: {
     title: 'Vartalaap - Connect, Share & Discover Your Community',
-    description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-    url: 'https://vartalaap-sable.vercel.app', // Your actual app's domain
+    description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations.',
+    url: 'https://vartalaap-sable.vercel.app',
     siteName: 'Vartalaap',
     images: [
       {
-        // --- IMPORTANT CORRECTION: Use a high-quality image, NOT favicon.ico for OG images ---
-        // Create an image like 'vartalaap-og-image.jpg' (1200x630px recommended)
-        // and place it in your 'public' folder. Then update the URL below.
-        url: 'https://vartalaap-sable.vercel.app/favicon.ico',
-        width: 1200, // Recommended width for OG images
-        height: 630, // Recommended height for OG images
+        url: 'https://vartalaap-sable.vercel.app/favicon.png',
+        width: 1200,
+        height: 630,
         alt: 'Vartalaap Social Media App - Connect and Share',
       },
-      // You can add more images if you have different aspect ratios or purposes
     ],
-    locale: 'en_US', // Specify the language and region
-    type: 'website', // Type of content (e.g., website, article, profile)
+    locale: 'en_US',
+    type: 'website',
   },
-
-  // --- UNCOMMENTED & FILLED: Twitter Card Tags ---
-  // Similar to Open Graph, but specifically for Twitter.
-  // twitter: {
-  //   card: 'summary_large_image', // Displays a prominent image
-  //   title: 'Vartalaap - Connect, Share & Discover Your Community',
-  //   description: 'Vartalaap is a vibrant social media app where you can connect with friends, share your moments, discover new communities, and engage in meaningful conversations. Join our online platform for seamless digital connection and community building.',
-  //   creator: '@VartalaapApp',
-  //   images: ['https://vartalaap-sable.vercel.app/vartalaap-twitter-image.jpg'],
-  // },
-
-  // --- UNCOMMENTED & FILLED: Canonical URL ---
-  // Helps prevent duplicate content issues if your site is accessible via multiple URLs.
   alternates: {
     canonical: 'https://vartalaap-sable.vercel.app',
+  },
+  // PWA specific metadata
+  manifest: '/manifest.json',
+  themeColor: '#3B82F6',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Vartalaap',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
   },
 };
 
@@ -107,9 +90,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        {/* PWA Meta Tags */}
         <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#3B82F6" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Vartalaap" />
+        <meta name="msapplication-TileColor" content="#3B82F6" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        
+        {/* Apple Touch Icons */}
         <link rel="apple-touch-icon" href="/favicon.png" />
-        <meta name="theme-color" content="#000000" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/favicon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/favicon.png" />
+        
+        {/* Standard Favicon */}
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
+        
+        {/* Microsoft Tiles */}
+        <meta name="msapplication-TileImage" content="/favicon.png" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
         <AuthProvider>
