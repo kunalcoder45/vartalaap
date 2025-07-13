@@ -8520,26 +8520,6 @@ const ChatWindow: FC<ChatWindowProps> = ({
         [sendTypingStatus]
     );
 
-
-    // const handleNewMessageContentChange = useCallback((content: string) => {
-    //     setNewMessageContent(content);
-
-    //     // Emit 'typing' event when user starts typing
-    //     if (content.length > 0 && typingTimeoutRef.current === null) {
-    //         sendTypingStatus(true);
-    //     }
-
-    //     // Clear previous timeout and set a new one to send 'stopped typing'
-    //     if (typingTimeoutRef.current) {
-    //         clearTimeout(typingTimeoutRef.current);
-    //     }
-    //     typingTimeoutRef.current = setTimeout(() => {
-    //         sendTypingStatus(false);
-    //         typingTimeoutRef.current = null; // Reset ref
-    //     }, 1500); // Send 'stopped typing' after 1.5 seconds of no new input
-    // }, [sendTypingStatus]);
-
-
     // --- Message Selection Handlers ---
     const handleSelectMessage = useCallback((messageId: string) => {
         if (editingMessageId) {
@@ -9105,43 +9085,45 @@ const ChatWindow: FC<ChatWindowProps> = ({
                     currentThemeImage={currentThemeImage}
                     isTyping={isOtherUserTyping}
                 />
-
-                {/* Messages Area */}
-                <MessageList
-                    messages={messages.filter(msg => !msg.isDeleted)}
-                    loading={loadingInitialMessages}
-                    error={error}
-                    currentUserId={currentUserId}
-                    getFullMediaUrl={getFullMediaUrl}
-                    defaultAvatarUrl={defaultAvatarUrl}
-                    onOpenImagePreview={openImagePreview}
-                    selectedMessages={selectedMessages}
-                    onSelectMessage={handleSelectMessage}
-                    onEditMessage={handleEditClick}
-                    editingMessageId={editingMessageId}
-                    backgroundImageUrl={currentThemeImage}
-                    // Pass the uploadingMessage state to MessageList as well if it needs to display temporary messages
-                    uploadingMessage={uploadingMessage}
-                />
-
-                {/* Message Input and Attachment Button */}
-                <ChatInput
-                    newMessageContent={newMessageContent}
-                    setNewMessageContent={handleNewMessageContentChange}
-                    selectedMedia={selectedMedia}
-                    mediaPreviewUrl={mediaPreviewUrl}
-                    removeSelectedMedia={removeSelectedMedia}
-                    error={error}
-                    isEditing={editingMessageId !== null} // Set this correctly based on editingMessageId
-                    editingMessageId={editingMessageId}
-                    sendingMessage={sendingMessage}
-                    isSavingEdit={isSavingEdit}
-                    handleSendMessage={handleSendMessage}
-                    handleSaveEdit={handleSaveEdit}
-                    handleCancelEdit={handleCancelEdit}
-                    handleFileChange={handleFileChange}
-                    uploadingMessage={uploadingMessage}
-                />
+                <div className="flex-1 pt-[64px] overflow-y-auto">
+                    {/* Messages Area */}
+                    <MessageList
+                        messages={messages.filter(msg => !msg.isDeleted)}
+                        loading={loadingInitialMessages}
+                        error={error}
+                        currentUserId={currentUserId}
+                        getFullMediaUrl={getFullMediaUrl}
+                        defaultAvatarUrl={defaultAvatarUrl}
+                        onOpenImagePreview={openImagePreview}
+                        selectedMessages={selectedMessages}
+                        onSelectMessage={handleSelectMessage}
+                        onEditMessage={handleEditClick}
+                        editingMessageId={editingMessageId}
+                        backgroundImageUrl={currentThemeImage}
+                        // Pass the uploadingMessage state to MessageList as well if it needs to display temporary messages
+                        uploadingMessage={uploadingMessage}
+                    />
+                </div>
+                <div className="sticky bottom-0">
+                    {/* Message Input and Attachment Button */}
+                    <ChatInput
+                        newMessageContent={newMessageContent}
+                        setNewMessageContent={handleNewMessageContentChange}
+                        selectedMedia={selectedMedia}
+                        mediaPreviewUrl={mediaPreviewUrl}
+                        removeSelectedMedia={removeSelectedMedia}
+                        error={error}
+                        isEditing={editingMessageId !== null} // Set this correctly based on editingMessageId
+                        editingMessageId={editingMessageId}
+                        sendingMessage={sendingMessage}
+                        isSavingEdit={isSavingEdit}
+                        handleSendMessage={handleSendMessage}
+                        handleSaveEdit={handleSaveEdit}
+                        handleCancelEdit={handleCancelEdit}
+                        handleFileChange={handleFileChange}
+                        uploadingMessage={uploadingMessage}
+                    />
+                </div>
             </div>
 
             {/* Image Preview Modal */}
