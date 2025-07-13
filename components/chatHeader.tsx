@@ -140,7 +140,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
 
   return (
     // <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
-    <div className="fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200 shadow-sm p-4 md:static md:z-auto md:p-4 flex items-center justify-between">
+    <div className="fixed top-0 left-0 right-0 z-996 bg-white border-b border-gray-200 shadow-sm p-4 md:static md:z-auto md:p-4 flex items-center justify-between">
       <div className="flex items-center">
         <button
           onClick={() => {

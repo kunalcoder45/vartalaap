@@ -326,7 +326,7 @@ const Main: React.FC<ActivityBarProps> = ({ userId }) => {
             />
           </div>
         ) : (
-          <div className="fixed inset-0 bg-white z-50 transition-transform animate-slide-in top-30">
+          <div className="fixed inset-0 bg-white z-995 transition-transform animate-slide-in top-30">
             <ChatWindow
               isOpen={isChatWindowOpen}
               onClose={handleCloseChatWindow}

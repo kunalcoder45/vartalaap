@@ -9085,7 +9085,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
                     currentThemeImage={currentThemeImage}
                     isTyping={isOtherUserTyping}
                 />
-                <div className="flex-1 pt-[64px] overflow-y-auto">
+                <div className="flex-1 pt-[64px] overflow-y-auto z-996">
                     {/* Messages Area */}
                     <MessageList
                         messages={messages.filter(msg => !msg.isDeleted)}
@@ -9104,7 +9104,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
                         uploadingMessage={uploadingMessage}
                     />
                 </div>
-                <div className="sticky bottom-0">
+                <div className="sticky bottom-0 z-999">
                     {/* Message Input and Attachment Button */}
                     <ChatInput
                         newMessageContent={newMessageContent}
