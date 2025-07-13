@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 export interface Notification {
+  read: any;
   _id: string;
   type: string;
   message: string;
