@@ -81,7 +81,7 @@ const MessageList: FC<MessageListProps> = ({
     }
 
     return (
-        <div className="flex-1 overflow-y-auto p-4 hide-scrollbar" style={messageListStyle}>
+        <div className="flex-1 overflow-y-auto p-4 hide-scrollbar h-auto" style={messageListStyle}>
             {messages.length === 0 && !uploadingMessage && (
                 <div className="text-center text-gray-500 py-4">No messages yet. Start a conversation!</div>
             )}
