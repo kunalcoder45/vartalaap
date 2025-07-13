@@ -9085,45 +9085,43 @@ const ChatWindow: FC<ChatWindowProps> = ({
                     currentThemeImage={currentThemeImage}
                     isTyping={isOtherUserTyping}
                 />
-                <div className="flex-1 pt-[64px] overflow-y-auto z-996">
-                    {/* Messages Area */}
-                    <MessageList
-                        messages={messages.filter(msg => !msg.isDeleted)}
-                        loading={loadingInitialMessages}
-                        error={error}
-                        currentUserId={currentUserId}
-                        getFullMediaUrl={getFullMediaUrl}
-                        defaultAvatarUrl={defaultAvatarUrl}
-                        onOpenImagePreview={openImagePreview}
-                        selectedMessages={selectedMessages}
-                        onSelectMessage={handleSelectMessage}
-                        onEditMessage={handleEditClick}
-                        editingMessageId={editingMessageId}
-                        backgroundImageUrl={currentThemeImage}
-                        // Pass the uploadingMessage state to MessageList as well if it needs to display temporary messages
-                        uploadingMessage={uploadingMessage}
-                    />
-                </div>
-                <div className="sticky bottom-0 z-999">
-                    {/* Message Input and Attachment Button */}
-                    <ChatInput
-                        newMessageContent={newMessageContent}
-                        setNewMessageContent={handleNewMessageContentChange}
-                        selectedMedia={selectedMedia}
-                        mediaPreviewUrl={mediaPreviewUrl}
-                        removeSelectedMedia={removeSelectedMedia}
-                        error={error}
-                        isEditing={editingMessageId !== null} // Set this correctly based on editingMessageId
-                        editingMessageId={editingMessageId}
-                        sendingMessage={sendingMessage}
-                        isSavingEdit={isSavingEdit}
-                        handleSendMessage={handleSendMessage}
-                        handleSaveEdit={handleSaveEdit}
-                        handleCancelEdit={handleCancelEdit}
-                        handleFileChange={handleFileChange}
-                        uploadingMessage={uploadingMessage}
-                    />
-                </div>
+
+                {/* Messages Area */}
+                <MessageList
+                    messages={messages.filter(msg => !msg.isDeleted)}
+                    loading={loadingInitialMessages}
+                    error={error}
+                    currentUserId={currentUserId}
+                    getFullMediaUrl={getFullMediaUrl}
+                    defaultAvatarUrl={defaultAvatarUrl}
+                    onOpenImagePreview={openImagePreview}
+                    selectedMessages={selectedMessages}
+                    onSelectMessage={handleSelectMessage}
+                    onEditMessage={handleEditClick}
+                    editingMessageId={editingMessageId}
+                    backgroundImageUrl={currentThemeImage}
+                    // Pass the uploadingMessage state to MessageList as well if it needs to display temporary messages
+                    uploadingMessage={uploadingMessage}
+                />
+
+                {/* Message Input and Attachment Button */}
+                <ChatInput
+                    newMessageContent={newMessageContent}
+                    setNewMessageContent={handleNewMessageContentChange}
+                    selectedMedia={selectedMedia}
+                    mediaPreviewUrl={mediaPreviewUrl}
+                    removeSelectedMedia={removeSelectedMedia}
+                    error={error}
+                    isEditing={editingMessageId !== null} // Set this correctly based on editingMessageId
+                    editingMessageId={editingMessageId}
+                    sendingMessage={sendingMessage}
+                    isSavingEdit={isSavingEdit}
+                    handleSendMessage={handleSendMessage}
+                    handleSaveEdit={handleSaveEdit}
+                    handleCancelEdit={handleCancelEdit}
+                    handleFileChange={handleFileChange}
+                    uploadingMessage={uploadingMessage}
+                />
             </div>
 
             {/* Image Preview Modal */}

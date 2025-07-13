@@ -139,8 +139,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
   };
 
   return (
-    // <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
-    <div className="fixed top-0 left-0 right-0 z-996 bg-white border-b border-gray-200 shadow-sm p-4 md:static md:z-auto md:p-4 flex items-center justify-between">
+    <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center">
         <button
           onClick={() => {
@@ -175,8 +174,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({
           disabled={isInCall}
           onClick={handleAudioCall}
           title="Audio Call"
-          className={`p-2 rounded-full ${isInCall ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-100'
-            } text-blue-600`}
+          className={`p-2 rounded-full ${
+            isInCall ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-100'
+          } text-blue-600`}
         >
           <Phone size={20} />
         </button>
@@ -186,8 +186,9 @@ const ChatHeader: FC<ChatHeaderProps> = ({
           disabled={isInCall}
           onClick={handleVideoCall}
           title="Video Call"
-          className={`p-2 rounded-full ${isInCall ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-100'
-            } text-blue-600`}
+          className={`p-2 rounded-full ${
+            isInCall ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-100'
+          } text-blue-600`}
         >
           <Video size={20} />
         </button>
@@ -267,18 +268,20 @@ const ChatHeader: FC<ChatHeaderProps> = ({
                     <button
                       key={theme.name}
                       onClick={() => handleThemeSelect(theme.imageUrl)}
-                      className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left ${currentThemeImage === theme.imageUrl
+                      className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left ${
+                        currentThemeImage === theme.imageUrl
                           ? 'bg-blue-100 font-semibold'
                           : ''
-                        }`}
+                      }`}
                     >
                       {theme.name}
                     </button>
                   ))}
                   <button
                     onClick={() => handleThemeSelect(null)}
-                    className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left ${currentThemeImage === null ? 'bg-blue-100 font-semibold' : ''
-                      }`}
+                    className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left ${
+                      currentThemeImage === null ? 'bg-blue-100 font-semibold' : ''
+                    }`}
                   >
                     No Theme
                   </button>

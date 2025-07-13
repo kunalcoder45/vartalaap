@@ -111,7 +111,7 @@ const ChatInput: FC<ChatInputProps> = ({
     };
 
     return (
-        <form onSubmit={onSubmit} className="p-4 bg-white border-t border-gray-200">
+        <form onSubmit={onSubmit} className="p-4 bg-white border-t border-gray-200 z-999">
             {/* Uploading message and progress bar */}
             {uploadingMessage && (
                 <div className="mb-2 flex items-center text-sm text-gray-600">
@@ -160,7 +160,7 @@ const ChatInput: FC<ChatInputProps> = ({
 
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
                 {!isEditing && (
                     <>
                         <input
