@@ -111,7 +111,7 @@ const ChatInput: FC<ChatInputProps> = ({
     };
 
     return (
-        <form onSubmit={onSubmit} className="p-4 bg-white border-t border-gray-200 h-auto flex-none fixed bottom-0 left-0 right-0 z-50">
+        <form onSubmit={onSubmit} className="p-4 bg-white border-t border-gray-200">
             {/* Uploading message and progress bar */}
             {uploadingMessage && (
                 <div className="mb-2 flex items-center text-sm text-gray-600">

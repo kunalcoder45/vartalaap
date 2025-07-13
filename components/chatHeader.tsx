@@ -1,3 +1,5 @@
+
+
 'use client';
 
 import React, { FC, useState, useRef, useEffect } from 'react';
@@ -139,7 +141,7 @@ const ChatHeader: FC<ChatHeaderProps> = ({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm flex-none fixed top-0 left-0 right-0 z-50">
+    <div className="flex items-center justify-between p-4 bg-white border-b border-gray-200 shadow-sm">
       <div className="flex items-center">
         <button
           onClick={() => {
