@@ -160,7 +160,7 @@ const ChatInput: FC<ChatInputProps> = ({
 
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
 
-            <div className="flex items-center space-x-2">
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex items-center space-x-2">
                 {!isEditing && (
                     <>
                         <input
