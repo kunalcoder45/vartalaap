@@ -147,6 +147,8 @@ export default function RequestsPage() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [processing, setProcessing] = useState<string | null>(null);
+  const requestAcceptedSound = typeof Audio !== 'undefined' ? new Audio('/sounds/request_accepted.mp3') : null;
+  const requestRejectedSound = typeof Audio !== 'undefined' ? new Audio('/sounds/request_rejected.mp3') : null;
 
   useEffect(() => {
     if (token) fetchPendingRequests();
@@ -187,6 +189,14 @@ export default function RequestsPage() {
       if (!res.ok) throw new Error('Action failed');
       setRequests((prev) => prev.filter((r) => r._id !== id));
 
+      if (action === 'accept' && requestAcceptedSound) {
+        requestAcceptedSound.currentTime = 0;
+        requestAcceptedSound.play();
+      } else if (action === 'reject' && requestRejectedSound) {
+        requestRejectedSound.currentTime = 0;
+        requestRejectedSound.play();
+      }
+
       toast.dismiss(toastId);
       toast.success(`Request ${action === 'accept' ? 'accepted' : 'rejected'} successfully!`);
     } catch (error) {
@@ -196,6 +206,7 @@ export default function RequestsPage() {
       setProcessing(null);
     }
   };
+
 
   return (
     <>
