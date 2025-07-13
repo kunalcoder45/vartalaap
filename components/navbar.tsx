@@ -663,6 +663,7 @@ import {
   Check,
   X,
   Menu,
+  UserRound,
 } from 'lucide-react';
 import defaultUserLogo from '../app/assets/userLogo.png';
 import { useRouter } from 'next/navigation';
@@ -1097,13 +1098,88 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Hamburger Menu */}
-        <button
-          className="md:hidden text-gray-600 hover:text-blue-600 transition-colors duration-200"
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          onClick={toggleMenu}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+
+        <div className='flex gap-3'>
+          <div className="relative md:hidden">
+            <button
+              onClick={toggleNotificationDropdown}
+              className="relative text-gray-600 hover:text-blue-600 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-300 hide-scrollbar"
+              aria-label="Notifications"
+            >
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full transform translate-x-1/2 -translate-y-1/2 hide-scrollbar">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            <AnimatePresence>
+              {showNotificationDropdown && (
+                <motion.div
+                  ref={notificationDropdownRef}
+                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute hide-scrollbar right-[-20px] mt-4 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-[310] overflow-hidden transform origin-top-right max-h-auto overflow-y-auto"
+                >
+                  <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-800">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={async () => {
+                          await markAllAsRead();
+                          toast.success('All notifications marked as read');
+                        }}
+                        className="text-blue-600 text-sm hover:underline cursor-pointer"
+                      >
+                        Mark all as read
+                      </button>
+                    )}
+                  </div>
+
+                  {notifications.length > 0 ? (
+                    <AnimatedList
+                      items={notifications}
+                      renderItem={renderNotificationItem}
+                      onItemSelect={(item) => {
+                        if (item.link) {
+                          router.push(
+                            '/users/' + (item.sender?.firebaseUid || item.sender?._id || 'profile')
+                          );
+                          setShowNotificationDropdown(false);
+                        }
+                      }}
+                      className="max-h-96"
+                      showGradients={true}
+                      enableArrowNavigation={true}
+                      displayScrollbar={true}
+                    />
+                  ) : (
+                    <p className="p-4 text-center text-gray-500 text-sm">No new notifications.</p>
+                  )}
+                  <div className="p-3 bg-white border-t border-gray-200 text-center">
+                    <Link
+                      href="/notifications"
+                      onClick={() => setShowNotificationDropdown(false)}
+                      className="text-blue-600 hover:underline text-sm"
+                    >
+                      View all notifications
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <button
+            className="md:hidden text-gray-600 hover:text-blue-600 transition-colors duration-200"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            onClick={toggleMenu}
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
@@ -1115,7 +1191,7 @@ const Navbar: React.FC = () => {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 h-full w-4/5 bg-white z-[310] shadow-lg p-5 flex flex-col"
+            className="fixed top-0 left-0 h-full w-full bg-white z-[310] shadow-lg p-5 flex flex-col"
           >
             <button
               className="self-end mb-4 text-gray-600 hover:text-blue-600"
@@ -1124,52 +1200,52 @@ const Navbar: React.FC = () => {
             >
               <X size={28} />
             </button>
-
+            <div className="mb-3">
+              <SearchBar currentAuthUser={user} />
+            </div>
             <Link
               href="/dashboard"
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600"
+              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 flex items-center gap-2"
               onClick={toggleMenu}
             >
+              <Home size={18} />
               Home
             </Link>
+
             <Link
               href="/users"
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600"
+              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 flex items-center gap-2"
               onClick={toggleMenu}
             >
+              <User size={18} />
               Find Users
             </Link>
+
             <Link
               href="/chat"
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600"
+              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 flex items-center gap-2"
               onClick={toggleMenu}
             >
+              <MessageSquare size={18} />
               Messages
             </Link>
 
-            <button
-              onClick={() => {
-                toggleNotificationDropdown();
-                toggleMenu();
-              }}
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 text-left"
-            >
-              Notifications {unreadCount > 0 && `(${unreadCount})`}
-            </button>
-
             <Link
-              href={`/user/${user?.firebaseUid || user?._id}`}
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600"
+              // href={`/user/${user?.firebaseUid || user?._id}`}
+              href={'/profile'}
+              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 flex items-center gap-2"
               onClick={toggleMenu}
             >
+              <UserRound size={18} />
               Profile
             </Link>
 
             <Link
               href="/settings"
-              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600"
+              className="mb-3 text-lg font-semibold text-gray-800 hover:text-blue-600 flex items-center gap-2"
               onClick={toggleMenu}
             >
+              <Settings size={18} />
               Settings
             </Link>
 
@@ -1178,8 +1254,9 @@ const Navbar: React.FC = () => {
                 handleLogout();
                 toggleMenu();
               }}
-              className="mt-auto text-left text-red-600 font-semibold"
+              className="mt-auto text-left text-red-600 font-semibold flex items-center gap-2"
             >
+              <LogOut size={18} />
               Logout
             </button>
           </motion.div>

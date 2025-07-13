@@ -2,7 +2,9 @@
 import { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../firebase/config'; // 🔁 adjust the path as per your project
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import Particles from './Particles';
+import { motion } from 'framer-motion';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -29,34 +31,54 @@ const ForgotPassword = () => {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-            <form
-                onSubmit={handleReset}
-                className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full space-y-6"
+        <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden" >
+            <Particles
+                particleCount={300}
+                particleColors={['#ffffff', '#3b82f6', '#8b5cf6']}
+                particleBaseSize={140}
+                alphaParticles={true}
+                cameraDistance={25}
+                speed={0.3}
+                moveParticlesOnHover={true}
+                particleHoverFactor={2}
+                className="absolute inset-0 z-0"
+            />
+
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="z-10 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl p-8 md:p-10 w-full max-w-md text-white"
             >
-                <h2 className="text-2xl font-bold text-center text-gray-800">Forgot Password</h2>
-
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
-                />
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-2 px-4 bg-violet-600 text-white rounded-md font-semibold hover:bg-violet-700 transition disabled:opacity-50"
+                <form
+                    onSubmit={handleReset}
+                    className="bg-transparent shadow-lg rounded-lg p-8 max-w-sm w-full space-y-6"
                 >
-                    {loading ? 'Sending...' : 'Send Reset Link'}
-                </button>
+                    <h2 className="text-2xl font-bold text-center text-white">Forgot Password</h2>
 
-                <p className="text-sm text-center text-gray-600">
-                    Go back to <a href="/auth/login" className="text-violet-600 underline">Login</a>
-                </p>
-            </form>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        className="w-full px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 border"
+                    />
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2 px-4 bg-violet-600 text-white rounded-full cursor-pointer font-semibold hover:bg-violet-700 transition disabled:opacity-50"
+                    >
+                        {loading ? 'Sending...' : 'Send Reset Link'}
+                    </button>
+
+                    <p className="text-sm text-center text-white">
+                        Go back to <a href="/auth/login" className="text-blue-400 underline">Login</a>
+                    </p>
+                </form>
+            </motion.div>
+            <Toaster />
         </div>
     );
 };
