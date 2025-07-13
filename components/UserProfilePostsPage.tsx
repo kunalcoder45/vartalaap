@@ -10,7 +10,7 @@ import PostCard from '@/components/PostCard';
 import ConnectionsModal from '@/components/ConnectionsModal';
 import toast, { Toaster } from 'react-hot-toast';
 import LoadingBar from 'react-top-loading-bar';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, UserCheck, UserPlus } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
@@ -55,9 +55,11 @@ interface UserProfilePostsPageProps {
 }
 
 export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePostsPageProps) {
-    const { user: currentUser, getIdToken } = useAuth();
+    const { user: currentUser, user, getIdToken } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const [followStatus, setFollowStatus] = useState<'following' | 'pending_sent' | 'not_following' | 'self'>('not_following');
+    const [isFollowLoading, setIsFollowLoading] = useState(false);
 
     const [userPosts, setUserPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
@@ -70,6 +72,10 @@ export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePo
     const loadingBarRef = useRef<any>(null);
 
     const [isConnectionsModalOpen, setIsConnectionsModalOpen] = useState(false);
+
+    const requestSentSound = typeof Audio !== 'undefined' ? new Audio('/sounds/request_sent.mp3') : null;
+    const requestRejectedSound = typeof Audio !== 'undefined' ? new Audio('/sounds/request_rejected.mp3') : null;
+
 
     const toggleSidebar = useCallback(() => {
         setIsSidebarOpen((prev) => !prev);
@@ -288,6 +294,89 @@ export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePo
         [currentUser, getIdToken, userPosts]
     );
 
+    const checkFollowStatus = useCallback(async () => {
+        if (!user || !userInfo?._id) {
+            setFollowStatus('not_following');
+            return;
+        }
+
+        if (user.mongoUserId === userInfo._id) {
+            setFollowStatus('self');
+            return;
+        }
+
+        try {
+            const token = await getIdToken();
+            const response = await fetch(`${API_BASE_URL}/follow/follow-status/${userInfo._id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await response.json();
+            setFollowStatus(data.status);
+        } catch (error) {
+            console.error('Error checking follow status:', error);
+        }
+    }, [user, userInfo, getIdToken, API_BASE_URL]);
+
+    useEffect(() => {
+        if (userInfo) checkFollowStatus();
+    }, [userInfo, checkFollowStatus]);
+
+    const handleFollowAction = async () => {
+        if (!user || !userInfo?._id || followStatus === 'self') return;
+
+        setIsFollowLoading(true);
+        try {
+            const token = await getIdToken();
+            if (!token) return toast.error('Please login to follow');
+
+            let response, message;
+
+            if (followStatus === 'not_following') {
+                response = await fetch(`${API_BASE_URL}/follow/send-follow-request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ targetUserId: userInfo._id }),
+                });
+
+                message = 'Follow request sent';
+
+                if (requestSentSound) {
+                    requestSentSound.currentTime = 0;
+                    requestSentSound.play()
+                };
+            } else if (followStatus === 'following') {
+                response = await fetch(`${API_BASE_URL}/follow/unfollow/${userInfo._id}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                message = 'Unfollowed successfully';
+
+                if (requestRejectedSound) {
+                    requestRejectedSound.currentTime = 0;
+                    requestRejectedSound.play();
+                }
+            }
+
+            if (response?.ok) {
+                toast.success(message);
+                checkFollowStatus();
+            } else {
+                const data = await response.json();
+                throw new Error(data.message || 'Follow action failed');
+            }
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err.message || 'Something went wrong');
+        } finally {
+            setIsFollowLoading(false);
+        }
+    };
+
+
     const handlePostDeleted = useCallback((deletedPostId: string) => {
         setUserPosts((prevPosts) => prevPosts.filter(post => post._id !== deletedPostId));
         setPostCount((prevCount) => Math.max(0, prevCount - 1));
@@ -392,7 +481,27 @@ export default function UserProfilePostsPage({ uid: firebaseUid }: UserProfilePo
                                             <span className="font-medium">
                                                 <span className="text-gray-900 font-bold">{postCount}</span> Posts
                                             </span>
-
+                                            {user?.mongoUserId !== userInfo?._id && (
+                                                <button
+                                                    onClick={handleFollowAction}
+                                                    disabled={isFollowLoading}
+                                                    className={`flex items-center px-3 py-1 rounded-full text-sm font-medium border transition-colors ${followStatus === 'following'
+                                                        ? 'bg-green-100 text-green-700 border-green-200 hover:bg-green-200'
+                                                        : followStatus === 'pending_sent'
+                                                            ? 'bg-yellow-100 text-yellow-700 border-yellow-200 cursor-not-allowed'
+                                                            : 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-200'
+                                                        } ${isFollowLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    {followStatus === 'following' ? <UserCheck size={16} className="mr-1" /> : <UserPlus size={16} className="mr-1" />}
+                                                    {isFollowLoading
+                                                        ? 'Loading...'
+                                                        : followStatus === 'following'
+                                                            ? 'Following'
+                                                            : followStatus === 'pending_sent'
+                                                                ? 'Pending'
+                                                                : 'Follow'}
+                                                </button>
+                                            )}
                                             <button
                                                 onClick={() => setIsConnectionsModalOpen(true)}
                                                 className="px-3 py-1 cursor-pointer bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors duration-200"
