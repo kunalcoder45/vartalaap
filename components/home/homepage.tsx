@@ -177,6 +177,7 @@ import {
   Smartphone,
 } from "lucide-react"
 import Particles from "../Particles"
+import SpotlightCard from "../SpotlightCard"
 
 export default function HomePage() {
   const { user, loading } = useAuth()
@@ -286,15 +287,34 @@ export default function HomePage() {
             >
               {user ? (
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button
+                  {/* <button
                     onClick={() => router.push("/dashboard")}
                     className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center gap-3"
                   >
                     <ArrowRightCircle size={20} />
                     Go to Dashboard
                     <div className="absolute cursor-pointer inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </button>
-                  <button
+                  </button> */}
+                  <div className="mx-auto h-15 md:h-20 w-full max-w-72 bg-black">
+                    <button className="group cursor-pointer flex h-full w-full items-center justify-between border-2 border-black bg-white px-8 text-xl font-semibold gap-2"
+                      onClick={() => router.push("/dashboard")}
+                      style={{ transform: "translateX(0px) translateY(0px)" }}>
+                      <span className="relative overflow-hidden">
+                        <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full">
+                          Go to Dashboard
+                        </span>
+                        <span className="absolute left-0 top-0 block translate-y-full transition-transform duration-300 group-hover:translate-y-0">
+                          Go to Dashboard
+                        </span>
+                      </span>
+                      <div className="pointer-events-none flex h-6 w-6 overflow-hidden text-2xl">
+                        <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" className="shrink-0 -translate-x-full text-red-500 transition-transform duration-300 group-hover:translate-x-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" className="shrink-0 -translate-x-full transition-transform duration-300 group-hover:translate-x-0" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* <button
                     onClick={async () => {
                       const { signOut } = await import('firebase/auth');
                       const { auth } = await import('../../firebase/config');
@@ -303,25 +323,85 @@ export default function HomePage() {
                     className="cursor-pointer group relative px-16 md:px-8 py-4 bg-red-500/80 backdrop-blur-md border border-white/20 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center gap-3 hover:bg-red-500"
                   >
                     <LogOut size={18} /> Logout
-                  </button>
+                  </button> */}
+                  {/* <div className="h-auto w-full flex items-center justify-center"> */}
+                  <div className="flex justify-center">
+                    <button
+                      className="cursor-pointer w-auto flex justify-center items-center px-16 md:px-12 py-4 font-medium bg-red-500/80 text-white transition-all shadow-[3px_3px_0px_white] gap-3 hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
+                      onClick={async () => {
+                        const { signOut } = await import('firebase/auth');
+                        const { auth } = await import('../../firebase/config');
+                        await signOut(auth);
+                      }}
+                    >
+                      <LogOut size={18} /> Logout
+                    </button>
+                  </div>
+
                 </div>
+                // </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button
+                  {/* <button
                     onClick={() => router.push("/auth/login")}
                     className="group relative px-12 md:px-8 cursor-pointer py-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center gap-3"
                   >
                     <LogIn size={20} />
                     Login
                     <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </button> */}
+                  <button className="
+                    relative z-0 flex items-center gap-2 overflow-hidden cursor-pointer border-[1px] 
+                    border-violet-300 px-10 py-4 font-semibold
+                    uppercase text-white transition-all duration-500
+                    
+                    before:absolute before:inset-0
+                    before:-z-10 before:translate-x-[150%]
+                    before:translate-y-[150%] before:scale-[2.5]
+                    before:rounded-[100%] before:bg-violet-300
+                    before:transition-transform before:duration-1000
+                    before:content-[&quot;&quot;]
+
+                    hover:scale-105 hover:text-neutral-900
+                    hover:before:translate-x-[0%]
+                    hover:before:translate-y-[0%]
+                    active:scale-95"
+                    onClick={() => router.push("/auth/login")}
+                  >
+                    <LogIn size={20} />
+                    Login
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => router.push("/auth/register")}
                     className="group relative px-8 py-4 bg-white/10 cursor-pointer backdrop-blur-md border border-white/20 text-white font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl flex items-center gap-3 hover:bg-blue-500/20"
                   >
                     <UserPlus size={20} />
                     Get Started
+                  </button> */}
+                  <button
+                    className="
+                    relative z-0 flex items-center gap-2 overflow-hidden cursor-pointer border-[1px] 
+                    border-violet-300 px-6 py-4 font-semibold
+                    uppercase text-white transition-all duration-500
+                    
+                    before:absolute before:inset-0
+                    before:-z-10 before:translate-x-[-150%]
+                    before:translate-y-[150%] before:scale-[2.5]
+                    before:rounded-[100%] before:bg-violet-300
+                    before:transition-transform before:duration-1000
+                    before:content-['']
+
+                    hover:scale-105 hover:text-neutral-900
+                    hover:before:translate-x-[0%]
+                    hover:before:translate-y-[0%]
+                    active:scale-95
+                  "
+                    onClick={() => router.push("/auth/register")}
+                  >
+                    <UserPlus size={20} />
+                    Get Started
                   </button>
+
                 </div>
               )}
             </motion.div>
@@ -349,7 +429,7 @@ export default function HomePage() {
           </motion.div>
         </section>
 
-        {/* Features Section */}
+        {/* Features Section (Updated) */}
         <section className="py-20 px-4">
           <motion.div
             className="max-w-6xl mx-auto"
@@ -369,22 +449,24 @@ export default function HomePage() {
               {features.map((feature, index) => (
                 <motion.div
                   key={index}
-                  className="group bg-white/5 backdrop-blur-md border border-white/10 p-8 text-center hover:bg-white/10 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <div className="text-blue-400 mb-4 flex justify-center group-hover:text-purple-400 transition-colors duration-300">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                  <p className="text-white/60 leading-relaxed">{feature.description}</p>
+                  <SpotlightCard spotlightColor="rgba(255, 255, 255, 0.15)">
+                    <div className="text-blue-400 mb-4 flex justify-center group-hover:text-purple-400 transition-colors duration-300">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                    <p className="text-white/60 leading-relaxed">{feature.description}</p>
+                  </SpotlightCard>
                 </motion.div>
               ))}
             </div>
           </motion.div>
         </section>
+
 
         {/* CTA Section */}
         <section className="py-20 px-4">
