@@ -5,7 +5,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from './AuthProvider';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import { useSocket } from '@/app/context/ChatProvider';
 import { User as GeneralUser } from '../types/activity';
 
 // Define a type for a chat participant with potentially last message info
@@ -43,6 +43,8 @@ const ChatList: React.FC<ChatListProps> = ({
     onSelectChat,
     currentSelectedChatUser,
 }) => {
+
+    const { onlineUsers } = useSocket();
     const { getIdToken } = useAuth();
     const [chatUsers, setChatUsers] = useState<GeneralUser[]>([]); // All chat-eligible users (followers/following)
     const [conversations, setConversations] = useState<ConversationPreview[]>([]); // Previews of active conversations
@@ -214,33 +216,51 @@ const ChatList: React.FC<ChatListProps> = ({
                     {combinedChatList.length === 0 ? (
                         <p className="text-gray-500 text-sm">No chats or contacts yet.</p>
                     ) : (
-                        combinedChatList.map(user => (
-                            <li
-                                key={user._id}
-                                className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200
-                                    ${currentSelectedChatUser && currentSelectedChatUser._id === user._id ? 'bg-blue-100' : 'hover:bg-gray-100'}
-                                `}
-                                onClick={() => onSelectChat(user)}
-                            >
-                                <img
-                                    src={user.avatarUrl || defaultAvatarUrl}
-                                    alt={user.name}
-                                    className="w-10 h-10 rounded-full object-cover mr-3 border border-gray-300"
-                                    onError={(e) => {
-                                        const target = e.target as HTMLImageElement;
-                                        target.src = defaultAvatarUrl;
-                                    }}
-                                />
-                                <div className="flex-1 overflow-hidden">
-                                    <p className="font-medium text-gray-800 truncate">{user.name}</p>
-                                    {user.lastMessageContent && (
-                                        <p className="text-sm text-gray-500 truncate">
-                                            {user.lastMessageContent}
-                                        </p>
-                                    )}
-                                </div>
-                            </li>
-                        ))
+                        combinedChatList.map(user => {
+                            const isOnline = onlineUsers.has(user._id);
+                            return (
+                                <li
+                                    key={user._id}
+                                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors duration-200
+                                        ${currentSelectedChatUser && currentSelectedChatUser._id === user._id ? 'bg-blue-100' : 'hover:bg-gray-100'}
+                                    `}
+                                    onClick={() => onSelectChat(user)}
+                                >
+                                    <div className="relative mr-3">
+                                        <img
+                                            src={user.avatarUrl || defaultAvatarUrl}
+                                            alt={user.name}
+                                            className="w-10 h-10 rounded-full object-cover border border-gray-300"
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = defaultAvatarUrl;
+                                            }}
+                                        />
+                                        {/* Online/Offline Status Indicator */}
+                                        <span
+                                            className={`
+                                                absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
+                                                ${isOnline ? 'bg-green-500' : 'bg-gray-400'}
+                                            `}
+                                            title={isOnline ? 'Online' : 'Offline'}
+                                        />
+                                    </div>
+                                    <div className="flex-1 overflow-hidden">
+                                        <div className="flex items-center gap-2">
+                                            <p className="font-medium text-gray-800 truncate">{user.name}</p>
+                                            {isOnline && (
+                                                <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                                            )}
+                                        </div>
+                                        {user.lastMessageContent && (
+                                            <p className="text-sm text-gray-500 truncate">
+                                                {user.lastMessageContent}
+                                            </p>
+                                        )}
+                                    </div>
+                                </li>
+                            );
+                        })
                     )}
                 </ul>
             )}

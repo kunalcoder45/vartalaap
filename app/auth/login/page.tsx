@@ -107,6 +107,7 @@ export default function Login() {
             Forget Password
           </Link>
         </p> */}
+
         <div className="flex justify-center mt-6">
           <GoogleSignInButton />
         </div>

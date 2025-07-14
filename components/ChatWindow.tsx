@@ -206,27 +206,6 @@ const ChatWindow: FC<ChatWindowProps> = ({
         },
         [sendTypingStatus]
     );
-
-
-    // const handleNewMessageContentChange = useCallback((content: string) => {
-    //     setNewMessageContent(content);
-
-    //     // Emit 'typing' event when user starts typing
-    //     if (content.length > 0 && typingTimeoutRef.current === null) {
-    //         sendTypingStatus(true);
-    //     }
-
-    //     // Clear previous timeout and set a new one to send 'stopped typing'
-    //     if (typingTimeoutRef.current) {
-    //         clearTimeout(typingTimeoutRef.current);
-    //     }
-    //     typingTimeoutRef.current = setTimeout(() => {
-    //         sendTypingStatus(false);
-    //         typingTimeoutRef.current = null; // Reset ref
-    //     }, 1500); // Send 'stopped typing' after 1.5 seconds of no new input
-    // }, [sendTypingStatus]);
-
-
     // --- Message Selection Handlers ---
     const handleSelectMessage = useCallback((messageId: string) => {
         if (editingMessageId) {

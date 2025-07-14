@@ -7,6 +7,7 @@ import ClickSpark from "@/components/ClickSpark";
 import OfflineOverlay from "@/components/OfflineOverlay";
 import { NotificationProvider } from "@/src/contexts/NotificationContext";
 import type { Metadata } from 'next';
+import { ChatProvider } from "./context/ChatProvider";
 
 export const metadata: Metadata = {
   title: 'Vartalaap - Connect, Share & Discover Your Community',
@@ -99,22 +100,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="Vartalaap" />
         <meta name="msapplication-TileColor" content="#3B82F6" />
         <meta name="msapplication-tap-highlight" content="no" />
-        
+
         {/* Apple Touch Icons */}
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/favicon.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png" />
         <link rel="apple-touch-icon" sizes="167x167" href="/favicon.png" />
-        
+
         {/* Standard Favicon */}
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
         <link rel="icon" href="/favicon.ico" />
-        
+
         {/* Microsoft Tiles */}
         <meta name="msapplication-TileImage" content="/favicon.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        
+
         {/* Preconnect for performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -127,7 +128,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <ClickSpark sparkColor="#3B82F6" sparkCount={10}>
                   <OfflineOverlay />
                   <NotificationProvider>
-                    {children}
+                    <ChatProvider>
+                      {children}
+                    </ChatProvider>
                   </NotificationProvider>
                 </ClickSpark>
               </CallUIWrapper>
@@ -135,6 +138,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </CallProvider>
         </AuthProvider>
       </body>
-    </html>
+    </html >
   );
 }
