@@ -30,7 +30,7 @@ export default function FavouritesPage() {
             <AnimatePresence>
                 {isMobileSidebarOpen && (
                     <motion.div
-                        className="fixed top-0 left-0 w-full h-screen z-[200] flex"
+                        className="fixed top-15 left-0 w-full h-screen z-[200] flex"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -40,17 +40,17 @@ export default function FavouritesPage() {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'tween', duration: 0.3 }}
-                            className="w-4/5 h-screen bg-gray-800 shadow-lg"
+                            className="w-4/5 h-screen shadow-lg"
                         >
                             <Slidebar
                                 joinedGroups={joinedGroups}
                                 currentPath={pathname}
-                                className="text-white h-full mt-12"
+                                className="text-white h-full"
                             />
                         </motion.div>
 
                         <div
-                            className="w-1/5 h-screen backdrop-blur-sm bg-black/50"
+                            className="w-1/5 h-screen backdrop-blur-sm"
                             onClick={() => setIsMobileSidebarOpen(false)}
                         ></div>
                     </motion.div>
@@ -64,7 +64,7 @@ export default function FavouritesPage() {
                     <Slidebar
                         joinedGroups={joinedGroups}
                         currentPath={pathname}
-                        className="text-gray-800 h-full"
+                        className="h-full mt-1"
                     />
                 </div>
 
